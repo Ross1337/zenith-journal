@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
+import { Providers } from '@/components/providers';
 import './globals.css';
 
 const display = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
@@ -15,7 +16,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${display.variable} ${ui.variable} ${mono.variable}`}>{children}</body>
+      <body className={`${display.variable} ${ui.variable} ${mono.variable}`}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

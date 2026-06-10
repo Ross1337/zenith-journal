@@ -1,55 +1,39 @@
-import type { Metadata } from 'next';
-import {
-  drawdown,
-  equityCurve,
-  expectancy,
-  profitFactor,
-  streaks,
-  sum,
-  winRate,
-} from '@zenith/calc';
+'use client';
+
+import { streaks } from '@zenith/calc';
 import { Card, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { EquityChart } from '@/components/dashboard/equity-chart';
 import { DailyPnlChart } from '@/components/dashboard/daily-pnl-chart';
 import { RecentTrades } from '@/components/dashboard/recent-trades';
-import { MOCK_ACCOUNT, getMockTrades } from '@/lib/mock-data';
+import { AccountSwitcher } from '@/components/shell/account-switcher';
+import { useAccounts, useDashboardMetrics, useTrades } from '@/lib/hooks';
+import { useUiStore } from '@/lib/store';
 import { fmtCurrency, fmtPct, fmtPnl, fmtRatio, pnlTone } from '@/lib/format';
 
-export const metadata: Metadata = { title: 'Dashboard' };
-
 export default function DashboardPage() {
-  const trades = getMockTrades();
-  const closed = trades.filter((t) => t.status === 'closed' && t.netPnl !== null);
+  const accountId = useUiStore((s) => s.accountId) ?? undefined;
+  const filters = accountId ? { accountId } : {};
 
-  // Chronological P&Ls feed every calc function.
-  const chrono = [...closed].sort((a, b) => a.openedAt.getTime() - b.openedAt.getTime());
-  const pnls = chrono.map((t) => t.netPnl ?? 0);
+  const { data: accounts } = useAccounts();
+  const { summary, equity, daily, isLoading } = useDashboardMetrics(filters);
+  const { data: tradeList } = useTrades({ ...filters, status: 'closed', limit: 500 });
 
-  const net = sum(pnls);
-  const wr = winRate(pnls);
-  const pf = profitFactor(pnls);
-  const exp = expectancy(pnls);
-  const streak = streaks(pnls);
+  const scoped = accountId
+    ? (accounts ?? []).filter((a) => a.id === accountId)
+    : (accounts ?? []);
+  const balance = scoped.reduce((acc, a) => acc + a.currentBalance, 0);
+  const initial = scoped.reduce((acc, a) => acc + a.initialBalance, 0);
 
-  const curve = equityCurve(
-    chrono.map((t) => ({ t: (t.closedAt ?? t.openedAt).getTime(), pnl: t.netPnl ?? 0 })),
-    MOCK_ACCOUNT.initialBalance,
+  // Discipline panel — derived client-side from the closed-trade list.
+  const closed = [...(tradeList?.items ?? [])].sort(
+    (a, b) => a.openedAt.getTime() - b.openedAt.getTime(),
   );
-  const dd = drawdown(curve);
+  const streak = streaks(closed.map((t) => t.netPnl ?? 0));
+  const lastEquity = equity?.[equity.length - 1];
 
-  // Daily aggregation for the bar chart (UTC buckets — display TZ comes with settings).
-  const byDay = new Map<string, { t: number; pnl: number }>();
-  for (const t of chrono) {
-    const d = (t.closedAt ?? t.openedAt).toISOString().slice(0, 10);
-    const bucket = byDay.get(d) ?? { t: new Date(`${d}T00:00:00Z`).getTime(), pnl: 0 };
-    bucket.pnl += t.netPnl ?? 0;
-    byDay.set(d, bucket);
-  }
-  const daily = [...byDay.values()].sort((a, b) => a.t - b.t);
-
-  const wins = pnls.filter((p) => p > 0).length;
-  const losses = pnls.filter((p) => p < 0).length;
+  if (isLoading) return <DashboardSkeleton />;
 
   return (
     <>
@@ -59,38 +43,49 @@ export default function DashboardPage() {
             Dashboard
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">
-            {MOCK_ACCOUNT.name} · {closed.length} closed trades · last 60 days
+            {accountId ? scoped[0]?.name : 'All accounts'} · {summary?.tradeCount ?? 0} closed
+            trades
           </p>
         </div>
-        <p className="z-numeric text-[13px] text-ink-secondary">
-          Equity{' '}
-          <span className="font-semibold text-ink">
-            {fmtCurrency(MOCK_ACCOUNT.initialBalance + net)}
-          </span>
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="z-numeric text-[13px] text-ink-secondary">
+            Equity <span className="font-semibold text-ink">{fmtCurrency(balance)}</span>
+          </p>
+          <AccountSwitcher />
+        </div>
       </header>
 
       {/* KPI row */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <StatCard
           label="Net P&L"
-          value={fmtPnl(net)}
-          tone={pnlTone(net)}
-          sub={`${wins} wins · ${losses} losses`}
+          value={fmtPnl(summary?.netPnl ?? 0)}
+          tone={pnlTone(summary?.netPnl ?? 0)}
+          sub={`${summary?.wins ?? 0} wins · ${summary?.losses ?? 0} losses`}
         />
-        <StatCard label="Win rate" value={fmtPct(wr)} sub="breakeven excluded" />
-        <StatCard label="Profit factor" value={fmtRatio(pf)} sub="gross gain / gross loss" />
+        <StatCard label="Win rate" value={fmtPct(summary?.winRate ?? null)} sub="breakeven excluded" />
+        <StatCard
+          label="Profit factor"
+          value={fmtRatio(summary?.profitFactor ?? null)}
+          sub="gross gain / gross loss"
+        />
         <StatCard
           label="Expectancy"
-          value={exp === null ? '—' : fmtPnl(exp)}
-          tone={exp === null ? 'neutral' : pnlTone(exp)}
+          value={summary?.expectancy == null ? '—' : fmtPnl(summary.expectancy)}
+          tone={summary?.expectancy == null ? 'neutral' : pnlTone(summary.expectancy)}
           sub="per trade"
         />
         <StatCard
           label="Max drawdown"
-          value={`−${fmtCurrency(dd.maxDrawdown, true)}`}
+          value={
+            summary?.maxDrawdown == null ? '—' : `−${fmtCurrency(summary.maxDrawdown, true)}`
+          }
           tone="loss"
-          sub={dd.maxDrawdownPct !== null ? `${fmtPct(dd.maxDrawdownPct)} from peak` : undefined}
+          sub={
+            summary?.maxDrawdownPct != null
+              ? `${fmtPct(summary.maxDrawdownPct)} from peak`
+              : undefined
+          }
         />
       </div>
 
@@ -98,14 +93,27 @@ export default function DashboardPage() {
       <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-5">
         <Card className="xl:col-span-3">
           <CardHeader title="Equity curve" hint="net, all instruments" />
-          <EquityChart
-            data={curve.map((p) => ({ t: p.t, equity: +p.equity.toFixed(2) }))}
-            baseline={MOCK_ACCOUNT.initialBalance}
-          />
+          {equity && equity.length > 0 ? (
+            <EquityChart
+              data={equity.map((p) => ({ t: p.date.getTime(), equity: p.equity }))}
+              baseline={initial}
+            />
+          ) : (
+            <EmptyChart label="No closed trades yet" />
+          )}
         </Card>
         <Card className="xl:col-span-2">
           <CardHeader title="Daily P&L" hint="net per session day" />
-          <DailyPnlChart data={daily.map((d) => ({ t: d.t, pnl: +d.pnl.toFixed(2) }))} />
+          {daily && daily.length > 0 ? (
+            <DailyPnlChart
+              data={daily.map((d) => ({
+                t: new Date(`${d.date}T00:00:00Z`).getTime(),
+                pnl: d.netPnl,
+              }))}
+            />
+          ) : (
+            <EmptyChart label="No closed trades yet" />
+          )}
         </Card>
       </div>
 
@@ -113,7 +121,7 @@ export default function DashboardPage() {
       <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-5">
         <Card className="xl:col-span-3">
           <CardHeader title="Recent trades" />
-          <RecentTrades trades={trades.slice(0, 6)} />
+          <RecentTrades trades={(tradeList?.items ?? []).slice(0, 6)} />
         </Card>
         <Card className="xl:col-span-2">
           <CardHeader title="Discipline" hint="current run" />
@@ -149,8 +157,12 @@ export default function DashboardPage() {
             />
             <Metric
               label="Current drawdown"
-              value={dd.currentDrawdown === 0 ? 'at peak' : `−${fmtCurrency(dd.currentDrawdown, true)}`}
-              tone={dd.currentDrawdown === 0 ? 'profit' : 'loss'}
+              value={
+                !lastEquity || lastEquity.drawdown === 0
+                  ? 'at peak'
+                  : `−${fmtCurrency(lastEquity.drawdown, true)}`
+              }
+              tone={!lastEquity || lastEquity.drawdown === 0 ? 'profit' : 'loss'}
             />
           </dl>
         </Card>
@@ -179,5 +191,33 @@ function Metric({
         {value}
       </dd>
     </div>
+  );
+}
+
+function EmptyChart({ label }: { label: string }) {
+  return (
+    <div className="flex h-[280px] items-center justify-center text-[13px] text-ink-muted">
+      {label}
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <>
+      <header className="mb-6">
+        <Skeleton className="h-7 w-44" />
+        <Skeleton className="mt-2 h-4 w-64" />
+      </header>
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+        {Array.from({ length: 5 }, (_, i) => (
+          <Skeleton key={i} className="h-[104px]" />
+        ))}
+      </div>
+      <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-5">
+        <Skeleton className="h-[340px] xl:col-span-3" />
+        <Skeleton className="h-[340px] xl:col-span-2" />
+      </div>
+    </>
   );
 }

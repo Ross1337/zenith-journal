@@ -1,14 +1,19 @@
-import type { Metadata } from 'next';
+'use client';
+
 import { sum } from '@zenith/calc';
 import { Card } from '@/components/ui/card';
 import { PnlValue } from '@/components/ui/pnl-value';
+import { Skeleton } from '@/components/ui/skeleton';
 import { TradesTable } from '@/components/trades/trades-table';
-import { getMockTrades } from '@/lib/mock-data';
-
-export const metadata: Metadata = { title: 'Trades' };
+import { AccountSwitcher } from '@/components/shell/account-switcher';
+import { useTrades } from '@/lib/hooks';
+import { useUiStore } from '@/lib/store';
 
 export default function TradesPage() {
-  const trades = getMockTrades();
+  const accountId = useUiStore((s) => s.accountId) ?? undefined;
+  const { data, isLoading } = useTrades({ accountId, limit: 500 });
+
+  const trades = data?.items ?? [];
   const net = sum(trades.map((t) => t.netPnl ?? 0));
 
   return (
@@ -19,17 +24,24 @@ export default function TradesPage() {
             Trade log
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">
-            Every execution, grouped into trades. Click a row to review (soon).
+            Every execution, grouped into trades.
           </p>
         </div>
-        <p className="text-[13px] text-ink-secondary">
-          Total net <PnlValue value={net} className="font-semibold" />
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-[13px] text-ink-secondary">
+            Total net <PnlValue value={net} className="font-semibold" />
+          </p>
+          <AccountSwitcher />
+        </div>
       </header>
 
-      <Card>
-        <TradesTable trades={trades} />
-      </Card>
+      {isLoading ? (
+        <Skeleton className="h-[480px]" />
+      ) : (
+        <Card>
+          <TradesTable trades={trades} />
+        </Card>
+      )}
     </>
   );
 }

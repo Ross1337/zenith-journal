@@ -1,0 +1,30 @@
+'use client';
+
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+/** Global UI state — account scope + the Log Trade modal. */
+interface UiState {
+  /** null = all accounts aggregated. */
+  accountId: string | null;
+  setAccountId: (id: string | null) => void;
+  tradeModalOpen: boolean;
+  openTradeModal: () => void;
+  closeTradeModal: () => void;
+}
+
+export const useUiStore = create<UiState>()(
+  persist(
+    (set) => ({
+      accountId: null,
+      setAccountId: (accountId) => set({ accountId }),
+      tradeModalOpen: false,
+      openTradeModal: () => set({ tradeModalOpen: true }),
+      closeTradeModal: () => set({ tradeModalOpen: false }),
+    }),
+    {
+      name: 'zenith-ui',
+      partialize: (s) => ({ accountId: s.accountId }),
+    },
+  ),
+);
