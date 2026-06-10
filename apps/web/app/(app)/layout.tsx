@@ -1,4 +1,5 @@
 import { Sidebar } from '@/components/shell/sidebar';
+import { ThemeSync } from '@/components/shell/theme-sync';
 import { TradeModal } from '@/components/trades/trade-modal';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -9,6 +10,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto max-w-[1240px]">{children}</div>
       </main>
       <TradeModal />
+      <ThemeSync />
     </div>
   );
 }

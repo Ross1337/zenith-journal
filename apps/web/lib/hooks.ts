@@ -2,11 +2,16 @@
 
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CreateTradeInput } from '@zenith/types';
+import type {
+  CreateJournalEntryInput,
+  CreateTradeInput,
+  UpdateProfileInput,
+} from '@zenith/types';
 import { useTokenGetter } from '@/components/providers';
 import {
   createApiClient,
   type CreateAccountPayload,
+  type JournalFilters,
   type MetricsFilters,
   type TradeFilters,
   type UpdateAccountPayload,
@@ -57,6 +62,19 @@ export function useDashboardMetrics(filters: MetricsFilters = {}) {
   };
 }
 
+export function useJournal(filters: JournalFilters = {}) {
+  const api = useApi();
+  return useQuery({
+    queryKey: ['journal', filters],
+    queryFn: () => api.journal.list(filters),
+  });
+}
+
+export function useProfile() {
+  const api = useApi();
+  return useQuery({ queryKey: ['me'], queryFn: () => api.me.get() });
+}
+
 // ── Mutations ────────────────────────────────────────────────────────
 
 /** Trades shift P&L everywhere — invalidate the whole data layer. */
@@ -94,6 +112,33 @@ export function useDeleteTrade() {
   return useMutation({
     mutationFn: (id: string) => api.trades.remove(id),
     onSuccess: invalidate,
+  });
+}
+
+export function useCreateJournalEntry() {
+  const api = useApi();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CreateJournalEntryInput) => api.journal.create(input),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ['journal'] }),
+  });
+}
+
+export function useDeleteJournalEntry() {
+  const api = useApi();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.journal.remove(id),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ['journal'] }),
+  });
+}
+
+export function useUpdateProfile() {
+  const api = useApi();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: UpdateProfileInput) => api.me.update(input),
+    onSuccess: (profile) => qc.setQueryData(['me'], profile),
   });
 }
 

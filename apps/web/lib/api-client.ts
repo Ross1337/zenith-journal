@@ -3,14 +3,20 @@ import {
   AccountSchema,
   DailyPnlSchema,
   EquityPointSchema,
+  JournalEntrySchema,
   MetricsSummarySchema,
   TradeSchema,
+  UserProfileSchema,
   type Account,
+  type CreateJournalEntryInput,
   type CreateTradeInput,
   type DailyPnl,
   type EquityPoint,
+  type JournalEntry,
   type MetricsSummary,
   type Trade,
+  type UpdateProfileInput,
+  type UserProfile,
 } from '@zenith/types';
 
 /**
@@ -58,6 +64,19 @@ export interface MetricsFilters {
 
 const TradeListSchema = z.object({ items: z.array(TradeSchema), total: z.number().int() });
 export type TradeList = z.infer<typeof TradeListSchema>;
+
+const JournalListSchema = z.object({
+  items: z.array(JournalEntrySchema),
+  total: z.number().int(),
+});
+export type JournalList = z.infer<typeof JournalListSchema>;
+
+export interface JournalFilters {
+  type?: JournalEntry['type'];
+  tradingDay?: string;
+  limit?: number;
+  offset?: number;
+}
 
 export type UpdateTradePayload = Partial<CreateTradeInput> & { reviewed?: boolean };
 export type CreateAccountPayload = Pick<
@@ -127,6 +146,20 @@ export function createApiClient(getToken: TokenGetter) {
         request(`/trades/${id}/media`, { method: 'POST', body }),
       listMedia: (id: string): Promise<Array<{ id: string; url: string }>> =>
         request(`/trades/${id}/media`),
+    },
+    journal: {
+      list: (filters: JournalFilters = {}): Promise<JournalList> =>
+        request(`/journal${buildQuery({ ...filters })}`, { schema: JournalListSchema }),
+      create: (body: CreateJournalEntryInput): Promise<JournalEntry> =>
+        request('/journal', { method: 'POST', body, schema: JournalEntrySchema }),
+      update: (id: string, body: Partial<CreateJournalEntryInput>): Promise<JournalEntry> =>
+        request(`/journal/${id}`, { method: 'PATCH', body, schema: JournalEntrySchema }),
+      remove: (id: string): Promise<void> => request(`/journal/${id}`, { method: 'DELETE' }),
+    },
+    me: {
+      get: (): Promise<UserProfile> => request('/me', { schema: UserProfileSchema }),
+      update: (body: UpdateProfileInput): Promise<UserProfile> =>
+        request('/me', { method: 'PATCH', body, schema: UserProfileSchema }),
     },
     uploads: {
       image: async (file: File): Promise<{ url: string }> => {
