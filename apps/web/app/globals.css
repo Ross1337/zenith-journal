@@ -1,0 +1,53 @@
+@import '@zenith/ui-tokens/css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Wire next/font variables into the token system. */
+:root {
+  --z-font-display: var(--font-display), system-ui, sans-serif;
+  --z-font-ui: var(--font-ui), system-ui, -apple-system, sans-serif;
+  --z-font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--z-surface-void);
+  color: var(--z-text-primary);
+  font-family: var(--z-font-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--z-gold-glow);
+  color: var(--z-text-primary);
+}
+
+/* Quiet, theme-aware scrollbars. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--z-border-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--z-border-strong);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--z-focus-ring);
+  border-radius: var(--z-radius-xs);
+}
