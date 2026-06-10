@@ -1,0 +1,321 @@
+// ZENITH — persistence schema.
+// Money/price columns are Float (double precision): parity with the number-based
+// contracts in @zenith/types. Display rounding happens at the calc/format layer.
+// `grade` and `mistakes` stay String — their zod enums contain values ('A+')
+// that Prisma enum identifiers can't express; zod validates at the API edge.
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "cjs"
+  importFileExtension = ""
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AccountType {
+  live
+  demo
+  prop
+  eval
+}
+
+enum InstrumentType {
+  stock
+  option
+  future
+  forex
+  crypto
+  cfd
+}
+
+enum Direction {
+  long
+  short
+}
+
+enum TradeStatus {
+  open
+  closed
+}
+
+enum ExecutionSide {
+  buy
+  sell
+}
+
+enum TradingSession {
+  asia
+  london
+  newyork
+  overlap
+  other
+}
+
+enum MarketCondition {
+  trend
+  range
+  news
+  volatile
+  quiet
+}
+
+enum JournalEntryType {
+  daily_plan
+  daily_recap
+  trade_note
+  idea
+  lesson
+  weekly_review
+}
+
+enum SubscriptionPlan {
+  free
+  pro
+  lifetime
+}
+
+enum SubscriptionStatus {
+  active
+  trialing
+  past_due
+  canceled
+  incomplete
+}
+
+/// Mirror of the Clerk user — id IS the Clerk userId.
+model User {
+  id           String   @id
+  email        String?  @unique
+  displayName  String?
+  timezone     String   @default("UTC")
+  theme        String   @default("dark")
+  baseCurrency String   @default("USD") @db.Char(3)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  accounts       Account[]
+  trades         Trade[]
+  strategies     Strategy[]
+  journalEntries JournalEntry[]
+  tags           Tag[]
+  subscription   Subscription?
+  metricsCaches  MetricsCache[]
+
+  @@map("users")
+}
+
+model Account {
+  id             String      @id @default(uuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String      @db.VarChar(80)
+  broker         String?     @db.VarChar(80)
+  accountType    AccountType
+  currency       String      @default("USD") @db.Char(3)
+  initialBalance Float
+  currentBalance Float
+  color          String?
+  /// { profitTarget, maxDailyLoss, maxDrawdown, drawdownType } for prop/eval accounts.
+  propConfig     Json?
+  isActive       Boolean     @default(true)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  trades     Trade[]
+  executions Execution[]
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+/// Atomic fill — the raw unit every import normalizes to.
+model Execution {
+  id             String         @id @default(uuid())
+  accountId      String
+  account        Account        @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  tradeId        String?
+  trade          Trade?         @relation(fields: [tradeId], references: [id], onDelete: SetNull)
+  symbol         String         @db.VarChar(32)
+  instrumentType InstrumentType
+  side           ExecutionSide
+  quantity       Float
+  price          Float
+  commission     Float          @default(0)
+  fees           Float          @default(0)
+  swap           Float          @default(0)
+  executedAt     DateTime
+  /// Broker-side id (or content hash) — dedup anchor for re-imported files.
+  externalId     String?
+  importBatchId  String?
+  createdAt      DateTime       @default(now())
+
+  @@unique([accountId, externalId])
+  @@index([accountId, symbol, executedAt])
+  @@map("executions")
+}
+
+/// Grouped position — what the user thinks of as "a trade".
+model Trade {
+  id              String           @id @default(uuid())
+  accountId       String
+  account         Account          @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symbol          String           @db.VarChar(32)
+  instrumentType  InstrumentType
+  direction       Direction
+  status          TradeStatus
+  openedAt        DateTime
+  closedAt        DateTime?
+  qty             Float
+  avgEntry        Float
+  avgExit         Float?
+  initialStop     Float?
+  target          Float?
+  grossPnl        Float?
+  netPnl          Float?
+  commissionTotal Float            @default(0)
+  feesTotal       Float            @default(0)
+  swapTotal       Float            @default(0)
+  pnlPct          Float?
+  rRealized       Float?
+  rPlanned        Float?
+  mae             Float?
+  mfe             Float?
+  holdSeconds     Int?
+  strategyId      String?
+  strategy        Strategy?        @relation(fields: [strategyId], references: [id], onDelete: SetNull)
+  setup           String?          @db.VarChar(80)
+  marketCondition MarketCondition?
+  session         TradingSession?
+  timeframe       String?          @db.VarChar(16)
+  followedPlan    Boolean?
+  /// TradeMistake values — validated by zod at the API edge.
+  mistakes        String[]
+  emotionPre      Int?
+  emotionDuring   Int?
+  emotionPost     Int?
+  /// TradeGrade ('A+' | 'A' | 'B' | 'C').
+  grade           String?
+  reviewed        Boolean          @default(false)
+  tags            String[]
+  notes           String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  executions Execution[]
+  media      JournalMedia[]
+
+  @@index([userId, openedAt(sort: Desc)])
+  @@index([accountId, openedAt(sort: Desc)])
+  @@index([userId, symbol])
+  @@map("trades")
+}
+
+model Strategy {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name             String   @db.VarChar(80)
+  description      String?
+  /// InstrumentType[] / TradingSession[] — zod-validated string arrays.
+  instrumentFilter String[]
+  sessionFilter    String[]
+  timeframe        String?  @db.VarChar(16)
+  rrTarget         Float?
+  entryRules       String[]
+  exitRules        String[]
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+
+  trades Trade[]
+
+  @@index([userId])
+  @@map("strategies")
+}
+
+model JournalEntry {
+  id         String           @id @default(uuid())
+  userId     String
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       JournalEntryType
+  title      String?          @db.VarChar(160)
+  /// Markdown body.
+  content    String
+  /// 1 (tilt) → 5 (flow), optional.
+  mood       Int?
+  /// YYYY-MM-DD trading day the entry belongs to, user timezone.
+  tradingDay String?          @db.VarChar(10)
+  tags       String[]
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  media JournalMedia[]
+
+  @@index([userId, tradingDay])
+  @@map("journal_entries")
+}
+
+/// Screenshots / attachments — linked to a journal entry, a trade, or both.
+model JournalMedia {
+  id             String        @id @default(uuid())
+  journalEntryId String?
+  journalEntry   JournalEntry? @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  tradeId        String?
+  trade          Trade?        @relation(fields: [tradeId], references: [id], onDelete: Cascade)
+  kind           String        @default("image")
+  url            String
+  width          Int?
+  height         Int?
+  createdAt      DateTime      @default(now())
+
+  @@index([tradeId])
+  @@index([journalEntryId])
+  @@map("journal_media")
+}
+
+/// User tag registry (autocomplete + color). Trade/journal tag arrays stay denormalized.
+model Tag {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String   @db.VarChar(40)
+  color     String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, name])
+  @@map("tags")
+}
+
+model Subscription {
+  id                   String             @id @default(uuid())
+  userId               String             @unique
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  plan                 SubscriptionPlan   @default(free)
+  status               SubscriptionStatus @default(active)
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@map("subscriptions")
+}
+
+/// Precomputed KPI payloads keyed by filter fingerprint — invalidated on writes.
+model MetricsCache {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId  String?
+  cacheKey   String
+  payload    Json
+  computedAt DateTime @default(now())
+
+  @@unique([userId, cacheKey])
+  @@map("metrics_cache")
+}
