@@ -1,0 +1,156 @@
+/* ============================================================
+   ZENITH design tokens — CSS custom properties.
+   Dark ("Observatory") is the default theme. Light = "Daylight".
+   Generated from @zenith/ui-tokens — keep in sync with src/.
+   ============================================================ */
+
+:root {
+  /* Surfaces */
+  --z-surface-void: #0a0b10;
+  --z-surface-raised: #10121a;
+  --z-surface-high: #161925;
+  --z-surface-overlay: #1d2130;
+  --z-surface-hover: #1a1e2b;
+
+  /* Borders */
+  --z-border-subtle: #1e2330;
+  --z-border-default: #252b3d;
+  --z-border-strong: #323a52;
+  --z-border-luminous: rgba(242, 181, 68, 0.35);
+
+  /* Text */
+  --z-text-primary: #f2f4fa;
+  --z-text-secondary: #a8b0c4;
+  --z-text-muted: #5f687e;
+  --z-text-faint: #3d4357;
+  --z-text-on-accent: #16120a;
+
+  /* Solar gold accent */
+  --z-gold: #f2b544;
+  --z-gold-hover: #ffca66;
+  --z-gold-active: #d99c2b;
+  --z-gold-subdued: #8a6a2b;
+  --z-gold-glow: rgba(242, 181, 68, 0.16);
+  --z-gold-wash: rgba(242, 181, 68, 0.08);
+
+  /* Ion violet accent */
+  --z-ion: #8b7cf6;
+  --z-ion-hover: #a99dff;
+  --z-ion-subdued: #4a4189;
+  --z-ion-wash: rgba(139, 124, 246, 0.1);
+
+  /* P&L */
+  --z-profit: #41e0a3;
+  --z-profit-dim: #1f7a58;
+  --z-profit-wash: rgba(65, 224, 163, 0.1);
+  --z-loss: #f2555f;
+  --z-loss-dim: #8c3038;
+  --z-loss-wash: rgba(242, 85, 95, 0.1);
+  --z-breakeven: #8a93a8;
+
+  /* Status */
+  --z-info: #6cb7ff;
+  --z-warning: #f2b544;
+  --z-danger: #f2555f;
+  --z-success: #41e0a3;
+
+  /* Typography */
+  --z-font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --z-font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+  --z-font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  /* Radii */
+  --z-radius-xs: 4px;
+  --z-radius-sm: 6px;
+  --z-radius-md: 10px;
+  --z-radius-lg: 14px;
+  --z-radius-xl: 20px;
+
+  /* Effects */
+  --z-shadow-overlay: 0 8px 32px rgba(3, 4, 8, 0.55), 0 2px 8px rgba(3, 4, 8, 0.35);
+  --z-shadow-modal: 0 16px 64px rgba(3, 4, 8, 0.65), 0 4px 16px rgba(3, 4, 8, 0.4);
+  --z-focus-ring: 0 0 0 2px rgba(242, 181, 68, 0.55);
+  --z-inner-light: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --z-gradient-horizon: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(242, 181, 68, 0.55) 50%,
+    transparent 100%
+  );
+  --z-gradient-dawn: radial-gradient(
+    ellipse 60% 45% at 50% 0%,
+    rgba(242, 181, 68, 0.1) 0%,
+    transparent 70%
+  );
+  --z-gradient-solar: linear-gradient(135deg, #f2b544 0%, #e08bd4 60%, #8b7cf6 100%);
+
+  /* Motion */
+  --z-duration-fast: 120ms;
+  --z-duration-base: 200ms;
+  --z-duration-slow: 320ms;
+  --z-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --z-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Layout */
+  --z-sidebar-width: 232px;
+  --z-topbar-height: 56px;
+
+  color-scheme: dark;
+}
+
+/* Daylight theme */
+[data-theme='light'] {
+  --z-surface-void: #fafaf7;
+  --z-surface-raised: #ffffff;
+  --z-surface-high: #f2f1ec;
+  --z-surface-overlay: #ffffff;
+  --z-surface-hover: #f5f4f0;
+
+  --z-border-subtle: #eae8e1;
+  --z-border-default: #dedbd2;
+  --z-border-strong: #c5c1b4;
+  --z-border-luminous: rgba(176, 124, 24, 0.4);
+
+  --z-text-primary: #191a20;
+  --z-text-secondary: #4d5263;
+  --z-text-muted: #80869b;
+  --z-text-faint: #b4b9c9;
+
+  --z-gold: #b07c18;
+  --z-gold-hover: #8f6410;
+  --z-gold-active: #75520d;
+  --z-gold-subdued: #d9b36a;
+  --z-gold-glow: rgba(176, 124, 24, 0.14);
+  --z-gold-wash: rgba(176, 124, 24, 0.07);
+
+  --z-profit: #0e9f6e;
+  --z-loss: #d6353f;
+  --z-breakeven: #6b7280;
+
+  --z-shadow-overlay: 0 8px 32px rgba(25, 26, 32, 0.12), 0 2px 8px rgba(25, 26, 32, 0.08);
+  --z-shadow-modal: 0 16px 64px rgba(25, 26, 32, 0.16), 0 4px 16px rgba(25, 26, 32, 0.1);
+
+  color-scheme: light;
+}
+
+/* Colorblind-safe P&L variant (blue/orange) — toggled in settings */
+[data-pnl='colorblind'] {
+  --z-profit: #4da3ff;
+  --z-profit-wash: rgba(77, 163, 255, 0.1);
+  --z-loss: #ffa94d;
+  --z-loss-wash: rgba(255, 169, 77, 0.1);
+}
+
+/* Numeric data must always align — apply to every number in the product. */
+.z-numeric {
+  font-family: var(--z-font-mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: 0.01em;
+}
+
+/* Signature divider */
+.z-horizon {
+  height: 1px;
+  border: 0;
+  background: var(--z-gradient-horizon);
+}

@@ -1,1 +1,11 @@
-node_modules/\n.env\n.env.local\ndist/\n.next/\nbuild/
+node_modules/
+.env
+.env.local
+.env*.local
+dist/
+.next/
+build/
+.turbo/
+coverage/
+*.tsbuildinfo
+.DS_Store
