@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Field, Input, Select } from '@/components/ui/field';
 import { PnlValue } from '@/components/ui/pnl-value';
+import { ImportCsv } from '@/components/accounts/import-csv';
 import {
   useAccounts,
   useCreateAccount,
@@ -67,6 +68,8 @@ export default function AccountsPage() {
           )}
         </div>
       )}
+
+      {(accounts ?? []).length > 0 && <ImportCsv accounts={accounts ?? []} />}
     </>
   );
 }

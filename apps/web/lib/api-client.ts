@@ -78,6 +78,47 @@ export interface JournalFilters {
   offset?: number;
 }
 
+// ── CSV import ──────────────────────────────────────────────────────
+
+export interface ImportFill {
+  symbol: string;
+  side: 'buy' | 'sell';
+  quantity: number;
+  price: number;
+  commission: number;
+  fees: number;
+  executedAt: string;
+  externalId: string;
+}
+
+export interface ImportPreviewTrade {
+  symbol: string;
+  direction: 'long' | 'short';
+  status: 'open' | 'closed';
+  openedAt: string;
+  closedAt: string | null;
+  qty: number;
+  avgEntry: number;
+  avgExit: number | null;
+  netPnl: number | null;
+  fillCount: number;
+}
+
+export interface ImportPreview {
+  fills: ImportFill[];
+  trades: ImportPreviewTrade[];
+  totalNetPnl: number;
+  duplicates: number;
+  errors: string[];
+}
+
+export interface ImportResult {
+  batchId: string;
+  importedExecutions: number;
+  importedTrades: number;
+  skippedDuplicates: number;
+}
+
 export type UpdateTradePayload = Partial<CreateTradeInput> & { reviewed?: boolean };
 export type CreateAccountPayload = Pick<
   Account,
@@ -160,6 +201,28 @@ export function createApiClient(getToken: TokenGetter) {
       get: (): Promise<UserProfile> => request('/me', { schema: UserProfileSchema }),
       update: (body: UpdateProfileInput): Promise<UserProfile> =>
         request('/me', { method: 'PATCH', body, schema: UserProfileSchema }),
+    },
+    imports: {
+      preview: async (accountId: string, file: File): Promise<ImportPreview> => {
+        const token = await getToken();
+        const form = new FormData();
+        form.append('file', file);
+        const res = await fetch(`${BASE}/imports/preview?accountId=${accountId}`, {
+          method: 'POST',
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+          body: form,
+        });
+        if (!res.ok) {
+          const detail = await res.json().catch(() => null);
+          throw new ApiError(res.status, detail?.message ?? `Preview failed (${res.status})`);
+        }
+        return (await res.json()) as ImportPreview;
+      },
+      commit: (body: {
+        accountId: string;
+        instrumentType: Trade['instrumentType'];
+        fills: ImportFill[];
+      }): Promise<ImportResult> => request('/imports/commit', { method: 'POST', body }),
     },
     uploads: {
       image: async (file: File): Promise<{ url: string }> => {
