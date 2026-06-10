@@ -3,6 +3,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { matchExecutions, type MatchedTrade } from '@zenith/calc';
 import { PrismaService } from '../prisma/prisma.service';
 import { AccountsService } from '../accounts/accounts.service';
+import { BillingService } from '../billing/billing.service';
 import { deriveTradeMetrics } from '../trades/derive';
 import { normalizeCsv, type NormalizedFill } from './csv';
 import type { CommitImportInput, FillInput } from './imports.dto';
@@ -31,6 +32,7 @@ export class ImportsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly accounts: AccountsService,
+    private readonly billing: BillingService,
   ) {}
 
   /** Parse + match, flag rows already imported. Nothing is written. */
@@ -67,6 +69,7 @@ export class ImportsService {
       throw new BadRequestException('Every row in this file was already imported');
     }
     const matched = this.match(input.accountId, fresh);
+    await this.billing.assertCanAddTrades(userId, matched.length);
     const batchId = randomUUID();
 
     await this.prisma.$transaction(async (tx) => {

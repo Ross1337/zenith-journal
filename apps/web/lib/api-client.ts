@@ -78,6 +78,14 @@ export interface JournalFilters {
   offset?: number;
 }
 
+export interface SubscriptionInfo {
+  plan: 'free' | 'pro' | 'lifetime';
+  status: string;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+  billingEnabled: boolean;
+}
+
 // ── CSV import ──────────────────────────────────────────────────────
 
 export interface ImportFill {
@@ -201,6 +209,12 @@ export function createApiClient(getToken: TokenGetter) {
       get: (): Promise<UserProfile> => request('/me', { schema: UserProfileSchema }),
       update: (body: UpdateProfileInput): Promise<UserProfile> =>
         request('/me', { method: 'PATCH', body, schema: UserProfileSchema }),
+    },
+    billing: {
+      subscription: (): Promise<SubscriptionInfo> => request('/billing/subscription'),
+      checkout: (plan: 'pro' | 'lifetime'): Promise<{ url: string }> =>
+        request('/billing/checkout', { method: 'POST', body: { plan } }),
+      portal: (): Promise<{ url: string }> => request('/billing/portal', { method: 'POST' }),
     },
     imports: {
       preview: async (accountId: string, file: File): Promise<ImportPreview> => {

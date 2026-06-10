@@ -9,6 +9,7 @@ import { UploadsModule } from './uploads/uploads.module';
 import { JournalModule } from './journal/journal.module';
 import { UsersModule } from './users/users.module';
 import { ImportsModule } from './imports/imports.module';
+import { BillingModule } from './billing/billing.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -23,6 +24,7 @@ import { HealthController } from './health.controller';
     JournalModule,
     UsersModule,
     ImportsModule,
+    BillingModule,
   ],
   controllers: [HealthController],
 })

@@ -75,6 +75,14 @@ export function useProfile() {
   return useQuery({ queryKey: ['me'], queryFn: () => api.me.get() });
 }
 
+export function useSubscription() {
+  const api = useApi();
+  return useQuery({
+    queryKey: ['billing', 'subscription'],
+    queryFn: () => api.billing.subscription(),
+  });
+}
+
 // ── Mutations ────────────────────────────────────────────────────────
 
 /** Trades shift P&L everywhere — invalidate the whole data layer. */

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import type { Trade } from '@zenith/types';
 import { PrismaService } from '../prisma/prisma.service';
 import { AccountsService } from '../accounts/accounts.service';
+import { BillingService } from '../billing/billing.service';
 import { toTrade } from '../common/mappers';
 import { deriveTradeMetrics } from './derive';
 import type { Prisma } from '../generated/prisma/client';
@@ -17,6 +18,7 @@ export class TradesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly accounts: AccountsService,
+    private readonly billing: BillingService,
   ) {}
 
   async list(userId: string, q: ListTradesQuery): Promise<{ items: Trade[]; total: number }> {
@@ -57,6 +59,7 @@ export class TradesService {
   async create(userId: string, input: CreateTradeInput): Promise<Trade> {
     // Ownership check — accountId comes from the client.
     await this.accounts.get(userId, input.accountId);
+    await this.billing.assertCanAddTrades(userId, 1);
 
     const shape = {
       direction: input.direction,

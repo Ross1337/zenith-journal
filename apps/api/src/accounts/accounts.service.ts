@@ -1,13 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { Account } from '@zenith/types';
 import { PrismaService } from '../prisma/prisma.service';
+import { BillingService } from '../billing/billing.service';
 import { toAccount } from '../common/mappers';
 import type { CreateAccountInput, UpdateAccountInput } from './accounts.dto';
 
 /** Postgres-backed accounts, scoped by userId. */
 @Injectable()
 export class AccountsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly billing: BillingService,
+  ) {}
 
   async list(userId: string): Promise<Account[]> {
     const rows = await this.prisma.account.findMany({
@@ -26,6 +30,7 @@ export class AccountsService {
   }
 
   async create(userId: string, input: CreateAccountInput): Promise<Account> {
+    await this.billing.assertCanAddAccount(userId);
     // First write for a new Clerk user — make sure the FK target exists.
     await this.prisma.user.upsert({ where: { id: userId }, create: { id: userId }, update: {} });
 
