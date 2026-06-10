@@ -2,9 +2,9 @@
  * ZENITH brand mark — a star at its highest point above the horizon line.
  * Pure SVG, original geometry; scales with the `size` prop.
  */
-export function ZenithMark({ size = 24 }: { size?: number }) {
+export function ZenithMark({ size = 24, className }: { size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden className={className}>
       {/* Horizon */}
       <path d="M3 19h18" stroke="var(--z-border-strong)" strokeWidth="1.5" strokeLinecap="round" />
       {/* Apex trajectory */}
