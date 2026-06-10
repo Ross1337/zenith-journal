@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../src/generated/prisma/client';
-import { deriveTradeMetrics } from '../src/trades/derive';
+import { PrismaClient } from './generated/prisma/client';
+import { deriveTradeMetrics } from './trades/derive';
 
 /**
  * Deterministic seed (mulberry32) — 2 accounts, 50 realistic trades over the

@@ -6,6 +6,7 @@ export default defineConfig({
   datasource: { url: env('DATABASE_URL') },
   migrations: {
     path: 'prisma/migrations',
-    seed: 'tsx prisma/seed.ts',
+    // Compiled by the regular build — works in dev and inside the Docker image.
+    seed: 'node dist/seed.js',
   },
 });
