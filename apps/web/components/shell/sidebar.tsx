@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { useUiStore } from '@/lib/store';
 import { ZenithMark } from './zenith-mark';
 import {
   AccountsIcon,
@@ -24,6 +25,7 @@ const NAV = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const openTradeModal = useUiStore((s) => s.openTradeModal);
 
   return (
     <aside className="fixed inset-y-0 left-0 z-20 flex w-[232px] flex-col border-r border-edge-subtle bg-raised">
@@ -40,6 +42,7 @@ export function Sidebar() {
       <div className="px-3 pt-5">
         <button
           type="button"
+          onClick={openTradeModal}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-gold px-3 py-2 text-[13px] font-semibold text-ink-on-accent transition-colors duration-fast hover:bg-gold-hover active:bg-gold-active"
         >
           <PlusIcon />

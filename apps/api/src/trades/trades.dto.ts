@@ -19,3 +19,11 @@ export const ListTradesQuery = z.object({
   offset: z.coerce.number().int().min(0).default(0),
 });
 export type ListTradesQuery = z.infer<typeof ListTradesQuery>;
+
+/** Attach a previously-uploaded screenshot to a trade. */
+export const AddTradeMediaInput = z.object({
+  url: z.string().min(1).max(500),
+  width: z.number().int().positive().optional(),
+  height: z.number().int().positive().optional(),
+});
+export type AddTradeMediaInput = z.infer<typeof AddTradeMediaInput>;

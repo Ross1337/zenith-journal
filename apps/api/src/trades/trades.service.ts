@@ -139,6 +139,25 @@ export class TradesService {
     return toTrade(row);
   }
 
+  async addMedia(
+    userId: string,
+    tradeId: string,
+    input: { url: string; width?: number; height?: number },
+  ) {
+    await this.get(userId, tradeId); // ownership
+    return this.prisma.journalMedia.create({
+      data: { tradeId, url: input.url, width: input.width ?? null, height: input.height ?? null },
+    });
+  }
+
+  async listMedia(userId: string, tradeId: string) {
+    await this.get(userId, tradeId);
+    return this.prisma.journalMedia.findMany({
+      where: { tradeId },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
   async remove(userId: string, id: string): Promise<void> {
     const trade = await this.get(userId, id);
     await this.prisma.trade.delete({ where: { id } });

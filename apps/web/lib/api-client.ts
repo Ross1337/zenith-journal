@@ -21,6 +21,11 @@ import {
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/v1';
 
+/** API media paths (`/v1/uploads/…`) → absolute URLs for <img>. */
+export function mediaUrl(path: string): string {
+  return path.startsWith('http') ? path : `${BASE.replace(/\/v1$/, '')}${path}`;
+}
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
@@ -118,6 +123,24 @@ export function createApiClient(getToken: TokenGetter) {
       update: (id: string, body: UpdateTradePayload): Promise<Trade> =>
         request(`/trades/${id}`, { method: 'PATCH', body, schema: TradeSchema }),
       remove: (id: string): Promise<void> => request(`/trades/${id}`, { method: 'DELETE' }),
+      addMedia: (id: string, body: { url: string }): Promise<{ id: string; url: string }> =>
+        request(`/trades/${id}/media`, { method: 'POST', body }),
+      listMedia: (id: string): Promise<Array<{ id: string; url: string }>> =>
+        request(`/trades/${id}/media`),
+    },
+    uploads: {
+      image: async (file: File): Promise<{ url: string }> => {
+        const token = await getToken();
+        const form = new FormData();
+        form.append('file', file);
+        const res = await fetch(`${BASE}/uploads`, {
+          method: 'POST',
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+          body: form,
+        });
+        if (!res.ok) throw new ApiError(res.status, `Upload failed (${res.status})`);
+        return (await res.json()) as { url: string };
+      },
     },
     metrics: {
       summary: (f: MetricsFilters = {}): Promise<MetricsSummary> =>
