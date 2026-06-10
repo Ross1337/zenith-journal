@@ -1,164 +1,147 @@
-import { randomUUID } from 'node:crypto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { Trade } from '@zenith/types';
-import { grossPnl, netPnl, pnlPct, rPlanned, rRealized } from '@zenith/calc';
+import { PrismaService } from '../prisma/prisma.service';
+import { AccountsService } from '../accounts/accounts.service';
+import { toTrade } from '../common/mappers';
+import { deriveTradeMetrics } from './derive';
+import type { Prisma } from '../generated/prisma/client';
 import type { CreateTradeInput, ListTradesQuery, UpdateTradeInput } from './trades.dto';
 
 /**
- * In-memory store, scoped by userId — the Postgres repository will take
- * over this contract. Derived metrics (P&L, R, hold time) are always
- * recomputed server-side via @zenith/calc; clients never send them.
+ * Postgres-backed trades, scoped by userId. Derived metrics (P&L, R, hold
+ * time) are always recomputed server-side via @zenith/calc; clients never
+ * send them. Account balances stay in sync with closed P&L.
  */
 @Injectable()
 export class TradesService {
-  private readonly trades = new Map<string, Trade>();
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly accounts: AccountsService,
+  ) {}
 
-  list(userId: string, q: ListTradesQuery): { items: Trade[]; total: number } {
-    const all = [...this.trades.values()]
-      .filter((t) => t.userId === userId)
-      .filter((t) => (q.accountId ? t.accountId === q.accountId : true))
-      .filter((t) => (q.symbol ? t.symbol.toUpperCase() === q.symbol.toUpperCase() : true))
-      .filter((t) => (q.direction ? t.direction === q.direction : true))
-      .filter((t) => (q.status ? t.status === q.status : true))
-      .filter((t) => (q.outcome ? outcomeOf(t) === q.outcome : true))
-      .filter((t) => (q.from ? t.openedAt >= q.from : true))
-      .filter((t) => (q.to ? t.openedAt <= q.to : true))
-      .sort((a, b) => b.openedAt.getTime() - a.openedAt.getTime());
+  async list(userId: string, q: ListTradesQuery): Promise<{ items: Trade[]; total: number }> {
+    const where: Prisma.TradeWhereInput = {
+      userId,
+      ...(q.accountId && { accountId: q.accountId }),
+      ...(q.symbol && { symbol: q.symbol.toUpperCase() }),
+      ...(q.direction && { direction: q.direction }),
+      ...(q.status && { status: q.status }),
+      ...(q.outcome === 'win' && { netPnl: { gt: 0 } }),
+      ...(q.outcome === 'loss' && { netPnl: { lt: 0 } }),
+      ...(q.outcome === 'breakeven' && { netPnl: { equals: 0 } }),
+      ...((q.from || q.to) && {
+        openedAt: { ...(q.from && { gte: q.from }), ...(q.to && { lte: q.to }) },
+      }),
+    };
 
-    return { items: all.slice(q.offset, q.offset + q.limit), total: all.length };
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.trade.findMany({
+        where,
+        orderBy: { openedAt: 'desc' },
+        skip: q.offset,
+        take: q.limit,
+      }),
+      this.prisma.trade.count({ where }),
+    ]);
+    return { items: rows.map(toTrade), total };
   }
 
-  get(userId: string, id: string): Trade {
-    const trade = this.trades.get(id);
-    if (!trade || trade.userId !== userId) {
+  async get(userId: string, id: string): Promise<Trade> {
+    const row = await this.prisma.trade.findUnique({ where: { id } });
+    if (!row || row.userId !== userId) {
       throw new NotFoundException(`Trade ${id} not found`);
     }
-    return trade;
+    return toTrade(row);
   }
 
-  create(userId: string, input: CreateTradeInput): Trade {
-    const now = new Date();
-    const trade: Trade = {
-      id: randomUUID(),
-      userId,
-      accountId: input.accountId,
-      symbol: input.symbol.toUpperCase(),
-      instrumentType: input.instrumentType,
+  async create(userId: string, input: CreateTradeInput): Promise<Trade> {
+    // Ownership check — accountId comes from the client.
+    await this.accounts.get(userId, input.accountId);
+
+    const shape = {
       direction: input.direction,
-      status: 'open',
-      openedAt: input.openedAt,
-      closedAt: input.closedAt ?? null,
       qty: input.qty,
       avgEntry: input.avgEntry,
       avgExit: input.avgExit ?? null,
       initialStop: input.initialStop ?? null,
       target: input.target ?? null,
-      grossPnl: null,
-      netPnl: null,
+      openedAt: input.openedAt,
+      closedAt: input.closedAt ?? null,
       commissionTotal: input.commissionTotal ?? 0,
       feesTotal: input.feesTotal ?? 0,
       swapTotal: input.swapTotal ?? 0,
-      pnlPct: null,
-      rRealized: null,
-      rPlanned: null,
-      mae: null,
-      mfe: null,
-      holdSeconds: null,
-      strategyId: input.strategyId ?? null,
-      setup: input.setup ?? null,
-      marketCondition: input.marketCondition ?? null,
-      session: input.session ?? null,
-      timeframe: input.timeframe ?? null,
-      followedPlan: input.followedPlan ?? null,
-      mistakes: input.mistakes ?? [],
-      emotionPre: input.emotionPre ?? null,
-      emotionDuring: input.emotionDuring ?? null,
-      emotionPost: input.emotionPost ?? null,
-      grade: input.grade ?? null,
-      reviewed: false,
-      tags: input.tags ?? [],
-      notes: input.notes ?? null,
-      createdAt: now,
-      updatedAt: now,
     };
+    const derived = deriveTradeMetrics(shape);
 
-    const computed = this.withDerivedMetrics(trade);
-    this.trades.set(computed.id, computed);
-    return computed;
+    const row = await this.prisma.trade.create({
+      data: {
+        userId,
+        accountId: input.accountId,
+        symbol: input.symbol.toUpperCase(),
+        instrumentType: input.instrumentType,
+        ...shape,
+        ...derived,
+        strategyId: input.strategyId ?? null,
+        setup: input.setup ?? null,
+        marketCondition: input.marketCondition ?? null,
+        session: input.session ?? null,
+        timeframe: input.timeframe ?? null,
+        followedPlan: input.followedPlan ?? null,
+        mistakes: input.mistakes ?? [],
+        emotionPre: input.emotionPre ?? null,
+        emotionDuring: input.emotionDuring ?? null,
+        emotionPost: input.emotionPost ?? null,
+        grade: input.grade ?? null,
+        tags: input.tags ?? [],
+        notes: input.notes ?? null,
+      },
+    });
+
+    if (derived.netPnl !== null) await this.accounts.syncBalance(input.accountId);
+    return toTrade(row);
   }
 
-  update(userId: string, id: string, input: UpdateTradeInput): Trade {
-    const trade = this.get(userId, id);
-    const merged: Trade = {
-      ...trade,
-      ...input,
-      symbol: input.symbol ? input.symbol.toUpperCase() : trade.symbol,
-      updatedAt: new Date(),
-    };
-    const computed = this.withDerivedMetrics(merged);
-    this.trades.set(id, computed);
-    return computed;
-  }
-
-  remove(userId: string, id: string): void {
-    this.get(userId, id);
-    this.trades.delete(id);
-  }
-
-  /** Recompute everything derivable from entry/exit/stop — single source of truth. */
-  private withDerivedMetrics(trade: Trade): Trade {
-    const closed = trade.avgExit !== null && trade.closedAt !== null;
-    if (!closed) {
-      return { ...trade, status: 'open', grossPnl: null, netPnl: null, pnlPct: null, rRealized: null, holdSeconds: null };
+  async update(userId: string, id: string, input: UpdateTradeInput): Promise<Trade> {
+    const current = await this.get(userId, id);
+    if (input.accountId && input.accountId !== current.accountId) {
+      await this.accounts.get(userId, input.accountId);
     }
 
-    const input = {
-      direction: trade.direction,
-      qty: trade.qty,
-      avgEntry: trade.avgEntry,
-      avgExit: trade.avgExit!,
-      commission: trade.commissionTotal,
-      fees: trade.feesTotal,
-      swap: trade.swapTotal,
-    };
-    const gross = grossPnl(input);
-    const net = netPnl(input);
+    const merged = { ...current, ...input };
+    const derived = deriveTradeMetrics({
+      direction: merged.direction,
+      qty: merged.qty,
+      avgEntry: merged.avgEntry,
+      avgExit: merged.avgExit ?? null,
+      initialStop: merged.initialStop ?? null,
+      target: merged.target ?? null,
+      openedAt: merged.openedAt,
+      closedAt: merged.closedAt ?? null,
+      commissionTotal: merged.commissionTotal ?? 0,
+      feesTotal: merged.feesTotal ?? 0,
+      swapTotal: merged.swapTotal ?? 0,
+    });
 
-    return {
-      ...trade,
-      status: 'closed',
-      grossPnl: round2(gross),
-      netPnl: round2(net),
-      pnlPct: round(pnlPct(input), 4),
-      rRealized: roundNullable(
-        rRealized(net, { avgEntry: trade.avgEntry, initialStop: trade.initialStop, qty: trade.qty }),
-      ),
-      rPlanned:
-        trade.initialStop !== null && trade.target !== null
-          ? roundNullable(rPlanned(trade.avgEntry, trade.initialStop, trade.target))
-          : null,
-      holdSeconds: Math.max(
-        0,
-        Math.round((trade.closedAt!.getTime() - trade.openedAt.getTime()) / 1000),
-      ),
-    };
+    const row = await this.prisma.trade.update({
+      where: { id },
+      data: {
+        ...input,
+        ...(input.symbol && { symbol: input.symbol.toUpperCase() }),
+        ...derived,
+      },
+    });
+
+    // P&L may have moved on either account involved.
+    await this.accounts.syncBalance(row.accountId);
+    if (input.accountId && input.accountId !== current.accountId) {
+      await this.accounts.syncBalance(current.accountId);
+    }
+    return toTrade(row);
   }
-}
 
-function outcomeOf(t: Trade): 'win' | 'loss' | 'breakeven' {
-  const pnl = t.netPnl ?? 0;
-  return pnl > 0 ? 'win' : pnl < 0 ? 'loss' : 'breakeven';
-}
-
-function round(v: number, digits: number): number {
-  const f = 10 ** digits;
-  return Math.round(v * f) / f;
-}
-
-function round2(v: number): number {
-  return round(v, 2);
-}
-
-function roundNullable(v: number | null): number | null {
-  return v === null ? null : round(v, 4);
+  async remove(userId: string, id: string): Promise<void> {
+    const trade = await this.get(userId, id);
+    await this.prisma.trade.delete({ where: { id } });
+    if (trade.netPnl !== null) await this.accounts.syncBalance(trade.accountId);
+  }
 }

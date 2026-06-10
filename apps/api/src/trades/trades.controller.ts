@@ -51,6 +51,6 @@ export class TradesController {
   @Delete(':id')
   @HttpCode(204)
   remove(@CurrentUser() userId: string, @Param('id') id: string) {
-    this.trades.remove(userId, id);
+    return this.trades.remove(userId, id);
   }
 }

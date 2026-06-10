@@ -47,6 +47,6 @@ export class AccountsController {
   @Delete(':id')
   @HttpCode(204)
   remove(@CurrentUser() userId: string, @Param('id') id: string) {
-    this.accounts.remove(userId, id);
+    return this.accounts.remove(userId, id);
   }
 }

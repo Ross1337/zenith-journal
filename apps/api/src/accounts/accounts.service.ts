@@ -1,67 +1,84 @@
-import { randomUUID } from 'node:crypto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { Account } from '@zenith/types';
+import { PrismaService } from '../prisma/prisma.service';
+import { toAccount } from '../common/mappers';
 import type { CreateAccountInput, UpdateAccountInput } from './accounts.dto';
 
-/**
- * In-memory store, scoped by userId. Same contract Postgres (Prisma)
- * will implement next iteration — controllers won't change.
- */
+/** Postgres-backed accounts, scoped by userId. */
 @Injectable()
 export class AccountsService {
-  private readonly accounts = new Map<string, Account>();
+  constructor(private readonly prisma: PrismaService) {}
 
-  list(userId: string): Account[] {
-    return [...this.accounts.values()]
-      .filter((a) => a.userId === userId)
-      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  async list(userId: string): Promise<Account[]> {
+    const rows = await this.prisma.account.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'asc' },
+    });
+    return rows.map(toAccount);
   }
 
-  get(userId: string, id: string): Account {
-    const account = this.accounts.get(id);
-    if (!account || account.userId !== userId) {
+  async get(userId: string, id: string): Promise<Account> {
+    const row = await this.prisma.account.findUnique({ where: { id } });
+    if (!row || row.userId !== userId) {
       throw new NotFoundException(`Account ${id} not found`);
     }
-    return account;
+    return toAccount(row);
   }
 
-  create(userId: string, input: CreateAccountInput): Account {
-    const now = new Date();
-    const account: Account = {
-      id: randomUUID(),
-      userId,
-      name: input.name,
-      broker: input.broker ?? null,
-      accountType: input.accountType,
-      currency: input.currency ?? 'USD',
-      initialBalance: input.initialBalance,
-      currentBalance: input.initialBalance,
-      color: input.color ?? null,
-      propConfig: input.propConfig ?? null,
-      isActive: true,
-      createdAt: now,
-      updatedAt: now,
-    };
-    this.accounts.set(account.id, account);
-    return account;
+  async create(userId: string, input: CreateAccountInput): Promise<Account> {
+    // First write for a new Clerk user — make sure the FK target exists.
+    await this.prisma.user.upsert({ where: { id: userId }, create: { id: userId }, update: {} });
+
+    const row = await this.prisma.account.create({
+      data: {
+        userId,
+        name: input.name,
+        broker: input.broker ?? null,
+        accountType: input.accountType,
+        currency: input.currency ?? 'USD',
+        initialBalance: input.initialBalance,
+        currentBalance: input.initialBalance,
+        color: input.color ?? null,
+        propConfig: input.propConfig ?? undefined,
+      },
+    });
+    return toAccount(row);
   }
 
-  update(userId: string, id: string, input: UpdateAccountInput): Account {
-    const account = this.get(userId, id);
-    const updated: Account = { ...account, ...input, updatedAt: new Date() };
-    this.accounts.set(id, updated);
-    return updated;
+  async update(userId: string, id: string, input: UpdateAccountInput): Promise<Account> {
+    await this.get(userId, id);
+    const { propConfig, ...rest } = input;
+    const row = await this.prisma.account.update({
+      where: { id },
+      data: { ...rest, ...(propConfig !== undefined && { propConfig: propConfig ?? undefined }) },
+    });
+
+    // A new starting balance shifts the running balance by the same delta.
+    if (input.initialBalance !== undefined) {
+      return this.syncBalance(id);
+    }
+    return toAccount(row);
   }
 
-  remove(userId: string, id: string): void {
-    this.get(userId, id);
-    this.accounts.delete(id);
+  async remove(userId: string, id: string): Promise<void> {
+    await this.get(userId, id);
+    await this.prisma.account.delete({ where: { id } });
   }
 
-  /** Called by TradesService when closed P&L changes. */
-  applyPnlDelta(userId: string, id: string, delta: number): void {
-    const account = this.get(userId, id);
-    account.currentBalance += delta;
-    account.updatedAt = new Date();
+  /** currentBalance = initialBalance + Σ closed net P&L. Called after trade writes. */
+  async syncBalance(accountId: string): Promise<Account> {
+    const [account, agg] = await this.prisma.$transaction([
+      this.prisma.account.findUniqueOrThrow({ where: { id: accountId } }),
+      this.prisma.trade.aggregate({
+        where: { accountId, status: 'closed' },
+        _sum: { netPnl: true },
+      }),
+    ]);
+    const balance = account.initialBalance + (agg._sum.netPnl ?? 0);
+    const row = await this.prisma.account.update({
+      where: { id: accountId },
+      data: { currentBalance: Math.round(balance * 100) / 100 },
+    });
+    return toAccount(row);
   }
 }
