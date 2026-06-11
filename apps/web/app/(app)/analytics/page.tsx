@@ -21,6 +21,8 @@ import { useAccounts, useDashboardMetrics, useTrades } from '@/lib/hooks';
 import { useUiStore } from '@/lib/store';
 import { byHour, bySetup, bySymbol, byWeekday, heatmapWeeks, rDistribution } from '@/lib/analytics';
 import { fmtHold, fmtPct, fmtPnl, fmtRatio } from '@/lib/format';
+import { useT } from '@/lib/i18n-context';
+import type { TKey } from '@/lib/i18n';
 import type { Trade, MetricsSummary } from '@zenith/types';
 
 /** Edge Score composite: 0–100 */
@@ -39,11 +41,11 @@ function computeEdgeScore(s: MetricsSummary | null): number | null {
   return Math.min(100, Math.round(wrScore + pfScore + erScore + ddScore));
 }
 
-function EdgeScoreRing({ score }: { score: number | null }) {
+function EdgeScoreRing({ score, t }: { score: number | null; t: (k: TKey) => string }) {
   if (score === null) {
     return (
       <div className="flex flex-col items-center justify-center p-6">
-        <p className="text-[12px] text-ink-muted">Not enough data</p>
+        <p className="text-[12px] text-ink-muted">{t('an_not_enough')}</p>
       </div>
     );
   }
@@ -54,7 +56,7 @@ function EdgeScoreRing({ score }: { score: number | null }) {
   const circ = 2 * Math.PI * r;
   const dashOffset = circ * (1 - score / 100);
   const color = score >= 70 ? '#4ADE80' : score >= 40 ? '#F2B544' : '#F87171';
-  const label = score >= 70 ? 'Strong' : score >= 40 ? 'Building' : 'Developing';
+  const label = score >= 70 ? t('an_edge_strong') : score >= 40 ? t('an_edge_building') : t('an_edge_developing');
 
   return (
     <div className="flex flex-col items-center gap-1 p-4">
@@ -75,7 +77,7 @@ function EdgeScoreRing({ score }: { score: number | null }) {
         </div>
       </div>
       <p className="text-[11.5px] font-semibold uppercase tracking-wider" style={{ color }}>{label}</p>
-      <p className="text-center text-[10.5px] leading-tight text-ink-muted" style={{ maxWidth: 110 }}>Edge Score</p>
+      <p className="text-center text-[10.5px] leading-tight text-ink-muted" style={{ maxWidth: 110 }}>{t('an_edge_score')}</p>
     </div>
   );
 }
@@ -149,6 +151,7 @@ function computeInsights(trades: Trade[], summary: MetricsSummary | null) {
 }
 
 export default function AnalyticsPage() {
+  const t = useT();
   const accountId = useUiStore((s) => s.accountId) ?? undefined;
   const filters = accountId ? { accountId } : {};
 
@@ -185,10 +188,10 @@ export default function AnalyticsPage() {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            Analytics
+            {t('an_title')}
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">
-            Where the edge lives — and where it leaks. {trades.length} closed trades.
+            {t('an_lead')} {trades.length} {t('an_closed_trades')}.
           </p>
         </div>
         <AccountSwitcher />
@@ -197,52 +200,52 @@ export default function AnalyticsPage() {
       {/* KPI strip + Edge Score */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
         <KpiCard
-          label="Expectancy / R"
+          label={t('an_expectancy_r')}
           value={summary?.expectancyR == null ? '—' : `${summary.expectancyR.toFixed(2)}R`}
           tone={erTone}
         />
         <KpiCard
-          label="Win rate"
+          label={t('an_win_rate')}
           value={fmtPct(summary?.winRate ?? null)}
           tone="neutral"
           progress={summary?.winRate ?? null}
           progressColor="#4ADE80"
         />
         <KpiCard
-          label="Profit factor"
+          label={t('an_profit_factor')}
           value={fmtRatio(summary?.profitFactor ?? null)}
           tone={pfTone}
         />
         <KpiCard
-          label="Avg win"
+          label={t('an_avg_win')}
           value={summary?.avgWin == null ? '—' : fmtPnl(summary.avgWin)}
           tone="profit"
         />
         <KpiCard
-          label="Avg loss"
+          label={t('an_avg_loss')}
           value={summary?.avgLoss == null ? '—' : fmtPnl(summary.avgLoss)}
           tone="loss"
         />
         <div className="col-span-2 flex items-center justify-center rounded-xl border border-edge-subtle bg-raised shadow-inner-light lg:col-span-1">
-          <EdgeScoreRing score={edgeScore} />
+          <EdgeScoreRing score={edgeScore} t={t} />
         </div>
       </div>
 
       {/* Equity + heatmap */}
       <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-5">
         <Card className="xl:col-span-3">
-          <CardHeader title="Equity curve" hint="net" />
+          <CardHeader title={t('an_equity_curve')} hint={t('an_net')} />
           {equity && equity.length > 0 ? (
             <EquityChart
               data={equity.map((p) => ({ t: p.date.getTime(), equity: p.equity }))}
               baseline={initial}
             />
           ) : (
-            <Empty />
+            <Empty t={t} />
           )}
         </Card>
         <Card className="xl:col-span-2">
-          <CardHeader title="Daily P&L heatmap" hint="last 16 weeks" />
+          <CardHeader title={t('an_heatmap_title')} hint={t('an_heatmap_hint')} />
           <PnlHeatmap weeks={heatmapWeeks(trades, 16)} />
         </Card>
       </div>
@@ -250,27 +253,27 @@ export default function AnalyticsPage() {
       {/* R distribution + snapshot */}
       <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-5">
         <Card className="xl:col-span-3">
-          <CardHeader title="R distribution" hint="realized R multiples, 0.5R buckets" />
+          <CardHeader title={t('an_r_dist_title')} hint={t('an_r_dist_hint')} />
           <RDistribution data={rDistribution(trades)} />
         </Card>
         <Card className="xl:col-span-2">
-          <CardHeader title="Snapshot" />
+          <CardHeader title={t('an_snapshot')} />
           <dl className="grid grid-cols-2 gap-x-6 gap-y-4 px-5 pb-5 pt-2">
             <Snap
-              label="Hold (win)"
+              label={t('an_hold_win')}
               value={fmtHold(summary?.avgHoldSecondsWin == null ? null : Math.round(summary.avgHoldSecondsWin))}
-              sub="winners held"
+              sub={t('an_winners_held')}
             />
             <Snap
-              label="Hold (loss)"
+              label={t('an_hold_loss')}
               value={fmtHold(summary?.avgHoldSecondsLoss == null ? null : Math.round(summary.avgHoldSecondsLoss))}
-              sub="losers held"
+              sub={t('an_losers_held')}
             />
-            <Snap label="Best day" value={summary?.bestDay == null ? '—' : fmtPnl(summary.bestDay)} tone="profit" />
-            <Snap label="Worst day" value={summary?.worstDay == null ? '—' : fmtPnl(summary.worstDay)} tone="loss" />
-            <Snap label="Breakevens" value={String(summary?.breakevens ?? 0)} />
+            <Snap label={t('an_best_day')} value={summary?.bestDay == null ? '—' : fmtPnl(summary.bestDay)} tone="profit" />
+            <Snap label={t('an_worst_day')} value={summary?.worstDay == null ? '—' : fmtPnl(summary.worstDay)} tone="loss" />
+            <Snap label={t('an_breakevens')} value={String(summary?.breakevens ?? 0)} />
             <Snap
-              label="Max drawdown"
+              label={t('an_max_dd')}
               value={summary?.maxDrawdown == null ? '—' : `−${fmtPnl(summary.maxDrawdown).replace('+', '')}`}
               tone="loss"
             />
@@ -281,19 +284,19 @@ export default function AnalyticsPage() {
       {/* Breakdowns */}
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader title="By setup" hint="net · trades · win rate" />
+          <CardHeader title={t('an_by_setup')} hint={t('an_breakdown_hint')} />
           <BreakdownBars rows={bySetup(trades)} />
         </Card>
         <Card>
-          <CardHeader title="By symbol" hint="net · trades · win rate" />
+          <CardHeader title={t('an_by_symbol')} hint={t('an_breakdown_hint')} />
           <BreakdownBars rows={bySymbol(trades)} />
         </Card>
         <Card>
-          <CardHeader title="By hour of open" hint="local time" />
+          <CardHeader title={t('an_by_hour')} hint={t('an_local_time')} />
           <BreakdownBars rows={byHour(trades)} maxRows={12} />
         </Card>
         <Card>
-          <CardHeader title="By weekday" />
+          <CardHeader title={t('an_by_weekday')} />
           <BreakdownBars rows={byWeekday(trades)} maxRows={7} />
         </Card>
       </div>
@@ -301,7 +304,7 @@ export default function AnalyticsPage() {
       {insights.length > 0 && (
         <div className="mt-4">
           <h2 className="mb-3 text-[13px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-            Insights
+            {t('an_insights')}
           </h2>
           <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
             {insights.map((ins, i) => (
@@ -370,10 +373,10 @@ function Snap({ label, value, tone, sub }: { label: string; value: string; tone?
   );
 }
 
-function Empty() {
+function Empty({ t }: { t: (k: TKey) => string }) {
   return (
     <div className="flex h-[280px] items-center justify-center text-[13px] text-ink-muted">
-      No closed trades yet
+      {t('dash_no_trades')}
     </div>
   );
 }

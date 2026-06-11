@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import type { Direction, Trade, TradeOutcome } from '@zenith/types';
 import { PnlValue } from '@/components/ui/pnl-value';
 import { fmtDateTime, fmtHold, fmtR } from '@/lib/format';
+import { useT } from '@/lib/i18n-context';
 
 type OutcomeFilter = TradeOutcome | 'all';
 type DirectionFilter = Direction | 'all';
@@ -15,6 +16,7 @@ function outcomeOf(t: Trade): TradeOutcome {
 }
 
 export function TradesTable({ trades }: { trades: Trade[] }) {
+  const t = useT();
   const [query, setQuery] = useState('');
   const [direction, setDirection] = useState<DirectionFilter>('all');
   const [outcome, setOutcome] = useState<OutcomeFilter>('all');
@@ -37,30 +39,30 @@ export function TradesTable({ trades }: { trades: Trade[] }) {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search symbol or setup…"
+          placeholder={t('tt_search')}
           className="h-8 w-56 rounded-md border border-edge bg-high px-3 text-[13px] text-ink placeholder:text-ink-faint focus:border-edge-strong"
         />
         <Segmented
           value={direction}
           onChange={setDirection}
           options={[
-            { value: 'all', label: 'All' },
-            { value: 'long', label: 'Long' },
-            { value: 'short', label: 'Short' },
+            { value: 'all', label: t('tt_all') },
+            { value: 'long', label: t('tt_long') },
+            { value: 'short', label: t('tt_short') },
           ]}
         />
         <Segmented
           value={outcome}
           onChange={setOutcome}
           options={[
-            { value: 'all', label: 'All' },
-            { value: 'win', label: 'Wins' },
-            { value: 'loss', label: 'Losses' },
-            { value: 'breakeven', label: 'BE' },
+            { value: 'all', label: t('tt_all') },
+            { value: 'win', label: t('tt_wins') },
+            { value: 'loss', label: t('tt_losses') },
+            { value: 'breakeven', label: t('tt_be') },
           ]}
         />
         <span className="z-numeric ml-auto text-[12px] text-ink-muted">
-          {filtered.length} / {trades.length} trades
+          {filtered.length} / {trades.length} {t('tt_trades')}
         </span>
       </div>
 
@@ -69,17 +71,17 @@ export function TradesTable({ trades }: { trades: Trade[] }) {
         <table className="w-full border-collapse text-[13px]">
           <thead>
             <tr className="border-y border-edge-subtle bg-high text-left text-[11px] uppercase tracking-[0.12em] text-ink-muted">
-              <Th>Opened</Th>
-              <Th>Symbol</Th>
-              <Th>Side</Th>
-              <Th className="text-right">Qty</Th>
-              <Th className="text-right">Entry</Th>
-              <Th className="text-right">Exit</Th>
-              <Th className="text-right">Net P&L</Th>
-              <Th className="text-right">R</Th>
-              <Th className="text-right">Hold</Th>
-              <Th>Setup</Th>
-              <Th>Grade</Th>
+              <Th>{t('tt_th_opened')}</Th>
+              <Th>{t('tt_th_symbol')}</Th>
+              <Th>{t('tt_th_side')}</Th>
+              <Th className="text-right">{t('tt_th_qty')}</Th>
+              <Th className="text-right">{t('tt_th_entry')}</Th>
+              <Th className="text-right">{t('tt_th_exit')}</Th>
+              <Th className="text-right">{t('tt_th_net')}</Th>
+              <Th className="text-right">{t('tt_th_r')}</Th>
+              <Th className="text-right">{t('tt_th_hold')}</Th>
+              <Th>{t('tt_th_setup')}</Th>
+              <Th>{t('tt_th_grade')}</Th>
             </tr>
           </thead>
           <tbody className="divide-y divide-edge-subtle">
@@ -133,7 +135,7 @@ export function TradesTable({ trades }: { trades: Trade[] }) {
             {filtered.length === 0 && (
               <tr>
                 <td colSpan={11} className="px-5 py-14 text-center text-[13px] text-ink-muted">
-                  No trades match these filters.
+                  {t('tt_no_match')}
                 </td>
               </tr>
             )}

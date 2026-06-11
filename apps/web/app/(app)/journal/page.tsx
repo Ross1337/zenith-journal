@@ -8,16 +8,18 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import { Markdown } from '@/lib/markdown';
 import { useCreateJournalEntry, useDeleteJournalEntry, useJournal } from '@/lib/hooks';
+import { useT } from '@/lib/i18n-context';
+import type { TKey } from '@/lib/i18n';
 
 type EntryType = JournalEntry['type'];
 
-const TYPE_LABELS: Record<EntryType, string> = {
-  daily_plan: 'Daily plan',
-  daily_recap: 'Daily recap',
-  trade_note: 'Trade note',
-  idea: 'Idea',
-  lesson: 'Lesson',
-  weekly_review: 'Weekly review',
+const TYPE_LABEL_KEYS: Record<EntryType, TKey> = {
+  daily_plan: 'jt_daily_plan',
+  daily_recap: 'jt_daily_recap',
+  trade_note: 'jt_trade_note',
+  idea: 'jt_idea',
+  lesson: 'jt_lesson',
+  weekly_review: 'jt_weekly_review',
 };
 
 const TYPE_TONES: Record<EntryType, string> = {
@@ -30,6 +32,7 @@ const TYPE_TONES: Record<EntryType, string> = {
 };
 
 export default function JournalPage() {
+  const t = useT();
   const [typeFilter, setTypeFilter] = useState<EntryType | 'all'>('all');
   const [composing, setComposing] = useState(false);
   const { data, isLoading } = useJournal(typeFilter === 'all' ? {} : { type: typeFilter });
@@ -41,10 +44,10 @@ export default function JournalPage() {
       <header className="mb-6 flex items-end justify-between">
         <div>
           <h1 className="font-display text-[22px] font-semibold tracking-tight text-ink">
-            Journal
+            {t('jr_title')}
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">
-            Plans, recaps, lessons — the narrative behind the numbers.
+            {t('jr_subtitle')}
           </p>
         </div>
         <button
@@ -52,7 +55,7 @@ export default function JournalPage() {
           onClick={() => setComposing((v) => !v)}
           className="rounded-md bg-gold px-4 py-2 text-[13px] font-semibold text-ink-on-accent transition-colors duration-fast hover:bg-gold-hover"
         >
-          {composing ? 'Close' : '+ New entry'}
+          {composing ? t('jr_close') : t('jr_new')}
         </button>
       </header>
 
@@ -61,11 +64,11 @@ export default function JournalPage() {
       {/* Type filter */}
       <div className="mb-4 flex flex-wrap gap-1.5">
         <FilterChip active={typeFilter === 'all'} onClick={() => setTypeFilter('all')}>
-          All
+          {t('jr_all')}
         </FilterChip>
-        {JournalEntryType.options.map((t) => (
-          <FilterChip key={t} active={typeFilter === t} onClick={() => setTypeFilter(t)}>
-            {TYPE_LABELS[t]}
+        {JournalEntryType.options.map((opt) => (
+          <FilterChip key={opt} active={typeFilter === opt} onClick={() => setTypeFilter(opt)}>
+            {t(TYPE_LABEL_KEYS[opt])}
           </FilterChip>
         ))}
       </div>
@@ -78,7 +81,7 @@ export default function JournalPage() {
       ) : entries.length === 0 ? (
         <Card>
           <p className="px-5 py-14 text-center text-[13px] text-ink-muted">
-            No entries yet. Start with a daily plan — future-you will thank you.
+            {t('jr_empty')}
           </p>
         </Card>
       ) : (
@@ -118,6 +121,7 @@ function FilterChip({
 }
 
 function Entry({ entry }: { entry: JournalEntry }) {
+  const t = useT();
   const del = useDeleteJournalEntry();
   return (
     <Card>
@@ -129,7 +133,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
               TYPE_TONES[entry.type],
             )}
           >
-            {TYPE_LABELS[entry.type]}
+            {t(TYPE_LABEL_KEYS[entry.type])}
           </span>
           {entry.title && (
             <h2 className="min-w-0 flex-1 truncate font-display text-[15px] font-semibold text-ink">
@@ -183,6 +187,7 @@ function MoodDot({ mood }: { mood: number }) {
 }
 
 function Composer({ onDone }: { onDone: () => void }) {
+  const t = useT();
   const create = useCreateJournalEntry();
   const [type, setType] = useState<EntryType>('daily_plan');
   const [title, setTitle] = useState('');
@@ -193,7 +198,7 @@ function Composer({ onDone }: { onDone: () => void }) {
 
   const submit = async () => {
     if (!content.trim()) {
-      setError('Write something first');
+      setError(t('jc_write_first'));
       return;
     }
     try {
@@ -207,7 +212,7 @@ function Composer({ onDone }: { onDone: () => void }) {
       });
       onDone();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to save');
+      setError(e instanceof Error ? e.message : t('jc_failed'));
     }
   };
 
@@ -215,23 +220,23 @@ function Composer({ onDone }: { onDone: () => void }) {
     <Card className="mb-5">
       <div className="space-y-4 px-5 py-4">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <Field label="Type">
+          <Field label={t('jc_type')}>
             <Select value={type} onChange={(e) => setType(e.target.value as EntryType)}>
-              {JournalEntryType.options.map((t) => (
-                <option key={t} value={t}>
-                  {TYPE_LABELS[t]}
+              {JournalEntryType.options.map((opt) => (
+                <option key={opt} value={opt}>
+                  {t(TYPE_LABEL_KEYS[opt])}
                 </option>
               ))}
             </Select>
           </Field>
-          <Field label="Title" className="col-span-2">
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Optional" />
+          <Field label={t('jc_title')} className="col-span-2">
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t('jc_optional')} />
           </Field>
-          <Field label="Trading day">
+          <Field label={t('jc_trading_day')}>
             <Input type="date" value={tradingDay} onChange={(e) => setTradingDay(e.target.value)} />
           </Field>
         </div>
-        <Field label="Entry" hint="markdown supported">
+        <Field label={t('jc_entry')} hint={t('jc_markdown')}>
           <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
@@ -241,7 +246,7 @@ function Composer({ onDone }: { onDone: () => void }) {
         </Field>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-[11.5px] uppercase tracking-[0.1em] text-ink-muted">Mood</span>
+            <span className="text-[11.5px] uppercase tracking-[0.1em] text-ink-muted">{t('jc_mood')}</span>
             {[1, 2, 3, 4, 5].map((n) => (
               <button
                 key={n}
@@ -266,7 +271,7 @@ function Composer({ onDone }: { onDone: () => void }) {
               disabled={create.isPending}
               className="rounded-md bg-gold px-4 py-2 text-[13px] font-semibold text-ink-on-accent transition-colors duration-fast hover:bg-gold-hover disabled:opacity-60"
             >
-              {create.isPending ? 'Saving…' : 'Save entry'}
+              {create.isPending ? t('jc_saving') : t('jc_save')}
             </button>
           </div>
         </div>

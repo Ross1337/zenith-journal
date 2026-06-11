@@ -5,9 +5,16 @@ import { useUiStore } from '@/lib/store';
 import { useTrades } from '@/lib/hooks';
 import { fmtPnl } from '@/lib/format';
 import { AccountSwitcher } from '@/components/shell/account-switcher';
+import { useI18n } from '@/lib/i18n-context';
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_BY_LANG = {
+  en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  fr: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+} as const;
+const MONTHS_BY_LANG = {
+  en: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+  fr: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+} as const;
 
 function toLocalDate(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -21,6 +28,9 @@ function pnlColor(pnl: number, maxAbs: number): string {
 }
 
 export default function CalendarPage() {
+  const { t, lang } = useI18n();
+  const DAYS = DAYS_BY_LANG[lang];
+  const MONTHS = MONTHS_BY_LANG[lang];
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
@@ -100,9 +110,9 @@ export default function CalendarPage() {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            Calendar
+            {t('cal_title')}
           </h1>
-          <p className="mt-1 text-[13px] text-ink-muted">Trading performance by day</p>
+          <p className="mt-1 text-[13px] text-ink-muted">{t('cal_subtitle')}</p>
         </div>
         <AccountSwitcher />
       </header>
@@ -113,7 +123,7 @@ export default function CalendarPage() {
           onClick={prevMonth}
           className="rounded-md border border-edge px-3 py-1.5 text-[13px] text-ink-secondary transition-colors hover:border-edge-strong hover:text-ink"
         >
-          ← Prev
+          ← {t('cal_prev')}
         </button>
         <div className="text-center">
           <h2 className="font-display text-[18px] font-semibold text-ink">{MONTHS[month]} {year}</h2>
@@ -127,7 +137,7 @@ export default function CalendarPage() {
           onClick={nextMonth}
           className="rounded-md border border-edge px-3 py-1.5 text-[13px] text-ink-secondary transition-colors hover:border-edge-strong hover:text-ink"
         >
-          Next →
+          {t('cal_next')} →
         </button>
       </div>
 
@@ -135,10 +145,10 @@ export default function CalendarPage() {
       {monthDays.length > 0 && (
         <div className="mb-4 grid grid-cols-4 gap-3">
           {[
-            { label: 'Win days', value: String(winDays), color: 'text-profit' },
-            { label: 'Loss days', value: String(lossDays), color: 'text-loss' },
-            { label: 'Best day', value: bestDay > -Infinity ? fmtPnl(bestDay) : '—', color: 'text-profit' },
-            { label: 'Worst day', value: worstDay < Infinity ? fmtPnl(worstDay) : '—', color: 'text-loss' },
+            { label: t('cal_win_days'), value: String(winDays), color: 'text-profit' },
+            { label: t('cal_loss_days'), value: String(lossDays), color: 'text-loss' },
+            { label: t('cal_best_day'), value: bestDay > -Infinity ? fmtPnl(bestDay) : '—', color: 'text-profit' },
+            { label: t('cal_worst_day'), value: worstDay < Infinity ? fmtPnl(worstDay) : '—', color: 'text-loss' },
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-edge-subtle bg-raised px-4 py-3">
               <p className="text-[11px] uppercase tracking-wider text-ink-muted">{s.label}</p>
@@ -191,7 +201,7 @@ export default function CalendarPage() {
                     <p className={`z-numeric text-[11px] font-semibold ${data.pnl >= 0 ? 'text-profit' : 'text-loss'}`}>
                       {fmtPnl(data.pnl)}
                     </p>
-                    <p className="text-[10px] text-ink-muted">{data.count} trade{data.count !== 1 ? 's' : ''}</p>
+                    <p className="text-[10px] text-ink-muted">{data.count} {data.count !== 1 ? t('cal_trades') : t('cal_trade')}</p>
                   </div>
                 )}
               </button>
@@ -204,7 +214,7 @@ export default function CalendarPage() {
       {selectedDay && dayTrades.length > 0 && (
         <div className="mt-4 rounded-xl border border-edge-subtle bg-raised p-4">
           <h3 className="mb-3 font-display text-[15px] font-semibold text-ink">
-            {new Date(selectedDay + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+            {new Date(selectedDay + 'T12:00:00').toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             <span className={`ml-2 text-[13px] font-normal ${dayMap.get(selectedDay)!.pnl >= 0 ? 'text-profit' : 'text-loss'}`}>
               {fmtPnl(dayMap.get(selectedDay)!.pnl)}
             </span>
@@ -238,12 +248,12 @@ export default function CalendarPage() {
 
       {selectedDay && dayTrades.length === 0 && (
         <div className="mt-4 rounded-xl border border-edge-subtle bg-raised px-5 py-8 text-center text-[13px] text-ink-muted">
-          No trades on this day
+          {t('cal_no_trades_day')}
         </div>
       )}
 
       {isLoading && (
-        <div className="mt-4 text-center text-[13px] text-ink-muted">Loading trades…</div>
+        <div className="mt-4 text-center text-[13px] text-ink-muted">{t('cal_loading')}</div>
       )}
     </>
   );
