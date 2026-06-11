@@ -73,3 +73,13 @@ export function PlusIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function CalendarIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <rect x="2.5" y="3.5" width="13" height="12" rx="1.5" />
+      <path d="M2.5 7.5h13M6 2v3M12 2v3" />
+      <path d="M5.5 11h2v2h-2zM8.5 11h2v2h-2z" strokeWidth="0" fill="currentColor" />
+    </svg>
+  );
+}

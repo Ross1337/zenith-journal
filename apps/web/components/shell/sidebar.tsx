@@ -8,6 +8,7 @@ import { ZenithMark } from './zenith-mark';
 import {
   AccountsIcon,
   AnalyticsIcon,
+  CalendarIcon,
   DashboardIcon,
   JournalIcon,
   PlusIcon,
@@ -20,6 +21,7 @@ const NAV = [
   { href: '/trades', label: 'Trades', icon: TradesIcon },
   { href: '/journal', label: 'Journal', icon: JournalIcon },
   { href: '/analytics', label: 'Analytics', icon: AnalyticsIcon },
+  { href: '/calendar', label: 'Calendar', icon: CalendarIcon },
   { href: '/accounts', label: 'Accounts', icon: AccountsIcon },
 ] as const;
 
