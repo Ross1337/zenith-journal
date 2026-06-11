@@ -102,14 +102,7 @@ export default function CalendarPage() {
     <>
       <header className="mb-6 flex items-end justify-between">
         <div>
-          <h1
-            className="font-display text-[28px] font-semibold tracking-tight"
-            style={{
-              background: 'linear-gradient(135deg, #F2F4FA 30%, #F2B544)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
+          <h1 className="z-gradient-text font-display text-[28px] font-semibold tracking-tight">
             {t('cal_title')}
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">{t('cal_subtitle')}</p>
@@ -185,7 +178,7 @@ export default function CalendarPage() {
                 key={cell.date}
                 onClick={() => setSelectedDay(isSelected ? null : cell.date)}
                 className="relative border-b border-r border-edge-subtle/50 min-h-[80px] p-2 text-left transition-all hover:ring-1 hover:ring-gold/30"
-                style={{ background: isSelected ? 'rgba(242,181,68,0.12)' : bg }}
+                style={{ background: isSelected ? 'rgba(66,226,184,0.12)' : bg }}
               >
                 <span
                   className={`z-numeric text-[13px] font-semibold ${

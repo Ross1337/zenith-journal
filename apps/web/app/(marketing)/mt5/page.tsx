@@ -6,14 +6,14 @@ import { useI18n } from '@/lib/i18n-context';
 const API_URL = 'http://192.168.1.195:4000/v1';
 
 const STEP_GRADIENTS = [
-  'linear-gradient(135deg, #f2b544, #38bdf8)',
-  'linear-gradient(135deg, #38bdf8, #a78bfa)',
+  'linear-gradient(135deg, #42e2b8, #5b8eff)',
+  'linear-gradient(135deg, #5b8eff, #a78bfa)',
   'linear-gradient(135deg, #a78bfa, #fb7185)',
   'linear-gradient(135deg, #fb7185, #2dd4bf)',
-  'linear-gradient(135deg, #2dd4bf, #f2b544)',
-  'linear-gradient(135deg, #f2b544, #a78bfa)',
-  'linear-gradient(135deg, #38bdf8, #2dd4bf)',
-  'linear-gradient(135deg, #a78bfa, #38bdf8)',
+  'linear-gradient(135deg, #2dd4bf, #42e2b8)',
+  'linear-gradient(135deg, #42e2b8, #a78bfa)',
+  'linear-gradient(135deg, #5b8eff, #2dd4bf)',
+  'linear-gradient(135deg, #a78bfa, #5b8eff)',
 ];
 
 const COPY = {
@@ -113,7 +113,7 @@ const COPY = {
   },
 } as const;
 
-function AccentLine({ color = 'rgba(242,181,68,0.55)' }: { color?: string }) {
+function AccentLine({ color = 'rgba(66,226,184,0.55)' }: { color?: string }) {
   return (
     <div
       aria-hidden
@@ -129,7 +129,7 @@ export default function EaPage() {
 
   const FEATURES = [
     { title: c.secure, desc: c.secureDesc, color: '#2dd4bf' },
-    { title: c.realtime, desc: c.realtimeDesc, color: '#38bdf8' },
+    { title: c.realtime, desc: c.realtimeDesc, color: '#5b8eff' },
     { title: c.history, desc: c.historyDesc, color: '#a78bfa' },
   ];
 
@@ -145,7 +145,7 @@ export default function EaPage() {
         {/* Hero */}
         <div className="text-center">
           <p className="mb-4 text-[11.5px] uppercase tracking-[0.2em] text-teal">{c.eyebrow}</p>
-          <h1 className="mx-auto max-w-2xl font-display text-[38px] font-semibold leading-[1.1] tracking-tight text-ink sm:text-[44px]">
+          <h1 className="z-gradient-text mx-auto max-w-2xl font-display text-[38px] font-semibold leading-[1.1] tracking-tight sm:text-[44px]">
             {c.title}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-ink-secondary">{c.subtitle}</p>
@@ -173,7 +173,7 @@ export default function EaPage() {
             <a
               href="/downloads/ZenithEA.ex5"
               download
-              className="rounded-lg bg-gold px-5 py-2.5 text-[13.5px] font-semibold text-ink-on-accent shadow-[0_0_20px_rgba(242,181,68,0.25)] transition-colors hover:bg-gold-hover"
+              className="rounded-lg bg-gold px-5 py-2.5 text-[13.5px] font-semibold text-ink-on-accent shadow-[0_0_20px_rgba(66,226,184,0.25)] transition-colors hover:bg-gold-hover"
             >
               {c.download}
             </a>
@@ -261,7 +261,7 @@ export default function EaPage() {
         <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/settings/integrations"
-            className="rounded-lg bg-gold px-6 py-2.5 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_24px_rgba(242,181,68,0.3)] transition-colors hover:bg-gold-hover"
+            className="rounded-lg bg-gold px-6 py-2.5 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_24px_rgba(66,226,184,0.3)] transition-colors hover:bg-gold-hover"
           >
             {c.settingsCta}
           </Link>

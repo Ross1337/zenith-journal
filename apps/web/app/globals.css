@@ -52,15 +52,57 @@ body {
   border-radius: var(--z-radius-xs);
 }
 
-/* ── Arctic accent utilities ─────────────────────────────────────── */
+/* ── Theme accent utilities (re-skin with the active theme) ──────── */
 
 /* Gradient headline text — the solar sweep clipped to the glyphs. */
-.z-gradient-text {
-  background: var(--z-gradient-solar);
+.z-gradient-text,
+.z-solar-text {
+  background: var(--solar, var(--z-gradient-solar));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+}
+
+/* Aurora gradient text — multi-hue sweep for marketing headlines. */
+.z-aurora-text {
+  background: var(--z-gradient-aurora);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Floating blurred orbs — ambient depth behind heroes. Position/size
+   set per-instance; color comes from the active theme. */
+.z-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+.z-orb-primary {
+  background: var(--primary-glow);
+}
+.z-orb-accent {
+  background: var(--accent-glow);
+}
+.z-orb-violet {
+  background: var(--z-violet-wash);
+}
+
+/* Card shine — a faint diagonal wash laid over a card. The host must be
+   `relative` + `overflow-hidden`; the ::before paints --card-shine. */
+.z-shine {
+  position: relative;
+}
+.z-shine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--card-shine);
+  pointer-events: none;
 }
 
 /* Numbered step badge — gradient-filled circle with white digits. */
@@ -75,27 +117,19 @@ body {
   font-size: 14px;
   color: #fff;
   flex-shrink: 0;
+  background: var(--solar, var(--z-gradient-solar));
 }
 
-/* Highlighted card — glowing border + halo for the hero element. */
+/* Highlighted card — glowing border + halo for the hero/recommended element. */
 .z-card-glow {
-  border-color: rgba(242, 181, 68, 0.4);
+  border-color: var(--recommended-border, var(--z-gold));
   box-shadow:
-    0 0 0 1px rgba(242, 181, 68, 0.14),
-    0 0 32px rgba(242, 181, 68, 0.12),
-    var(--z-shadow-inner-light, inset 0 1px 0 rgba(255, 255, 255, 0.04));
+    0 0 0 1px var(--recommended-glow, var(--z-gold-glow)),
+    0 0 40px var(--recommended-glow, var(--z-gold-glow)),
+    var(--z-inner-light, inset 0 1px 0 rgba(255, 255, 255, 0.04));
 }
 
 /* Colored left-accent card — type-coded border rail (T6). */
 .z-rail {
   border-left-width: 2px;
-}
-
-/* Aurora gradient text — multi-hue sweep for marketing headlines. */
-.z-aurora-text {
-  background: var(--z-gradient-aurora);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
 }

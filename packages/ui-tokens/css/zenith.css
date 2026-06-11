@@ -1,73 +1,21 @@
 /* ============================================================
    ZENITH design tokens — CSS custom properties.
-   Dark ("Observatory") is the default theme. Light = "Daylight".
-   Generated from @zenith/ui-tokens — keep in sync with src/.
+
+   THREE color themes, all dark, switchable at runtime and
+   persisted to localStorage('zenith-theme'):
+
+     • theme-cosmos  — Gold #F2B544 / Cyan #00D4FF   (DEFAULT)
+     • theme-ember   — Orange #FF5F1F / Rose #FF2D78
+     • theme-arctic  — Ice-teal #42E2B8 / Sky #5B8EFF
+
+   Every Tailwind utility maps to a --z-* var (see tailwind-preset),
+   so each theme class repaints the whole product for free. The
+   pricing.html-style aliases (--primary, --accent, --solar, …) are
+   exposed too, so heroes/cards can use the exact same recipes.
    ============================================================ */
 
 :root {
-  /* Surfaces — the deep "void" night, with a faint violet cast. */
-  --z-surface-void: #050510;
-  --z-surface-raised: #0e0e1e;
-  --z-surface-high: #141428;
-  --z-surface-overlay: #1a1a32;
-  --z-surface-hover: #1c1c38;
-
-  /* Borders */
-  --z-border-subtle: #1e2330;
-  --z-border-default: #2a2f42;
-  --z-border-strong: #3a4159;
-  --z-border-luminous: rgba(242, 181, 68, 0.4);
-
-  /* Text */
-  --z-text-primary: #f2f4fa;
-  --z-text-secondary: #a8b0c4;
-  --z-text-muted: #6b7388;
-  --z-text-faint: #424963;
-  --z-text-on-accent: #1a1206;
-
-  /* Solar gold — the signature ZENITH accent */
-  --z-gold: #f2b544;
-  --z-gold-hover: #f8d06b;
-  --z-gold-active: #d99a2e;
-  --z-gold-subdued: #7a5f24;
-  --z-gold-glow: rgba(242, 181, 68, 0.18);
-  --z-gold-wash: rgba(242, 181, 68, 0.08);
-
-  /* Ion blue accent */
-  --z-ion: #38bdf8;
-  --z-ion-hover: #5fccfb;
-  --z-ion-subdued: #1d5a78;
-  --z-ion-wash: rgba(56, 189, 248, 0.1);
-
-  /* Violet accent */
-  --z-violet: #a78bfa;
-  --z-violet-hover: #bfa6ff;
-  --z-violet-wash: rgba(167, 139, 250, 0.1);
-
-  /* Rose accent */
-  --z-rose: #fb7185;
-  --z-rose-hover: #fd8b9b;
-  --z-rose-wash: rgba(251, 113, 133, 0.1);
-
-  /* Teal accent */
-  --z-teal: #2dd4bf;
-  --z-teal-hover: #4fe0ce;
-  --z-teal-wash: rgba(45, 212, 191, 0.1);
-
-  /* P&L */
-  --z-profit: #4ade80;
-  --z-profit-dim: #1f7a44;
-  --z-profit-wash: rgba(74, 222, 128, 0.1);
-  --z-loss: #f87171;
-  --z-loss-dim: #8c3838;
-  --z-loss-wash: rgba(248, 113, 113, 0.1);
-  --z-breakeven: #8a93a8;
-
-  /* Status */
-  --z-info: #38bdf8;
-  --z-warning: #f2b544;
-  --z-danger: #f87171;
-  --z-success: #4ade80;
+  /* ── Theme-independent primitives ───────────────────────── */
 
   /* Typography */
   --z-font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
@@ -81,24 +29,10 @@
   --z-radius-lg: 14px;
   --z-radius-xl: 20px;
 
-  /* Effects */
+  /* Structural shadows */
   --z-shadow-overlay: 0 8px 32px rgba(3, 4, 8, 0.55), 0 2px 8px rgba(3, 4, 8, 0.35);
   --z-shadow-modal: 0 16px 64px rgba(3, 4, 8, 0.65), 0 4px 16px rgba(3, 4, 8, 0.4);
-  --z-focus-ring: 0 0 0 2px rgba(242, 181, 68, 0.55);
   --z-inner-light: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  --z-gradient-horizon: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(242, 181, 68, 0.55) 50%,
-    transparent 100%
-  );
-  --z-gradient-dawn: radial-gradient(
-    ellipse 60% 45% at 50% 0%,
-    rgba(242, 181, 68, 0.1) 0%,
-    transparent 70%
-  );
-  --z-gradient-solar: linear-gradient(135deg, #f2b544 0%, #38bdf8 55%, #a78bfa 100%);
-  --z-gradient-aurora: linear-gradient(120deg, #38bdf8 0%, #a78bfa 50%, #fb7185 100%);
 
   /* Motion */
   --z-duration-fast: 120ms;
@@ -111,61 +45,325 @@
   --z-sidebar-width: 232px;
   --z-topbar-height: 56px;
 
+  /* Aliases for multi-theme compat (Cosmos defaults; theme-* classes override) */
+  --primary: #f2b544;
+  --primary-glow: rgba(242, 181, 68, 0.2);
+  --accent: #00d4ff;
+  --accent-glow: rgba(0, 212, 255, 0.15);
+  --hero-grad: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(242, 181, 68, 0.14) 0%, rgba(0, 212, 255, 0.07) 50%, transparent 100%);
+
   color-scheme: dark;
 }
 
-/* Daylight theme */
-[data-theme='light'] {
-  --z-surface-void: #fafaf7;
-  --z-surface-raised: #ffffff;
-  --z-surface-high: #f2f1ec;
-  --z-surface-overlay: #ffffff;
-  --z-surface-hover: #f5f4f0;
+/* ════════════════════════════════════════════════════════════
+   THEME COSMOS — Gold / Cyan (DEFAULT). Mirrored on :root so the
+   server-rendered first paint is already Cosmos (no flash).
+   ════════════════════════════════════════════════════════════ */
+:root,
+body.theme-cosmos {
+  --bg: #080910;
+  --surface: #0e1018;
+  --card: #12151f;
+  --card-hover: #161a28;
 
-  --z-border-subtle: #eae8e1;
-  --z-border-default: #dedbd2;
-  --z-border-strong: #c5c1b4;
-  --z-border-luminous: rgba(193, 138, 30, 0.45);
+  --z-surface-void: #080910;
+  --z-surface-raised: #0e1018;
+  --z-surface-high: #12151f;
+  --z-surface-overlay: #161a28;
+  --z-surface-hover: #161a28;
 
-  --z-text-primary: #191a20;
-  --z-text-secondary: #4d5263;
-  --z-text-muted: #80869b;
-  --z-text-faint: #b4b9c9;
-  --z-text-on-accent: #1a1206;
+  --z-border-subtle: #1e2338;
+  --z-border-default: #232a44;
+  --z-border-strong: #2a3050;
+  --z-border-luminous: rgba(242, 181, 68, 0.4);
 
-  --z-gold: #c18a1e;
-  --z-gold-hover: #a8761a;
-  --z-gold-active: #8c6214;
-  --z-gold-subdued: #e6cf9a;
-  --z-gold-glow: rgba(193, 138, 30, 0.16);
-  --z-gold-wash: rgba(193, 138, 30, 0.08);
+  --z-text-primary: #eef1fa;
+  --z-text-secondary: #9ba5be;
+  --z-text-muted: #6e7790;
+  --z-text-faint: #4f5870;
+  --z-text-on-accent: #0d0a02;
 
-  --z-ion: #0284c7;
-  --z-ion-hover: #0369a1;
-  --z-ion-wash: rgba(2, 132, 199, 0.1);
+  /* Primary = solar gold */
+  --primary: #f2b544;
+  --primary-glow: rgba(242, 181, 68, 0.2);
+  --primary-dim: rgba(242, 181, 68, 0.08);
+  --z-gold: #f2b544;
+  --z-gold-hover: #ffca66;
+  --z-gold-active: #d99c2b;
+  --z-gold-subdued: #8a6a2b;
+  --z-gold-glow: rgba(242, 181, 68, 0.2);
+  --z-gold-wash: rgba(242, 181, 68, 0.08);
 
-  --z-violet: #7c3aed;
-  --z-violet-hover: #6d28d9;
-  --z-violet-wash: rgba(124, 58, 237, 0.1);
+  /* Accent = cyan */
+  --accent: #00d4ff;
+  --accent-glow: rgba(0, 212, 255, 0.15);
+  --accent-dim: rgba(0, 212, 255, 0.07);
+  --z-ion: #00d4ff;
+  --z-ion-hover: #5fe3ff;
+  --z-ion-subdued: #0a5a6e;
+  --z-ion-wash: rgba(0, 212, 255, 0.07);
 
-  --z-rose: #e11d48;
-  --z-rose-hover: #be123c;
-  --z-rose-wash: rgba(225, 29, 72, 0.1);
+  --violet: #8b7cf6;
+  --z-violet: #8b7cf6;
+  --z-violet-hover: #a99dff;
+  --z-violet-wash: rgba(139, 124, 246, 0.1);
 
-  --z-teal: #0d9488;
-  --z-teal-hover: #0f766e;
-  --z-teal-wash: rgba(13, 148, 136, 0.1);
+  --z-teal: #5ee0dc;
+  --z-teal-hover: #82eae7;
+  --z-teal-wash: rgba(94, 224, 220, 0.1);
 
-  --z-profit: #0e9f6e;
-  --z-profit-wash: rgba(14, 159, 110, 0.1);
-  --z-loss: #d6353f;
-  --z-loss-wash: rgba(214, 53, 63, 0.1);
-  --z-breakeven: #6b7280;
+  --z-rose: #e08bd4;
+  --z-rose-hover: #eaa6e0;
+  --z-rose-wash: rgba(224, 139, 212, 0.1);
 
-  --z-shadow-overlay: 0 8px 32px rgba(25, 26, 32, 0.12), 0 2px 8px rgba(25, 26, 32, 0.08);
-  --z-shadow-modal: 0 16px 64px rgba(25, 26, 32, 0.16), 0 4px 16px rgba(25, 26, 32, 0.1);
+  --profit: #41e0a3;
+  --loss: #f2555f;
+  --z-profit: #41e0a3;
+  --z-profit-dim: #1f7a58;
+  --z-profit-wash: rgba(65, 224, 163, 0.1);
+  --z-loss: #f2555f;
+  --z-loss-dim: #8c3038;
+  --z-loss-wash: rgba(242, 85, 95, 0.1);
+  --z-breakeven: #8a93a8;
 
-  color-scheme: light;
+  --z-info: #00d4ff;
+  --z-warning: #f2b544;
+  --z-danger: #f2555f;
+  --z-success: #41e0a3;
+
+  /* Composed effects */
+  --solar: linear-gradient(135deg, #f2b544 0%, #e08bd4 55%, #8b7cf6 100%);
+  --hero-grad: radial-gradient(
+    ellipse 80% 60% at 50% -10%,
+    rgba(242, 181, 68, 0.14) 0%,
+    rgba(0, 212, 255, 0.07) 50%,
+    transparent 100%
+  );
+  --card-shine: linear-gradient(135deg, rgba(242, 181, 68, 0.06) 0%, transparent 60%);
+  --recommended-border: var(--primary);
+  --recommended-glow: var(--primary-glow);
+  --tag-rec: var(--primary);
+  --tag-rec-bg: var(--primary-dim);
+  --btn-primary: linear-gradient(135deg, #f2b544 0%, #ffca66 100%);
+  --btn-primary-text: #0d0a02;
+  --btn-elite: linear-gradient(135deg, #8b7cf6 0%, #00d4ff 100%);
+  --step-accent: var(--primary);
+
+  --z-gradient-solar: linear-gradient(135deg, #f2b544 0%, #e08bd4 55%, #8b7cf6 100%);
+  --z-gradient-aurora: linear-gradient(120deg, #00d4ff 0%, #8b7cf6 50%, #e08bd4 100%);
+  --z-gradient-horizon: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--primary) 45%,
+    var(--accent) 55%,
+    transparent 100%
+  );
+  --z-gradient-dawn: var(--hero-grad);
+  --z-focus-ring: 0 0 0 2px rgba(242, 181, 68, 0.55);
+}
+
+/* ════════════════════════════════════════════════════════════
+   THEME EMBER — Orange / Rose (fire / energy)
+   ════════════════════════════════════════════════════════════ */
+body.theme-ember {
+  --bg: #090608;
+  --surface: #100c0e;
+  --card: #160f12;
+  --card-hover: #1c1318;
+
+  --z-surface-void: #090608;
+  --z-surface-raised: #100c0e;
+  --z-surface-high: #160f12;
+  --z-surface-overlay: #1c1318;
+  --z-surface-hover: #1c1318;
+
+  --z-border-subtle: #261820;
+  --z-border-default: #301d28;
+  --z-border-strong: #38222c;
+  --z-border-luminous: rgba(255, 95, 31, 0.4);
+
+  --z-text-primary: #faf0ee;
+  --z-text-secondary: #b89fa5;
+  --z-text-muted: #856068;
+  --z-text-faint: #604850;
+  --z-text-on-accent: #ffffff;
+
+  --primary: #ff5f1f;
+  --primary-glow: rgba(255, 95, 31, 0.22);
+  --primary-dim: rgba(255, 95, 31, 0.09);
+  --z-gold: #ff5f1f;
+  --z-gold-hover: #ff7a45;
+  --z-gold-active: #e04d12;
+  --z-gold-subdued: #8a3a18;
+  --z-gold-glow: rgba(255, 95, 31, 0.22);
+  --z-gold-wash: rgba(255, 95, 31, 0.09);
+
+  --accent: #ff2d78;
+  --accent-glow: rgba(255, 45, 120, 0.18);
+  --accent-dim: rgba(255, 45, 120, 0.07);
+  --z-ion: #ff2d78;
+  --z-ion-hover: #ff5894;
+  --z-ion-subdued: #80163c;
+  --z-ion-wash: rgba(255, 45, 120, 0.07);
+
+  --violet: #ffb830;
+  --z-violet: #ffb830;
+  --z-violet-hover: #ffc955;
+  --z-violet-wash: rgba(255, 184, 48, 0.1);
+
+  --z-teal: #ffb830;
+  --z-teal-hover: #ffc955;
+  --z-teal-wash: rgba(255, 184, 48, 0.1);
+
+  --z-rose: #ff2d78;
+  --z-rose-hover: #ff5894;
+  --z-rose-wash: rgba(255, 45, 120, 0.1);
+
+  --profit: #34d399;
+  --loss: #ff4155;
+  --z-profit: #34d399;
+  --z-profit-dim: #1a7a5a;
+  --z-profit-wash: rgba(52, 211, 153, 0.1);
+  --z-loss: #ff4155;
+  --z-loss-dim: #8c2530;
+  --z-loss-wash: rgba(255, 65, 85, 0.1);
+  --z-breakeven: #9a8088;
+
+  --z-info: #ff2d78;
+  --z-warning: #ffb830;
+  --z-danger: #ff4155;
+  --z-success: #34d399;
+
+  --solar: linear-gradient(135deg, #ff5f1f 0%, #ff2d78 55%, #ffb830 100%);
+  --hero-grad: radial-gradient(
+    ellipse 80% 60% at 50% -10%,
+    rgba(255, 95, 31, 0.16) 0%,
+    rgba(255, 45, 120, 0.09) 55%,
+    transparent 100%
+  );
+  --card-shine: linear-gradient(135deg, rgba(255, 95, 31, 0.07) 0%, transparent 60%);
+  --recommended-border: var(--accent);
+  --recommended-glow: var(--accent-glow);
+  --tag-rec: var(--accent);
+  --tag-rec-bg: var(--accent-dim);
+  --btn-primary: linear-gradient(135deg, #ff5f1f 0%, #ff2d78 100%);
+  --btn-primary-text: #ffffff;
+  --btn-elite: linear-gradient(135deg, #ffb830 0%, #ff5f1f 100%);
+  --step-accent: var(--primary);
+
+  --z-gradient-solar: linear-gradient(135deg, #ff5f1f 0%, #ff2d78 55%, #ffb830 100%);
+  --z-gradient-aurora: linear-gradient(120deg, #ff2d78 0%, #ff5f1f 50%, #ffb830 100%);
+  --z-gradient-horizon: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--primary) 45%,
+    var(--accent) 55%,
+    transparent 100%
+  );
+  --z-gradient-dawn: var(--hero-grad);
+  --z-focus-ring: 0 0 0 2px rgba(255, 95, 31, 0.55);
+}
+
+/* ════════════════════════════════════════════════════════════
+   THEME ARCTIC — Ice-teal / Sky (cold / analytical)
+   ════════════════════════════════════════════════════════════ */
+body.theme-arctic {
+  --bg: #070910;
+  --surface: #0c0f18;
+  --card: #101420;
+  --card-hover: #141928;
+
+  --z-surface-void: #070910;
+  --z-surface-raised: #0c0f18;
+  --z-surface-high: #101420;
+  --z-surface-overlay: #141928;
+  --z-surface-hover: #141928;
+
+  --z-border-subtle: #1a2135;
+  --z-border-default: #1f2942;
+  --z-border-strong: #253050;
+  --z-border-luminous: rgba(66, 226, 184, 0.4);
+
+  --z-text-primary: #ecf1ff;
+  --z-text-secondary: #8fa0c8;
+  --z-text-muted: #5f6e90;
+  --z-text-faint: #445070;
+  --z-text-on-accent: #040812;
+
+  --primary: #42e2b8;
+  --primary-glow: rgba(66, 226, 184, 0.18);
+  --primary-dim: rgba(66, 226, 184, 0.07);
+  --z-gold: #42e2b8;
+  --z-gold-hover: #6fffe0;
+  --z-gold-active: #2bc49a;
+  --z-gold-subdued: #1a5c4a;
+  --z-gold-glow: rgba(66, 226, 184, 0.18);
+  --z-gold-wash: rgba(66, 226, 184, 0.07);
+
+  --accent: #5b8eff;
+  --accent-glow: rgba(91, 142, 255, 0.18);
+  --accent-dim: rgba(91, 142, 255, 0.07);
+  --z-ion: #5b8eff;
+  --z-ion-hover: #7ba8ff;
+  --z-ion-subdued: #2a3d80;
+  --z-ion-wash: rgba(91, 142, 255, 0.07);
+
+  --violet: #b06eff;
+  --z-violet: #b06eff;
+  --z-violet-hover: #c490ff;
+  --z-violet-wash: rgba(176, 110, 255, 0.1);
+
+  --z-teal: #2dd4bf;
+  --z-teal-hover: #4fe0ce;
+  --z-teal-wash: rgba(45, 212, 191, 0.1);
+
+  --z-rose: #fb7185;
+  --z-rose-hover: #fd8b9b;
+  --z-rose-wash: rgba(251, 113, 133, 0.1);
+
+  --profit: #42e2b8;
+  --loss: #ff5b6e;
+  --z-profit: #42e2b8;
+  --z-profit-dim: #1f7a64;
+  --z-profit-wash: rgba(66, 226, 184, 0.1);
+  --z-loss: #ff5b6e;
+  --z-loss-dim: #8c3038;
+  --z-loss-wash: rgba(255, 91, 110, 0.1);
+  --z-breakeven: #8a93a8;
+
+  --z-info: #5b8eff;
+  --z-warning: #f2a030;
+  --z-danger: #ff5b6e;
+  --z-success: #42e2b8;
+
+  --solar: linear-gradient(135deg, #42e2b8 0%, #5b8eff 55%, #b06eff 100%);
+  --hero-grad: radial-gradient(
+    ellipse 80% 60% at 50% -10%,
+    rgba(66, 226, 184, 0.12) 0%,
+    rgba(91, 142, 255, 0.1) 55%,
+    transparent 100%
+  );
+  --card-shine: linear-gradient(135deg, rgba(91, 142, 255, 0.07) 0%, transparent 60%);
+  --recommended-border: var(--primary);
+  --recommended-glow: var(--primary-glow);
+  --tag-rec: var(--primary);
+  --tag-rec-bg: var(--primary-dim);
+  --btn-primary: linear-gradient(135deg, #42e2b8 0%, #5b8eff 100%);
+  --btn-primary-text: #040812;
+  --btn-elite: linear-gradient(135deg, #b06eff 0%, #5b8eff 100%);
+  --step-accent: var(--accent);
+
+  --z-gradient-solar: linear-gradient(135deg, #42e2b8 0%, #5b8eff 55%, #b06eff 100%);
+  --z-gradient-aurora: linear-gradient(120deg, #5b8eff 0%, #b06eff 50%, #fb7185 100%);
+  --z-gradient-horizon: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--primary) 45%,
+    var(--accent) 55%,
+    transparent 100%
+  );
+  --z-gradient-dawn: var(--hero-grad);
+  --z-focus-ring: 0 0 0 2px rgba(66, 226, 184, 0.55);
 }
 
 /* Colorblind-safe P&L variant (blue/orange) — toggled in settings */
@@ -183,7 +381,7 @@
   letter-spacing: 0.01em;
 }
 
-/* Signature divider */
+/* Signature divider — transparent → primary → accent → transparent. */
 .z-horizon {
   height: 1px;
   border: 0;

@@ -180,14 +180,7 @@ export default function AnalyticsPage() {
     <>
       <header className="mb-6 flex items-end justify-between">
         <div>
-          <h1
-            className="font-display text-[28px] font-semibold tracking-tight"
-            style={{
-              background: 'linear-gradient(135deg, #F2F4FA 30%, #F2B544)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
+          <h1 className="z-gradient-text font-display text-[28px] font-semibold tracking-tight">
             {t('an_title')}
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">
@@ -351,8 +344,8 @@ function KpiCard({
             className="h-full rounded-full"
             style={{
               width: `${Math.round(progress * 100)}%`,
-              background: progressColor ?? '#F2B544',
-              boxShadow: `0 0 6px ${progressColor ?? '#F2B544'}80`,
+              background: progressColor ?? 'var(--primary)',
+              boxShadow: `0 0 6px ${progressColor ?? 'var(--primary)'}80`,
             }}
           />
         </div>

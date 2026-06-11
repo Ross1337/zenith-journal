@@ -8,24 +8,24 @@ import { useI18n } from '@/lib/i18n-context';
  * scanner picks them up. Palette rotates through the solar accents.
  */
 const STEP_BADGES = [
-  'z-step-badge bg-gradient-to-br from-[#f2b544] to-[#38bdf8]',
-  'z-step-badge bg-gradient-to-br from-[#38bdf8] to-[#a78bfa]',
+  'z-step-badge bg-gradient-to-br from-[#42e2b8] to-[#5b8eff]',
+  'z-step-badge bg-gradient-to-br from-[#5b8eff] to-[#a78bfa]',
   'z-step-badge bg-gradient-to-br from-[#a78bfa] to-[#2dd4bf]',
-  'z-step-badge bg-gradient-to-br from-[#2dd4bf] to-[#f2b544]',
-  'z-step-badge bg-gradient-to-br from-[#f2b544] to-[#a78bfa]',
-  'z-step-badge bg-gradient-to-br from-[#38bdf8] to-[#2dd4bf]',
-  'z-step-badge bg-gradient-to-br from-[#a78bfa] to-[#f2b544]',
-  'z-step-badge bg-gradient-to-br from-[#2dd4bf] to-[#38bdf8]',
+  'z-step-badge bg-gradient-to-br from-[#42e2b8] to-[#5b8eff]',
+  'z-step-badge bg-gradient-to-br from-[#42e2b8] to-[#a78bfa]',
+  'z-step-badge bg-gradient-to-br from-[#5b8eff] to-[#2dd4bf]',
+  'z-step-badge bg-gradient-to-br from-[#a78bfa] to-[#42e2b8]',
+  'z-step-badge bg-gradient-to-br from-[#2dd4bf] to-[#5b8eff]',
 ];
 
 /** Accent hairline color per step — the badge's leading hue at ~55%. */
 const STEP_ACCENTS = [
-  'rgba(242,181,68,0.55)',
-  'rgba(56,189,248,0.55)',
+  'rgba(66,226,184,0.55)',
+  'rgba(91,142,255,0.55)',
   'rgba(167,139,250,0.55)',
   'rgba(45,212,191,0.55)',
-  'rgba(242,181,68,0.55)',
-  'rgba(56,189,248,0.55)',
+  'rgba(66,226,184,0.55)',
+  'rgba(91,142,255,0.55)',
   'rgba(167,139,250,0.55)',
   'rgba(45,212,191,0.55)',
 ];
@@ -101,7 +101,7 @@ const STEPS = {
   ],
 } as const;
 
-function AccentLine({ color = 'rgba(242,181,68,0.55)' }: { color?: string }) {
+function AccentLine({ color = 'rgba(66,226,184,0.55)' }: { color?: string }) {
   return (
     <div
       aria-hidden
@@ -117,7 +117,7 @@ export default function EaPage() {
 
   const FEATURES = [
     { title: t('ea_feat_secure'), desc: t('ea_feat_secure_desc'), color: '#2dd4bf' },
-    { title: t('ea_feat_realtime'), desc: t('ea_feat_realtime_desc'), color: '#38bdf8' },
+    { title: t('ea_feat_realtime'), desc: t('ea_feat_realtime_desc'), color: '#5b8eff' },
     { title: t('ea_feat_history'), desc: t('ea_feat_history_desc'), color: '#a78bfa' },
   ];
 
@@ -138,7 +138,7 @@ export default function EaPage() {
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            background: 'linear-gradient(135deg, rgba(242,181,68,0.04) 0%, transparent 45%)',
+            background: 'var(--card-shine)',
           }}
         />
         <div className="relative flex flex-wrap items-center justify-between gap-4">
@@ -170,7 +170,7 @@ export default function EaPage() {
           <a
             href="/downloads/ZenithEA.ex5"
             download
-            className="rounded-md bg-gold px-5 py-2.5 text-[13.5px] font-semibold text-ink-on-accent shadow-[0_0_20px_rgba(242,181,68,0.25)] transition-colors duration-fast hover:bg-gold-hover"
+            className="rounded-md bg-gold px-5 py-2.5 text-[13.5px] font-semibold text-ink-on-accent shadow-[0_0_20px_var(--z-gold-glow)] transition-colors duration-fast hover:bg-gold-hover"
           >
             {t('ea_download')}
           </a>

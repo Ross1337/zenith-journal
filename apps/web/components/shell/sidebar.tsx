@@ -34,7 +34,7 @@ export function Sidebar() {
   ] as const;
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-20 flex w-[232px] flex-col border-r border-edge-subtle bg-raised">
+    <aside className="fixed inset-y-0 left-0 z-20 flex w-[232px] flex-col border-r border-edge-subtle bg-raised/70 backdrop-blur-xl">
       {/* Brand */}
       <Link href="/dashboard" className="flex items-center gap-2.5 px-5 pb-5 pt-6">
         <ZenithMark size={26} />
@@ -49,7 +49,7 @@ export function Sidebar() {
         <button
           type="button"
           onClick={openTradeModal}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-gold px-3 py-2 text-[13px] font-semibold text-ink-on-accent shadow-[0_0_20px_rgba(242,181,68,0.18)] transition-colors duration-fast hover:bg-gold-hover active:bg-gold-active"
+          className="flex w-full items-center justify-center gap-2 rounded-md bg-gold px-3 py-2 text-[13px] font-semibold text-ink-on-accent shadow-[0_0_20px_var(--z-gold-glow)] transition-colors duration-fast hover:bg-gold-hover active:bg-gold-active"
         >
           <PlusIcon />
           {t('nav_log_trade')}
@@ -67,14 +67,14 @@ export function Sidebar() {
               className={clsx(
                 'group relative flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] transition-colors duration-fast',
                 active
-                  ? 'bg-gold-wash font-medium text-ink shadow-[inset_0_0_12px_rgba(242,181,68,0.12)]'
+                  ? 'bg-gold-wash font-medium text-ink shadow-[inset_0_0_12px_var(--z-gold-glow)]'
                   : 'text-ink-secondary hover:bg-hover hover:text-ink',
               )}
             >
               {/* Active marker — a luminous notch on the left edge. */}
               <span
                 className={clsx(
-                  'absolute -left-3 h-4 w-0.5 rounded-full bg-gold shadow-[0_0_8px_rgba(242,181,68,0.6)] transition-opacity duration-base',
+                  'absolute -left-3 h-4 w-0.5 rounded-full bg-gold shadow-[0_0_8px_var(--z-gold-glow)] transition-opacity duration-base',
                   active ? 'opacity-100' : 'opacity-0',
                 )}
               />

@@ -15,8 +15,8 @@ export function EquityChart({ data, baseline }: { data: EquitySeriesPoint[]; bas
         <AreaChart data={data} margin={{ top: 16, right: 18, bottom: 4, left: 8 }}>
           <defs>
             <linearGradient id="equityFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#F2B544" stopOpacity={0.22} />
-              <stop offset="100%" stopColor="#F2B544" stopOpacity={0} />
+              <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.22} />
+              <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid stroke="var(--z-border-subtle)" strokeDasharray="2 6" vertical={false} />

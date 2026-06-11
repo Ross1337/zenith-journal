@@ -31,7 +31,7 @@ export default function AccountsPage() {
     <>
       <header className="mb-6 flex items-end justify-between">
         <div>
-          <h1 className="font-display text-[22px] font-semibold tracking-tight text-ink">
+          <h1 className="z-gradient-text font-display text-[22px] font-semibold tracking-tight">
             Accounts
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">

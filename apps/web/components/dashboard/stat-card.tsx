@@ -1,26 +1,27 @@
 import clsx from 'clsx';
 
-/** Per-tone accent color used for the top bar and the hover glow. */
+/** Per-tone accent color used for the top bar and the hover glow.
+    Brand tones (gold/ion/violet/teal) follow the active theme. */
 const TONE_COLOR = {
   neutral: 'rgba(120, 140, 170, 0.55)',
-  profit: 'rgba(74, 222, 128, 0.7)',
-  loss: 'rgba(248, 113, 113, 0.7)',
-  breakeven: 'rgba(148, 163, 184, 0.6)',
-  gold: 'rgba(242, 181, 68, 0.7)',
-  ion: 'rgba(56, 189, 248, 0.7)',
-  violet: 'rgba(167, 139, 250, 0.7)',
-  teal: 'rgba(45, 212, 191, 0.7)',
+  profit: 'var(--z-profit)',
+  loss: 'var(--z-loss)',
+  breakeven: 'var(--z-breakeven)',
+  gold: 'var(--primary)',
+  ion: 'var(--accent)',
+  violet: 'var(--z-violet)',
+  teal: 'var(--z-teal)',
 } as const;
 
 const TONE_GLOW = {
   neutral: 'hover:shadow-[0_0_24px_rgba(120,140,170,0.10)]',
-  profit: 'hover:shadow-[0_0_24px_rgba(74,222,128,0.16)]',
-  loss: 'hover:shadow-[0_0_24px_rgba(248,113,113,0.16)]',
+  profit: 'hover:shadow-[0_0_24px_var(--z-profit-wash)]',
+  loss: 'hover:shadow-[0_0_24px_var(--z-loss-wash)]',
   breakeven: 'hover:shadow-[0_0_24px_rgba(148,163,184,0.12)]',
-  gold: 'hover:shadow-[0_0_24px_rgba(242,181,68,0.18)]',
-  ion: 'hover:shadow-[0_0_24px_rgba(56,189,248,0.18)]',
-  violet: 'hover:shadow-[0_0_24px_rgba(167,139,250,0.18)]',
-  teal: 'hover:shadow-[0_0_24px_rgba(45,212,191,0.18)]',
+  gold: 'hover:shadow-[0_0_24px_var(--z-gold-glow)]',
+  ion: 'hover:shadow-[0_0_24px_var(--z-ion-wash)]',
+  violet: 'hover:shadow-[0_0_24px_var(--z-violet-wash)]',
+  teal: 'hover:shadow-[0_0_24px_var(--z-teal-wash)]',
 } as const;
 
 /**

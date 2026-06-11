@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ZenithMark } from '@/components/shell/zenith-mark';
+import { ThemeSwitcher } from '@/components/shell/theme-switcher';
 import { CursorReveal, CursorRevealVivid } from '@/components/landing/cursor-reveal';
 import { StatTicker } from '@/components/landing/stat-ticker';
 import { Marquee } from '@/components/landing/marquee';
@@ -16,8 +17,8 @@ export default function LandingPage() {
           to { opacity: 1; transform: translateY(0); }
         }
         @keyframes arcticPulse {
-          0%, 100% { text-shadow: 0 0 20px rgba(242,181,68,0.45), 0 0 40px rgba(56,189,248,0.2); }
-          50% { text-shadow: 0 0 44px rgba(242,181,68,0.75), 0 0 84px rgba(242,181,68,0.35); }
+          0%, 100% { text-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--accent-glow); }
+          50% { text-shadow: 0 0 44px var(--primary-glow), 0 0 84px var(--primary-glow); }
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .word-1 { animation: slideUp 0.7s ease both 0.0s; }
@@ -89,15 +90,17 @@ function Nav() {
           <Link href="/mt5" className="transition-colors duration-fast hover:text-teal">EA</Link>
         </nav>
         <div className="ml-auto flex items-center gap-3">
+          <ThemeSwitcher />
+          <span aria-hidden className="hidden h-4 w-px bg-edge sm:block" />
           <Link
             href={clerkEnabled ? '/sign-in' : '/dashboard'}
-            className="rounded-md px-3 py-1.5 text-[13px] font-medium text-ink-secondary transition-colors hover:text-ink"
+            className="hidden rounded-md px-3 py-1.5 text-[13px] font-medium text-ink-secondary transition-colors hover:text-ink sm:block"
           >
             Sign in
           </Link>
           <Link
             href={CTA_HREF}
-            className="rounded-md bg-gold px-3.5 py-1.5 text-[13px] font-semibold text-ink-on-accent shadow-[0_0_20px_rgba(242,181,68,0.25)] transition-all hover:bg-gold-hover hover:shadow-[0_0_28px_rgba(242,181,68,0.4)]"
+            className="rounded-md bg-gold px-3.5 py-1.5 text-[13px] font-semibold text-ink-on-accent shadow-[0_0_20px_var(--z-gold-glow)] transition-all hover:bg-gold-hover hover:shadow-[0_0_28px_var(--z-gold-glow)]"
           >
             Get started
           </Link>
@@ -119,8 +122,8 @@ function Hero() {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full" aria-hidden>
       <defs>
         <linearGradient id="heroFillVivid" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f2b544" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#f2b544" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.45" />
+          <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
         </linearGradient>
         <filter id="glow">
           <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -128,11 +131,11 @@ function Hero() {
         </filter>
       </defs>
       {[0.25, 0.5, 0.75].map((f) => (
-        <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} stroke="#f2b544" strokeOpacity="0.15" strokeDasharray="2 8" />
+        <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} stroke="var(--primary)" strokeOpacity="0.15" strokeDasharray="2 8" />
       ))}
       <path d={`${path} L${w},${h} L0,${h} Z`} fill="url(#heroFillVivid)" />
-      <path d={path} fill="none" stroke="#f2b544" strokeWidth="2.5" strokeLinejoin="round" filter="url(#glow)" />
-      <circle cx={w} cy={h - 24 - (points[points.length - 1]! / max) * (h - 60)} r="5" fill="#f2b544" filter="url(#glow)" />
+      <path d={path} fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinejoin="round" filter="url(#glow)" />
+      <circle cx={w} cy={h - 24 - (points[points.length - 1]! / max) * (h - 60)} r="5" fill="var(--primary)" filter="url(#glow)" />
     </svg>
   );
 
@@ -140,16 +143,16 @@ function Hero() {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full" role="img" aria-label="Equity curve illustration">
       <defs>
         <linearGradient id="heroFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.22" />
-          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0" />
+          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((f) => (
         <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} stroke="#1e2330" strokeDasharray="2 8" />
       ))}
       <path d={`${path} L${w},${h} L0,${h} Z`} fill="url(#heroFill)" />
-      <path d={path} fill="none" stroke="#38bdf8" strokeWidth="2.2" strokeLinejoin="round" />
-      <circle cx={w} cy={h - 24 - (points[points.length - 1]! / max) * (h - 60)} r="4" fill="#38bdf8" />
+      <path d={path} fill="none" stroke="var(--accent)" strokeWidth="2.2" strokeLinejoin="round" />
+      <circle cx={w} cy={h - 24 - (points[points.length - 1]! / max) * (h - 60)} r="4" fill="var(--accent)" />
     </svg>
   );
 
@@ -159,8 +162,11 @@ function Hero() {
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-[480px]"
-        style={{ background: 'radial-gradient(ellipse 65% 50% at 50% 0%, rgba(242,181,68,0.13) 0%, transparent 70%)' }}
+        style={{ background: 'var(--hero-grad)' }}
       />
+      {/* Floating orbs */}
+      <div className="z-orb z-orb-primary h-[320px] w-[420px] opacity-50" style={{ top: -120, left: '8%' }} />
+      <div className="z-orb z-orb-accent h-[300px] w-[300px] opacity-40" style={{ top: -80, right: '10%' }} />
       <div className="relative mx-auto max-w-[1100px] px-6 pb-20 pt-20 text-center sm:pt-28">
         <p className="badge-anim mx-auto mb-5 w-fit rounded-full border border-edge bg-raised px-3 py-1 text-[11.5px] uppercase tracking-[0.16em] text-ink-muted opacity-0">
           The trading journal for serious traders
@@ -170,7 +176,7 @@ function Hero() {
           <span className="word-1 inline-block opacity-0">See</span>{' '}
           <span className="word-2 inline-block opacity-0">your</span>{' '}
           <span className="word-3 inline-block opacity-0">edge</span>{' '}
-          <span className="word-gold inline-block opacity-0 text-gold">clearly.</span>
+          <span className="word-gold z-gradient-text inline-block opacity-0 [filter:drop-shadow(0_0_18px_var(--z-gold-glow))]">clearly.</span>
         </h1>
 
         <p className="sub-anim mx-auto mt-5 max-w-xl text-[15.5px] leading-relaxed text-ink-secondary opacity-0">
@@ -182,7 +188,7 @@ function Hero() {
         <div className="cta-anim mt-8 flex items-center justify-center gap-3 opacity-0">
           <Link
             href={CTA_HREF}
-            className="rounded-md bg-gold px-6 py-2.5 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_rgba(242,181,68,0.3)] transition-colors hover:bg-gold-hover"
+            className="rounded-md bg-gold px-6 py-2.5 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_var(--z-gold-glow)] transition-colors hover:bg-gold-hover"
           >
             Start journaling free
           </Link>
@@ -240,7 +246,7 @@ function Hero() {
             <div className="absolute inset-0 mx-auto mt-14 max-w-[920px] rounded-xl border border-gold/40 bg-raised p-4" style={{top: 'calc(14rem + 56px)'}}>
               <div className="flex items-center justify-between px-2 pb-3">
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-gold" style={{boxShadow: '0 0 8px rgba(242,181,68,0.8)'}} />
+                  <span className="h-2 w-2 rounded-full bg-gold" style={{boxShadow: '0 0 8px var(--primary)'}} />
                   <span className="z-numeric text-[11.5px] uppercase tracking-[0.14em] text-gold/70">
                     Equity curve · all accounts
                   </span>
@@ -280,7 +286,7 @@ function Features() {
         {FEATURES.map((f, i) => (
           <article
             key={f.title}
-            className="reveal rounded-xl border border-edge-subtle bg-raised p-5 transition-all duration-300 hover:border-gold/30 hover:shadow-[0_0_24px_rgba(242,181,68,0.08)]"
+            className="reveal z-shine overflow-hidden rounded-xl border border-edge-subtle bg-raised p-5 transition-all duration-300 hover:border-gold/30 hover:shadow-[0_0_24px_var(--z-gold-glow)]"
             style={{ transitionDelay: `${i * 80}ms` }}
           >
             <span className="z-numeric text-[11px] text-gold">{String(i + 1).padStart(2, '0')}</span>
@@ -363,8 +369,8 @@ function Pricing() {
           {PLANS.map((p, i) => (
             <article
               key={p.name}
-              className={`reveal ${p.badge
-                ? 'relative rounded-xl border border-gold/50 bg-raised p-6 shadow-[0_0_40px_rgba(242,181,68,0.14)]'
+              className={`reveal z-shine overflow-hidden ${p.badge
+                ? 'relative rounded-xl border border-gold/50 bg-raised p-6 shadow-[0_0_40px_var(--recommended-glow)]'
                 : 'rounded-xl border border-edge-subtle bg-raised p-6'
               }`}
               style={{ transitionDelay: `${i * 100}ms` }}
@@ -415,7 +421,7 @@ function FinalCta() {
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[300px]"
-        style={{ background: 'radial-gradient(ellipse 60% 70% at 50% 100%, rgba(242,181,68,0.1) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(ellipse 60% 70% at 50% 100%, var(--primary-glow) 0%, transparent 70%)' }}
       />
       <div className="relative mx-auto max-w-[1100px] px-6 py-24 text-center reveal">
         <ZenithMark size={36} className="mx-auto" />
@@ -427,7 +433,7 @@ function FinalCta() {
         </p>
         <Link
           href={CTA_HREF}
-          className="mt-8 inline-block rounded-md bg-gold px-7 py-3 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_rgba(242,181,68,0.3)] transition-colors hover:bg-gold-hover"
+          className="mt-8 inline-block rounded-md bg-gold px-7 py-3 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_var(--z-gold-glow)] transition-colors hover:bg-gold-hover"
         >
           Start journaling free
         </Link>

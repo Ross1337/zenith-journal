@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ZenithMark } from '@/components/shell/zenith-mark';
+import { ThemeSwitcher } from '@/components/shell/theme-switcher';
 import { useI18n } from '@/lib/i18n-context';
 
 const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
@@ -48,6 +49,8 @@ export function SiteNav() {
           })}
         </nav>
         <div className="ml-auto flex items-center gap-3">
+          <ThemeSwitcher />
+          <span aria-hidden className="hidden h-4 w-px bg-edge sm:block" />
           <button
             onClick={toggle}
             className="rounded-md border border-edge px-2.5 py-1 text-[11.5px] font-semibold uppercase tracking-wider text-ink-secondary transition-colors hover:border-gold/40 hover:text-gold"
@@ -63,7 +66,7 @@ export function SiteNav() {
           </Link>
           <Link
             href={CTA_HREF}
-            className="rounded-md bg-gold px-3.5 py-1.5 text-[13px] font-semibold text-ink-on-accent shadow-[0_0_20px_rgba(242,181,68,0.25)] transition-all hover:bg-gold-hover hover:shadow-[0_0_28px_rgba(242,181,68,0.4)]"
+            className="rounded-md bg-gold px-3.5 py-1.5 text-[13px] font-semibold text-ink-on-accent shadow-[0_0_20px_var(--z-gold-glow)] transition-all hover:bg-gold-hover hover:shadow-[0_0_28px_var(--z-gold-glow)]"
           >
             {l.cta}
           </Link>

@@ -14,23 +14,20 @@ export function Card({
         className,
       )}
     >
-      {/* Top accent hairline — transparent → gold → transparent. */}
+      {/* Top accent hairline — transparent → primary → transparent. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{
           background:
-            'linear-gradient(90deg, transparent, rgba(242,181,68,0.5), transparent)',
+            'linear-gradient(90deg, transparent, var(--primary-glow), transparent)',
         }}
       />
       {/* Inner shine — a faint diagonal wash that catches the eye. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'linear-gradient(135deg, rgba(242,181,68,0.04) 0%, transparent 45%)',
-        }}
+        style={{ background: 'var(--card-shine)' }}
       />
       {children}
     </section>

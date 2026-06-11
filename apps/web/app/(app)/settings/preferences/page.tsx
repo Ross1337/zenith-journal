@@ -6,6 +6,7 @@ import { Card, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useProfile, useUpdateProfile } from '@/lib/hooks';
 import { applyTheme, type Theme } from '@/lib/theme';
+import { ThemeSwitcher } from '@/components/shell/theme-switcher';
 import { useI18n } from '@/lib/i18n-context';
 import type { Lang } from '@/lib/i18n';
 
@@ -140,6 +141,17 @@ export default function PreferencesPage() {
                 <p className="mt-1 text-[11.5px] leading-snug text-ink-muted">{th.desc}</p>
               </button>
             ))}
+          </div>
+        </Card>
+
+        {/* Brand color theme — Cosmos / Ember / Arctic */}
+        <Card>
+          <CardHeader
+            title={lang === 'fr' ? 'Thème de couleur' : 'Color theme'}
+            hint={lang === 'fr' ? 'Repeint toute l’application' : 'Repaints the whole app'}
+          />
+          <div className="px-5 pb-5 pt-3">
+            <ThemeSwitcher variant="full" />
           </div>
         </Card>
 

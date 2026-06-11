@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { Providers } from '@/components/providers';
+import { COLOR_THEME_NO_FLASH_SCRIPT } from '@/lib/color-theme';
 import './globals.css';
 
 const display = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
@@ -16,7 +17,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${display.variable} ${ui.variable} ${mono.variable}`}>
+      <body className={`theme-cosmos ${display.variable} ${ui.variable} ${mono.variable}`}>
+        {/* Apply the saved brand theme before first paint (no flash). */}
+        <script dangerouslySetInnerHTML={{ __html: COLOR_THEME_NO_FLASH_SCRIPT }} />
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -126,6 +126,77 @@ export const light = {
   },
 } as const;
 
+/**
+ * The three switchable brand themes (all dark). These mirror the CSS custom
+ * properties emitted in css/zenith.css — the runtime source of truth. Kept
+ * here for documentation, design tooling, and any JS that needs the palettes.
+ * Switch at runtime via the `theme-cosmos|theme-ember|theme-arctic` body class.
+ */
+export const themes = {
+  /** Default — solar gold + cyan. */
+  cosmos: {
+    bg: '#080910',
+    surface: '#0E1018',
+    card: '#12151F',
+    cardHover: '#161A28',
+    border: '#1E2338',
+    borderStrong: '#2A3050',
+    text: '#EEF1FA',
+    text2: '#9BA5BE',
+    text3: '#4F5870',
+    primary: '#F2B544',
+    accent: '#00D4FF',
+    violet: '#8B7CF6',
+    profit: '#41E0A3',
+    loss: '#F2555F',
+    solar: 'linear-gradient(135deg, #F2B544 0%, #E08BD4 55%, #8B7CF6 100%)',
+    btnPrimary: 'linear-gradient(135deg, #F2B544 0%, #FFCA66 100%)',
+    btnElite: 'linear-gradient(135deg, #8B7CF6 0%, #00D4FF 100%)',
+  },
+  /** Fire — orange + rose. */
+  ember: {
+    bg: '#090608',
+    surface: '#100C0E',
+    card: '#160F12',
+    cardHover: '#1C1318',
+    border: '#261820',
+    borderStrong: '#38222C',
+    text: '#FAF0EE',
+    text2: '#B89FA5',
+    text3: '#604850',
+    primary: '#FF5F1F',
+    accent: '#FF2D78',
+    violet: '#FFB830',
+    profit: '#34D399',
+    loss: '#FF4155',
+    solar: 'linear-gradient(135deg, #FF5F1F 0%, #FF2D78 55%, #FFB830 100%)',
+    btnPrimary: 'linear-gradient(135deg, #FF5F1F 0%, #FF2D78 100%)',
+    btnElite: 'linear-gradient(135deg, #FFB830 0%, #FF5F1F 100%)',
+  },
+  /** Cold / analytical — ice-teal + sky. */
+  arctic: {
+    bg: '#070910',
+    surface: '#0C0F18',
+    card: '#101420',
+    cardHover: '#141928',
+    border: '#1A2135',
+    borderStrong: '#253050',
+    text: '#ECF1FF',
+    text2: '#8FA0C8',
+    text3: '#445070',
+    primary: '#42E2B8',
+    accent: '#5B8EFF',
+    violet: '#B06EFF',
+    profit: '#42E2B8',
+    loss: '#FF5B6E',
+    solar: 'linear-gradient(135deg, #42E2B8 0%, #5B8EFF 55%, #B06EFF 100%)',
+    btnPrimary: 'linear-gradient(135deg, #42E2B8 0%, #5B8EFF 100%)',
+    btnElite: 'linear-gradient(135deg, #B06EFF 0%, #5B8EFF 100%)',
+  },
+} as const;
+
+export type ThemeName = keyof typeof themes;
+
 export const colors = {
   surface,
   border,
@@ -136,4 +207,5 @@ export const colors = {
   status,
   chartSeries,
   light,
+  themes,
 } as const;

@@ -30,7 +30,7 @@ function ClerkTokenBridge({ children }: { children: React.ReactNode }) {
 /** Clerk components themed to the Observatory tokens. */
 const clerkAppearance = {
   variables: {
-    colorPrimary: '#f2b544',
+    colorPrimary: '#42e2b8',
     colorBackground: '#10121a',
     colorText: '#f2f4fa',
     colorTextSecondary: '#a8b0c4',
