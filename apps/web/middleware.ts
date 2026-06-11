@@ -13,6 +13,8 @@ const isProtectedRoute = createRouteMatcher([
   '/journal(.*)',
   '/analytics(.*)',
   '/accounts(.*)',
+  '/calendar(.*)',
+  '/ea(.*)',
   '/settings(.*)',
   '/billing(.*)',
 ]);

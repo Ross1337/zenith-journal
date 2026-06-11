@@ -86,7 +86,7 @@ function Nav() {
           <a href="#features" className="transition-colors duration-fast hover:text-ink">Features</a>
           <a href="#why" className="transition-colors duration-fast hover:text-ink">Why</a>
           <Link href="/pricing" className="transition-colors duration-fast hover:text-gold">Tarifs</Link>
-          <Link href="/ea" className="transition-colors duration-fast hover:text-teal">EA</Link>
+          <Link href="/mt5" className="transition-colors duration-fast hover:text-teal">EA</Link>
         </nav>
         <div className="ml-auto flex items-center gap-3">
           <Link

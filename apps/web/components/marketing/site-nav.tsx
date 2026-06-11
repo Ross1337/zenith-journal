@@ -11,7 +11,7 @@ const CTA_HREF = clerkEnabled ? '/sign-up' : '/dashboard';
 const LINKS = [
   { href: '/#features', key: 'features', hover: 'hover:text-ink' },
   { href: '/pricing', key: 'pricing', hover: 'hover:text-gold' },
-  { href: '/ea', key: 'ea', hover: 'hover:text-teal' },
+  { href: '/mt5', key: 'ea', hover: 'hover:text-teal' },
 ] as const;
 
 const LABELS = {
@@ -86,7 +86,7 @@ export function SiteFooter() {
           <Link href="/pricing" className="hover:text-ink-secondary">
             {LABELS[lang].pricing}
           </Link>
-          <Link href="/ea" className="hover:text-ink-secondary">
+          <Link href="/mt5" className="hover:text-ink-secondary">
             EA
           </Link>
           <Link href={clerkEnabled ? '/sign-in' : '/dashboard'} className="hover:text-ink-secondary">
