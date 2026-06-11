@@ -11,6 +11,9 @@ const nextConfig = {
   output: 'standalone',
   experimental: {
     outputFileTracingRoot: repoRoot,
+    // Client-side Router Cache TTLs (seconds) — keeps prefetched dashboard
+    // routes warm so navigation feels instant instead of refetching each time.
+    staleTimes: { dynamic: 30, static: 180 },
   },
 };
 

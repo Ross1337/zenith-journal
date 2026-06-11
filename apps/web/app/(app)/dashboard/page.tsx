@@ -70,11 +70,13 @@ export default function DashboardPage() {
         <StatCard
           label={t('dash_win_rate')}
           value={fmtPct(summary?.winRate ?? null)}
+          tone="ion"
           sub={t('dash_breakeven')}
         />
         <StatCard
           label={t('dash_profit_factor')}
           value={fmtRatio(summary?.profitFactor ?? null)}
+          tone="violet"
           sub={t('dash_gross')}
         />
         <StatCard

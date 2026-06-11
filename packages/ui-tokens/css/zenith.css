@@ -5,54 +5,69 @@
    ============================================================ */
 
 :root {
-  /* Surfaces */
-  --z-surface-void: #0a0b10;
-  --z-surface-raised: #10121a;
-  --z-surface-high: #161925;
-  --z-surface-overlay: #1d2130;
-  --z-surface-hover: #1a1e2b;
+  /* Surfaces — the deep "void" night, with a faint violet cast. */
+  --z-surface-void: #050510;
+  --z-surface-raised: #0e0e1e;
+  --z-surface-high: #141428;
+  --z-surface-overlay: #1a1a32;
+  --z-surface-hover: #1c1c38;
 
   /* Borders */
   --z-border-subtle: #1e2330;
-  --z-border-default: #252b3d;
-  --z-border-strong: #323a52;
-  --z-border-luminous: rgba(66, 226, 184, 0.35);
+  --z-border-default: #2a2f42;
+  --z-border-strong: #3a4159;
+  --z-border-luminous: rgba(242, 181, 68, 0.4);
 
   /* Text */
   --z-text-primary: #f2f4fa;
   --z-text-secondary: #a8b0c4;
-  --z-text-muted: #5f687e;
-  --z-text-faint: #3d4357;
-  --z-text-on-accent: #031a12;
+  --z-text-muted: #6b7388;
+  --z-text-faint: #424963;
+  --z-text-on-accent: #1a1206;
 
-  /* Solar gold accent */
-  --z-gold: #42e2b8;
-  --z-gold-hover: #6fffe0;
-  --z-gold-active: #2bc49a;
-  --z-gold-subdued: #1a7a60;
-  --z-gold-glow: rgba(66, 226, 184, 0.16);
-  --z-gold-wash: rgba(66, 226, 184, 0.08);
+  /* Solar gold — the signature ZENITH accent */
+  --z-gold: #f2b544;
+  --z-gold-hover: #f8d06b;
+  --z-gold-active: #d99a2e;
+  --z-gold-subdued: #7a5f24;
+  --z-gold-glow: rgba(242, 181, 68, 0.18);
+  --z-gold-wash: rgba(242, 181, 68, 0.08);
 
-  /* Ion violet accent */
-  --z-ion: #5b8eff;
-  --z-ion-hover: #7ba8ff;
-  --z-ion-subdued: #2a4580;
-  --z-ion-wash: rgba(91, 142, 255, 0.1);
+  /* Ion blue accent */
+  --z-ion: #38bdf8;
+  --z-ion-hover: #5fccfb;
+  --z-ion-subdued: #1d5a78;
+  --z-ion-wash: rgba(56, 189, 248, 0.1);
+
+  /* Violet accent */
+  --z-violet: #a78bfa;
+  --z-violet-hover: #bfa6ff;
+  --z-violet-wash: rgba(167, 139, 250, 0.1);
+
+  /* Rose accent */
+  --z-rose: #fb7185;
+  --z-rose-hover: #fd8b9b;
+  --z-rose-wash: rgba(251, 113, 133, 0.1);
+
+  /* Teal accent */
+  --z-teal: #2dd4bf;
+  --z-teal-hover: #4fe0ce;
+  --z-teal-wash: rgba(45, 212, 191, 0.1);
 
   /* P&L */
-  --z-profit: #41e0a3;
-  --z-profit-dim: #1f7a58;
-  --z-profit-wash: rgba(65, 224, 163, 0.1);
-  --z-loss: #f2555f;
-  --z-loss-dim: #8c3038;
-  --z-loss-wash: rgba(242, 85, 95, 0.1);
+  --z-profit: #4ade80;
+  --z-profit-dim: #1f7a44;
+  --z-profit-wash: rgba(74, 222, 128, 0.1);
+  --z-loss: #f87171;
+  --z-loss-dim: #8c3838;
+  --z-loss-wash: rgba(248, 113, 113, 0.1);
   --z-breakeven: #8a93a8;
 
   /* Status */
-  --z-info: #6cb7ff;
-  --z-warning: #f2a030;
-  --z-danger: #f2555f;
-  --z-success: #41e0a3;
+  --z-info: #38bdf8;
+  --z-warning: #f2b544;
+  --z-danger: #f87171;
+  --z-success: #4ade80;
 
   /* Typography */
   --z-font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
@@ -69,20 +84,21 @@
   /* Effects */
   --z-shadow-overlay: 0 8px 32px rgba(3, 4, 8, 0.55), 0 2px 8px rgba(3, 4, 8, 0.35);
   --z-shadow-modal: 0 16px 64px rgba(3, 4, 8, 0.65), 0 4px 16px rgba(3, 4, 8, 0.4);
-  --z-focus-ring: 0 0 0 2px rgba(66, 226, 184, 0.55);
+  --z-focus-ring: 0 0 0 2px rgba(242, 181, 68, 0.55);
   --z-inner-light: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   --z-gradient-horizon: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(66, 226, 184, 0.55) 50%,
+    rgba(242, 181, 68, 0.55) 50%,
     transparent 100%
   );
   --z-gradient-dawn: radial-gradient(
     ellipse 60% 45% at 50% 0%,
-    rgba(66, 226, 184, 0.1) 0%,
+    rgba(242, 181, 68, 0.1) 0%,
     transparent 70%
   );
-  --z-gradient-solar: linear-gradient(135deg, #42e2b8 0%, #5b8eff 55%, #b06eff 100%);
+  --z-gradient-solar: linear-gradient(135deg, #f2b544 0%, #38bdf8 55%, #a78bfa 100%);
+  --z-gradient-aurora: linear-gradient(120deg, #38bdf8 0%, #a78bfa 50%, #fb7185 100%);
 
   /* Motion */
   --z-duration-fast: 120ms;
@@ -109,22 +125,41 @@
   --z-border-subtle: #eae8e1;
   --z-border-default: #dedbd2;
   --z-border-strong: #c5c1b4;
-  --z-border-luminous: rgba(14, 159, 110, 0.4);
+  --z-border-luminous: rgba(193, 138, 30, 0.45);
 
   --z-text-primary: #191a20;
   --z-text-secondary: #4d5263;
   --z-text-muted: #80869b;
   --z-text-faint: #b4b9c9;
+  --z-text-on-accent: #1a1206;
 
-  --z-gold: #0e9f6e;
-  --z-gold-hover: #0a7a52;
-  --z-gold-active: #086342;
-  --z-gold-subdued: #7dd4b8;
-  --z-gold-glow: rgba(14, 159, 110, 0.14);
-  --z-gold-wash: rgba(14, 159, 110, 0.07);
+  --z-gold: #c18a1e;
+  --z-gold-hover: #a8761a;
+  --z-gold-active: #8c6214;
+  --z-gold-subdued: #e6cf9a;
+  --z-gold-glow: rgba(193, 138, 30, 0.16);
+  --z-gold-wash: rgba(193, 138, 30, 0.08);
+
+  --z-ion: #0284c7;
+  --z-ion-hover: #0369a1;
+  --z-ion-wash: rgba(2, 132, 199, 0.1);
+
+  --z-violet: #7c3aed;
+  --z-violet-hover: #6d28d9;
+  --z-violet-wash: rgba(124, 58, 237, 0.1);
+
+  --z-rose: #e11d48;
+  --z-rose-hover: #be123c;
+  --z-rose-wash: rgba(225, 29, 72, 0.1);
+
+  --z-teal: #0d9488;
+  --z-teal-hover: #0f766e;
+  --z-teal-wash: rgba(13, 148, 136, 0.1);
 
   --z-profit: #0e9f6e;
+  --z-profit-wash: rgba(14, 159, 110, 0.1);
   --z-loss: #d6353f;
+  --z-loss-wash: rgba(214, 53, 63, 0.1);
   --z-breakeven: #6b7280;
 
   --z-shadow-overlay: 0 8px 32px rgba(25, 26, 32, 0.12), 0 2px 8px rgba(25, 26, 32, 0.08);

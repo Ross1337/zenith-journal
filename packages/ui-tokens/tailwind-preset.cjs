@@ -46,6 +46,21 @@ module.exports = {
           subdued: 'var(--z-ion-subdued)',
           wash: 'var(--z-ion-wash)',
         },
+        violet: {
+          DEFAULT: 'var(--z-violet)',
+          hover: 'var(--z-violet-hover)',
+          wash: 'var(--z-violet-wash)',
+        },
+        rose: {
+          DEFAULT: 'var(--z-rose)',
+          hover: 'var(--z-rose-hover)',
+          wash: 'var(--z-rose-wash)',
+        },
+        teal: {
+          DEFAULT: 'var(--z-teal)',
+          hover: 'var(--z-teal-hover)',
+          wash: 'var(--z-teal-wash)',
+        },
 
         profit: {
           DEFAULT: 'var(--z-profit)',
@@ -86,6 +101,7 @@ module.exports = {
         horizon: 'var(--z-gradient-horizon)',
         dawn: 'var(--z-gradient-dawn)',
         solar: 'var(--z-gradient-solar)',
+        aurora: 'var(--z-gradient-aurora)',
       },
       transitionTimingFunction: {
         'zenith-out': 'cubic-bezier(0.22, 1, 0.36, 1)',

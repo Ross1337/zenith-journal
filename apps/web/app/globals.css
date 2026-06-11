@@ -79,9 +79,23 @@ body {
 
 /* Highlighted card — glowing border + halo for the hero element. */
 .z-card-glow {
-  border-color: rgba(66, 226, 184, 0.35);
+  border-color: rgba(242, 181, 68, 0.4);
   box-shadow:
-    0 0 0 1px rgba(66, 226, 184, 0.12),
-    0 0 32px rgba(66, 226, 184, 0.12),
+    0 0 0 1px rgba(242, 181, 68, 0.14),
+    0 0 32px rgba(242, 181, 68, 0.12),
     var(--z-shadow-inner-light, inset 0 1px 0 rgba(255, 255, 255, 0.04));
+}
+
+/* Colored left-accent card — type-coded border rail (T6). */
+.z-rail {
+  border-left-width: 2px;
+}
+
+/* Aurora gradient text — multi-hue sweep for marketing headlines. */
+.z-aurora-text {
+  background: var(--z-gradient-aurora);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }

@@ -3,18 +3,24 @@ import clsx from 'clsx';
 /** Per-tone accent color used for the top bar and the hover glow. */
 const TONE_COLOR = {
   neutral: 'rgba(120, 140, 170, 0.55)',
-  profit: 'rgba(52, 211, 153, 0.7)',
+  profit: 'rgba(74, 222, 128, 0.7)',
   loss: 'rgba(248, 113, 113, 0.7)',
   breakeven: 'rgba(148, 163, 184, 0.6)',
-  gold: 'rgba(66, 226, 184, 0.7)',
+  gold: 'rgba(242, 181, 68, 0.7)',
+  ion: 'rgba(56, 189, 248, 0.7)',
+  violet: 'rgba(167, 139, 250, 0.7)',
+  teal: 'rgba(45, 212, 191, 0.7)',
 } as const;
 
 const TONE_GLOW = {
   neutral: 'hover:shadow-[0_0_24px_rgba(120,140,170,0.10)]',
-  profit: 'hover:shadow-[0_0_24px_rgba(52,211,153,0.16)]',
+  profit: 'hover:shadow-[0_0_24px_rgba(74,222,128,0.16)]',
   loss: 'hover:shadow-[0_0_24px_rgba(248,113,113,0.16)]',
   breakeven: 'hover:shadow-[0_0_24px_rgba(148,163,184,0.12)]',
-  gold: 'hover:shadow-[0_0_24px_rgba(66,226,184,0.18)]',
+  gold: 'hover:shadow-[0_0_24px_rgba(242,181,68,0.18)]',
+  ion: 'hover:shadow-[0_0_24px_rgba(56,189,248,0.18)]',
+  violet: 'hover:shadow-[0_0_24px_rgba(167,139,250,0.18)]',
+  teal: 'hover:shadow-[0_0_24px_rgba(45,212,191,0.18)]',
 } as const;
 
 /**
@@ -30,7 +36,7 @@ export function StatCard({
   label: string;
   value: string;
   sub?: string;
-  tone?: 'neutral' | 'profit' | 'loss' | 'breakeven' | 'gold';
+  tone?: 'neutral' | 'profit' | 'loss' | 'breakeven' | 'gold' | 'ion' | 'violet' | 'teal';
 }) {
   return (
     <div
@@ -57,6 +63,9 @@ export function StatCard({
           tone === 'loss' && 'text-loss',
           tone === 'breakeven' && 'text-breakeven',
           tone === 'gold' && 'text-gold',
+          tone === 'ion' && 'text-ion',
+          tone === 'violet' && 'text-violet',
+          tone === 'teal' && 'text-teal',
           tone === 'neutral' && 'text-ink',
         )}
       >

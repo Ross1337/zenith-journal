@@ -20,7 +20,7 @@ export function Card({
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{
           background:
-            'linear-gradient(90deg, transparent, rgba(66,226,184,0.55), transparent)',
+            'linear-gradient(90deg, transparent, rgba(242,181,68,0.5), transparent)',
         }}
       />
       {/* Inner shine — a faint diagonal wash that catches the eye. */}
@@ -29,7 +29,7 @@ export function Card({
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'linear-gradient(135deg, rgba(66,226,184,0.04) 0%, transparent 45%)',
+            'linear-gradient(135deg, rgba(242,181,68,0.04) 0%, transparent 45%)',
         }}
       />
       {children}
