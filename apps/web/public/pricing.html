@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZENITH — Tarifs & EA MT5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════
+   BASE + RESET
+══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+/* ══════════════════════════════════════════════
+   THEME A — GOLD COSMOS (classic évolution)
+   Primary: gold #F2B544 | Accent: cyan #00D4FF | Surface: void
+══════════════════════════════════════════════ */
+body.theme-cosmos {
+  --bg: #080910;
+  --surface: #0E1018;
+  --card: #12151F;
+  --card-hover: #161A28;
+  --border: #1E2338;
+  --border-strong: #2A3050;
+  --primary: #F2B544;
+  --primary-glow: rgba(242,181,68,0.20);
+  --primary-dim: rgba(242,181,68,0.08);
+  --accent: #00D4FF;
+  --accent-glow: rgba(0,212,255,0.15);
+  --accent-dim: rgba(0,212,255,0.07);
+  --violet: #8B7CF6;
+  --profit: #41E0A3;
+  --loss: #F2555F;
+  --text: #EEF1FA;
+  --text-2: #9BA5BE;
+  --text-3: #4F5870;
+  --hero-grad: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(242,181,68,0.14) 0%, rgba(0,212,255,0.07) 50%, transparent 100%);
+  --card-shine: linear-gradient(135deg, rgba(242,181,68,0.06) 0%, transparent 60%);
+  --recommended-border: var(--primary);
+  --recommended-glow: var(--primary-glow);
+  --tag-rec: var(--primary);
+  --tag-rec-bg: var(--primary-dim);
+  --solar: linear-gradient(135deg, #F2B544 0%, #E08BD4 55%, #8B7CF6 100%);
+  --btn-primary: linear-gradient(135deg, #F2B544 0%, #FFCA66 100%);
+  --btn-primary-text: #0D0A02;
+  --btn-elite: linear-gradient(135deg, #8B7CF6 0%, #00D4FF 100%);
+  --step-accent: var(--primary);
+}
+
+/* ══════════════════════════════════════════════
+   THEME B — NEON EMBER (fire / énergie)
+   Primary: orange #FF5F1F | Accent: rose #FF2D78 | Surface: charcoal
+══════════════════════════════════════════════ */
+body.theme-ember {
+  --bg: #090608;
+  --surface: #100C0E;
+  --card: #160F12;
+  --card-hover: #1C1318;
+  --border: #261820;
+  --border-strong: #38222C;
+  --primary: #FF5F1F;
+  --primary-glow: rgba(255,95,31,0.22);
+  --primary-dim: rgba(255,95,31,0.09);
+  --accent: #FF2D78;
+  --accent-glow: rgba(255,45,120,0.18);
+  --accent-dim: rgba(255,45,120,0.07);
+  --violet: #FFB830;
+  --profit: #34D399;
+  --loss: #FF4155;
+  --text: #FAF0EE;
+  --text-2: #B89FA5;
+  --text-3: #604850;
+  --hero-grad: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,95,31,0.16) 0%, rgba(255,45,120,0.09) 55%, transparent 100%);
+  --card-shine: linear-gradient(135deg, rgba(255,95,31,0.07) 0%, transparent 60%);
+  --recommended-border: var(--accent);
+  --recommended-glow: var(--accent-glow);
+  --tag-rec: var(--accent);
+  --tag-rec-bg: var(--accent-dim);
+  --solar: linear-gradient(135deg, #FF5F1F 0%, #FF2D78 55%, #FFB830 100%);
+  --btn-primary: linear-gradient(135deg, #FF5F1F 0%, #FF2D78 100%);
+  --btn-primary-text: #FFF;
+  --btn-elite: linear-gradient(135deg, #FFB830 0%, #FF5F1F 100%);
+  --step-accent: var(--primary);
+}
+
+/* ══════════════════════════════════════════════
+   THEME C — ARCTIC PRECISION (froid / analytique)
+   Primary: ice-blue #42E2B8 | Accent: sky #5B8EFF | Surface: slate noir
+══════════════════════════════════════════════ */
+body.theme-arctic {
+  --bg: #070910;
+  --surface: #0C0F18;
+  --card: #101420;
+  --card-hover: #141928;
+  --border: #1A2135;
+  --border-strong: #253050;
+  --primary: #42E2B8;
+  --primary-glow: rgba(66,226,184,0.18);
+  --primary-dim: rgba(66,226,184,0.07);
+  --accent: #5B8EFF;
+  --accent-glow: rgba(91,142,255,0.18);
+  --accent-dim: rgba(91,142,255,0.07);
+  --violet: #B06EFF;
+  --profit: #42E2B8;
+  --loss: #FF5B6E;
+  --text: #ECF1FF;
+  --text-2: #8FA0C8;
+  --text-3: #445070;
+  --hero-grad: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(66,226,184,0.12) 0%, rgba(91,142,255,0.10) 55%, transparent 100%);
+  --card-shine: linear-gradient(135deg, rgba(91,142,255,0.07) 0%, transparent 60%);
+  --recommended-border: var(--primary);
+  --recommended-glow: var(--primary-glow);
+  --tag-rec: var(--primary);
+  --tag-rec-bg: var(--primary-dim);
+  --solar: linear-gradient(135deg, #42E2B8 0%, #5B8EFF 55%, #B06EFF 100%);
+  --btn-primary: linear-gradient(135deg, #42E2B8 0%, #5B8EFF 100%);
+  --btn-primary-text: #040812;
+  --btn-elite: linear-gradient(135deg, #B06EFF 0%, #5B8EFF 100%);
+  --step-accent: var(--accent);
+}
+
+/* ══════════════════════════════════════════════
+   GLOBALS
+══════════════════════════════════════════════ */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  min-height: 100vh;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* ══════════════════════════════════════════════
+   THEME SWITCHER (sticky top bar)
+══════════════════════════════════════════════ */
+.theme-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(12px);
+}
+.theme-bar-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-right: 4px;
+}
+.theme-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.theme-btn:hover { border-color: var(--primary); color: var(--text); }
+.theme-btn.active { border-color: var(--primary); background: var(--primary-dim); color: var(--primary); }
+.theme-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ══════════════════════════════════════════════
+   PAGE LAYOUT
+══════════════════════════════════════════════ */
+.page { max-width: 1100px; margin: 0 auto; padding: 0 32px 80px; }
+
+/* ══════════════════════════════════════════════
+   HERO PRICING
+══════════════════════════════════════════════ */
+.pricing-hero {
+  position: relative;
+  text-align: center;
+  padding: 72px 0 56px;
+  background: var(--hero-grad);
+  overflow: hidden;
+}
+.pricing-hero::after {
+  content: '';
+  position: absolute;
+  left: 10%; right: 10%; bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+  opacity: 0.4;
+}
+
+/* Floating orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+.orb-1 {
+  width: 400px; height: 300px;
+  background: var(--primary-glow);
+  top: -100px; left: -100px;
+  opacity: 0.6;
+}
+.orb-2 {
+  width: 300px; height: 300px;
+  background: var(--accent-glow);
+  top: -80px; right: -80px;
+  opacity: 0.5;
+}
+
+.zenith-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.zenith-mark-sm {
+  width: 36px; height: 36px;
+}
+.zenith-wordmark {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  background: var(--solar);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pricing-hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  position: relative;
+}
+.pricing-hero h1 .gradient-text {
+  background: var(--solar);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.pricing-hero .sub {
+  color: var(--text-2);
+  font-size: 1.05rem;
+  margin-top: 12px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+.pricing-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 5px;
+  position: relative;
+}
+.toggle-option {
+  padding: 6px 18px;
+  border-radius: 24px;
+  font-size: 0.825rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-2);
+  transition: all 0.2s;
+}
+.toggle-option.active {
+  background: var(--card-hover);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+}
+.save-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--profit);
+  background: rgba(65,224,163,0.10);
+  border-radius: 8px;
+  padding: 1px 7px;
+}
+
+/* ══════════════════════════════════════════════
+   PRICING GRID
+══════════════════════════════════════════════ */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr 1fr;
+  gap: 16px;
+  margin-top: 48px;
+  align-items: start;
+}
+
+.plan-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, transform 0.2s;
+}
+.plan-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--card-shine);
+  pointer-events: none;
+}
+.plan-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+/* Pro card highlight */
+.plan-card.recommended {
+  border-color: var(--recommended-border);
+  background: var(--card-hover);
+  box-shadow: 0 0 40px var(--recommended-glow), inset 0 1px 0 rgba(255,255,255,0.04);
+  transform: translateY(-6px);
+}
+.plan-card.recommended:hover { transform: translateY(-8px); }
+.plan-card.recommended::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--recommended-border), transparent);
+  opacity: 0.8;
+}
+
+/* Elite card subtle glow */
+.plan-card.elite {
+  border-color: var(--border-strong);
+}
+.plan-card.elite::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--violet), var(--accent), transparent);
+  opacity: 0.5;
+}
+
+.plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 16px;
+}
+.badge-starter { background: var(--primary-dim); color: var(--primary); border: 1px solid var(--primary-glow); }
+.badge-pro { background: var(--tag-rec-bg); color: var(--tag-rec); border: 1px solid var(--recommended-glow); }
+.badge-elite { background: rgba(139,124,246,0.10); color: var(--violet); border: 1px solid rgba(139,124,246,0.20); }
+
+.plan-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+.plan-desc {
+  font-size: 0.8125rem;
+  color: var(--text-2);
+  margin-bottom: 24px;
+  line-height: 1.45;
+}
+
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.price-amount {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.price-currency {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-2);
+  align-self: flex-start;
+  margin-top: 6px;
+}
+.price-period {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+}
+.price-annual {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  margin-bottom: 24px;
+  min-height: 18px;
+}
+.price-annual .save { color: var(--profit); font-weight: 600; }
+
+.plan-cta {
+  display: block;
+  width: 100%;
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+  margin-bottom: 24px;
+}
+.cta-starter {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-2);
+}
+.cta-starter:hover { border-color: var(--primary); color: var(--primary); }
+.cta-pro {
+  background: var(--btn-primary);
+  color: var(--btn-primary-text);
+  box-shadow: 0 0 24px var(--primary-glow);
+}
+.cta-pro:hover { opacity: 0.92; box-shadow: 0 0 36px var(--primary-glow); }
+.cta-elite {
+  background: var(--btn-elite);
+  color: #fff;
+}
+.cta-elite:hover { opacity: 0.9; }
+
+.plan-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 20px;
+}
+
+.plan-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.plan-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.8125rem;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+.plan-feature .check {
+  flex-shrink: 0;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+.check-yes { background: var(--primary-dim); color: var(--primary); }
+.check-no { background: rgba(255,255,255,0.03); color: var(--text-3); }
+.check-accent { background: var(--accent-dim); color: var(--accent); }
+.feature-strong { color: var(--text); font-weight: 500; }
+.feature-new {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--accent-dim);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  margin-left: 4px;
+}
+
+/* ══════════════════════════════════════════════
+   COMPARISON / GUARANTEE STRIP
+══════════════════════════════════════════════ */
+.trust-strip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin-top: 36px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-2);
+}
+.trust-icon {
+  font-size: 1rem;
+}
+
+/* ══════════════════════════════════════════════
+   EA INSTALL SECTION
+══════════════════════════════════════════════ */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.section-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--step-accent);
+  margin-bottom: 10px;
+}
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.section-sub {
+  color: var(--text-2);
+  font-size: 0.9375rem;
+  max-width: 520px;
+  margin-bottom: 40px;
+}
+
+.ea-section {
+  margin-top: 88px;
+  position: relative;
+}
+.ea-section::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: -44px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+}
+
+/* Steps */
+.steps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.step-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 20px;
+  display: flex;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.step-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+.step-card.step-highlight {
+  border-color: var(--border-strong);
+  background: var(--card-hover);
+}
+.step-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--card-shine);
+  pointer-events: none;
+}
+
+.step-num {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: var(--primary-dim);
+  border: 1px solid var(--primary-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--step-accent);
+}
+.step-content { flex: 1; }
+.step-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.step-desc {
+  font-size: 0.7875rem;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+.step-code {
+  display: inline-block;
+  margin-top: 7px;
+  padding: 4px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+.step-badge-final {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  background: rgba(65,224,163,0.10);
+  border: 1px solid rgba(65,224,163,0.25);
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #41E0A3;
+}
+
+/* EA download card */
+.ea-download-card {
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+  position: relative;
+  overflow: hidden;
+}
+.ea-download-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+  opacity: 0.5;
+}
+.ea-info { display: flex; gap: 16px; align-items: center; }
+.ea-icon {
+  width: 52px; height: 52px;
+  border-radius: 12px;
+  background: var(--primary-dim);
+  border: 1px solid var(--primary-glow);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+.ea-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 3px;
+}
+.ea-meta {
+  font-size: 0.75rem;
+  color: var(--text-2);
+  display: flex;
+  gap: 12px;
+}
+.ea-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ea-dl-btn {
+  padding: 11px 24px;
+  border-radius: 10px;
+  background: var(--btn-primary);
+  color: var(--btn-primary-text);
+  font-weight: 700;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.ea-dl-btn:hover { opacity: 0.88; }
+
+/* ══════════════════════════════════════════════
+   COMPARE TABLE
+══════════════════════════════════════════════ */
+.compare-section { margin-top: 88px; }
+.compare-section::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+  margin-bottom: 64px;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.compare-table th {
+  padding: 14px 20px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  text-align: left;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table th.plan-col {
+  text-align: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+}
+.compare-table th.col-pro { color: var(--tag-rec); }
+.compare-table th.col-elite { color: var(--violet); }
+
+.compare-table td {
+  padding: 12px 20px;
+  font-size: 0.8125rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-2);
+}
+.compare-table td.feature-name { color: var(--text); }
+.compare-table td.plan-col { text-align: center; }
+.compare-table tr:hover td { background: var(--card); }
+
+.tick { color: var(--profit); font-size: 1rem; }
+.cross { color: var(--text-3); font-size: 1rem; }
+.val-text { color: var(--text); font-size: 0.8rem; font-weight: 500; }
+.category-row td {
+  padding: 20px 20px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--step-accent);
+  background: var(--surface);
+  border-bottom: none;
+}
+
+/* ══════════════════════════════════════════════
+   FAQ
+══════════════════════════════════════════════ */
+.faq-section { margin-top: 88px; }
+.faq-section::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+  margin-bottom: 64px;
+}
+.faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.faq-item { }
+.faq-q {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 6px;
+  display: flex;
+  gap: 10px;
+}
+.faq-q::before { content: 'Q'; color: var(--step-accent); font-weight: 700; flex-shrink: 0; }
+.faq-a {
+  font-size: 0.8125rem;
+  color: var(--text-2);
+  line-height: 1.55;
+  padding-left: 22px;
+}
+
+/* ══════════════════════════════════════════════
+   FOOTER CTA
+══════════════════════════════════════════════ */
+.footer-cta {
+  margin-top: 88px;
+  text-align: center;
+  position: relative;
+  padding: 64px 32px;
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.footer-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--hero-grad);
+  pointer-events: none;
+}
+.footer-cta h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+.footer-cta p {
+  color: var(--text-2);
+  margin: 12px auto 28px;
+  max-width: 420px;
+  position: relative;
+}
+.cta-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  position: relative;
+}
+.btn-main {
+  padding: 13px 28px;
+  border-radius: 11px;
+  background: var(--btn-primary);
+  color: var(--btn-primary-text);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-main:hover { opacity: 0.9; }
+.btn-ghost {
+  padding: 13px 28px;
+  border-radius: 11px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-2);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 41px; /* below theme bar */
+  z-index: 90;
+  backdrop-filter: blur(12px);
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  background: var(--solar);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-link {
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  color: var(--text-2);
+  text-decoration: none;
+  border-radius: 7px;
+  transition: all 0.2s;
+}
+.nav-link:hover { background: var(--card); color: var(--text); }
+.nav-link.active { color: var(--primary); }
+.nav-btn {
+  padding: 7px 18px;
+  border-radius: 8px;
+  background: var(--btn-primary);
+  color: var(--btn-primary-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .pricing-grid { grid-template-columns: 1fr; }
+  .plan-card.recommended { transform: none; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .compare-table { font-size: 0.75rem; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .cta-group { flex-direction: column; align-items: center; }
+  .nav { padding: 14px 20px; }
+  .page { padding: 0 20px 60px; }
+  .ea-download-card { flex-direction: column; }
+  .trust-strip { flex-wrap: wrap; gap: 16px; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.float { animation: float 6s ease-in-out infinite; }
+</style>
+</head>
+<body class="theme-cosmos">
+
+<!-- THEME SWITCHER -->
+<div class="theme-bar">
+  <span class="theme-bar-label">Thème</span>
+  <button class="theme-btn active" onclick="setTheme('cosmos', this)">
+    <div class="theme-dot" style="background: linear-gradient(135deg, #F2B544, #00D4FF)"></div>
+    Gold Cosmos
+  </button>
+  <button class="theme-btn" onclick="setTheme('ember', this)">
+    <div class="theme-dot" style="background: linear-gradient(135deg, #FF5F1F, #FF2D78)"></div>
+    Neon Ember
+  </button>
+  <button class="theme-btn" onclick="setTheme('arctic', this)">
+    <div class="theme-dot" style="background: linear-gradient(135deg, #42E2B8, #5B8EFF)"></div>
+    Arctic Precision
+  </button>
+  <span style="margin-left:auto; font-size:0.7rem; color: var(--text-3)">Cliquez pour prévisualiser</span>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="nav-brand">
+    <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
+      <polygon points="24,5 43,39 5,39" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" style="-webkit-text-fill-color: initial; color: #F2B544"/>
+      <circle cx="24" cy="5" r="2.5" fill="#F2B544"/>
+    </svg>
+    ZENITH
+  </a>
+  <div class="nav-links">
+    <a href="#pricing" class="nav-link active">Tarifs</a>
+    <a href="#ea-install" class="nav-link">EA MT5</a>
+    <a href="#compare" class="nav-link">Comparer</a>
+    <button class="nav-btn">Commencer</button>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- ═══════════ PRICING HERO ═══════════ -->
+  <section class="pricing-hero" id="pricing">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <a href="#" class="zenith-logo">
+      <svg class="zenith-mark-sm" viewBox="0 0 48 48" fill="none">
+        <polygon points="24,5 43,39 5,39" stroke="url(#g1)" stroke-width="2" fill="none" stroke-linejoin="round"/>
+        <circle cx="24" cy="5" r="2.5" fill="url(#g1)"/>
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="48" y2="48">
+            <stop offset="0%" stop-color="#F2B544"/>
+            <stop offset="100%" stop-color="#8B7CF6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="zenith-wordmark">ZENITH</span>
+    </a>
+
+    <h1>
+      Le journal de trading<br>
+      <span class="gradient-text">qui travaille avec vous.</span>
+    </h1>
+    <p class="sub">Analysez vos trades. Automatisez votre sync MT5. Trouvez votre edge.</p>
+
+    <div class="pricing-toggle">
+      <div class="toggle-option active" onclick="toggleBilling('monthly', this)">Mensuel</div>
+      <div class="toggle-option" onclick="toggleBilling('annual', this)">
+        Annuel <span class="save-badge">−20%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PRICING CARDS ═══════════ -->
+  <div class="pricing-grid" id="pricing-grid">
+
+    <!-- STARTER -->
+    <div class="plan-card">
+      <div class="plan-badge badge-starter">⚡ Starter</div>
+      <div class="plan-name">Starter</div>
+      <div class="plan-desc">Parfait pour commencer. CSV rapide, stats essentielles, EA gratuit.</div>
+      <div class="plan-price">
+        <span class="price-currency">€</span>
+        <span class="price-amount" data-monthly="8.99" data-annual="7.19">8.99</span>
+        <span class="price-period">/mois</span>
+      </div>
+      <div class="price-annual" data-monthly="" data-annual-text="soit 86.28€/an — <span class='save'>économisez 21€</span>">&nbsp;</div>
+      <button class="plan-cta cta-starter">Commencer gratuitement</button>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Import CSV MT4/MT5 <span class="feature-strong">illimité</span></span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>EA MT5 <span class="feature-strong">gratuit inclus</span></span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Dashboard P&L, Win Rate, Drawdown</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>1 compte de trading</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Trade log + notes</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-no">—</div>
+          <span style="color: var(--text-3)">Sync automatique MT5</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-no">—</div>
+          <span style="color: var(--text-3)">Analytics avancées</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-no">—</div>
+          <span style="color: var(--text-3)">Rapport PDF</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- PRO (recommended) -->
+    <div class="plan-card recommended">
+      <div class="plan-badge badge-pro">🔥 Recommandé</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-desc">Sync automatique en temps réel. La version que 80% de nos traders utilisent.</div>
+      <div class="plan-price">
+        <span class="price-currency">€</span>
+        <span class="price-amount" data-monthly="14.99" data-annual="11.99">14.99</span>
+        <span class="price-period">/mois</span>
+      </div>
+      <div class="price-annual" data-monthly="" data-annual-text="soit 143.88€/an — <span class='save'>économisez 36€</span>">&nbsp;</div>
+      <button class="plan-cta cta-pro">Démarrer en Pro →</button>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span><span class="feature-strong">Tout Starter</span>, plus :</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-accent">✓</div>
+          <span><span class="feature-strong">Sync MT5 automatique</span> — trades importés en temps réel <span class="feature-new">AUTO</span></span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-accent">✓</div>
+          <span>3 comptes de trading</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Analytics : R-multiple, expectancy, heatmap calendrier</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Journal de notes enrichi + screenshots</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Webhook entrant (intégrations tierces)</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Rapport PDF mensuel auto</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-no">—</div>
+          <span style="color: var(--text-3)">Support prioritaire</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ELITE (anchor) -->
+    <div class="plan-card elite">
+      <div class="plan-badge badge-elite">💎 Elite</div>
+      <div class="plan-name">Elite</div>
+      <div class="plan-desc">Pour les traders sérieux. Comptes illimités, support dédié, accès bêta.</div>
+      <div class="plan-price">
+        <span class="price-currency">€</span>
+        <span class="price-amount" data-monthly="29.99" data-annual="23.99">29.99</span>
+        <span class="price-period">/mois</span>
+      </div>
+      <div class="price-annual" data-monthly="" data-annual-text="soit 287.88€/an — <span class='save'>économisez 72€</span>">&nbsp;</div>
+      <button class="plan-cta cta-elite">Accéder à l'Elite →</button>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span><span class="feature-strong">Tout Pro</span>, plus :</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-accent">✓</div>
+          <span><span class="feature-strong">Comptes illimités</span></span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-accent">✓</div>
+          <span><span class="feature-strong">Support prioritaire</span> — réponse &lt; 2h</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-accent">✓</div>
+          <span>Accès bêta aux nouvelles features</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Dashboard personnalisable (widgets, layout)</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Rapport PDF hebdomadaire automatisé</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Export API — vos données partout</span>
+        </li>
+        <li class="plan-feature">
+          <div class="check check-yes">✓</div>
+          <span>Onboarding 1:1 à la demande</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TRUST STRIP -->
+  <div class="trust-strip">
+    <div class="trust-item"><span class="trust-icon">🔒</span> SSL + données chiffrées</div>
+    <div class="trust-item"><span class="trust-icon">↩️</span> Annulation à tout moment</div>
+    <div class="trust-item"><span class="trust-icon">💳</span> Paiement sécurisé Stripe</div>
+    <div class="trust-item"><span class="trust-icon">📧</span> Onboarding par email inclus</div>
+  </div>
+
+  <!-- ═══════════ EA MT5 INSTALL ═══════════ -->
+  <section class="ea-section" id="ea-install">
+
+    <p class="section-eyebrow">Expert Advisor · MT5</p>
+    <h2 class="section-title">Sync automatique en <span style="background: var(--solar); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">3 minutes</span></h2>
+    <p class="section-sub">Notre EA MT5 envoie vos trades à Zenith en temps réel, sans VPS, sans serveur. Il tourne sur votre propre MT5.</p>
+
+    <!-- Download card -->
+    <div class="ea-download-card">
+      <div class="ea-info">
+        <div class="ea-icon">📦</div>
+        <div>
+          <div class="ea-name">ZenithBridge.ex5</div>
+          <div class="ea-meta">
+            <span>📐 v2.1.0</span>
+            <span>⚖️ 48 KB</span>
+            <span>✅ Compatible MT5 Build 4000+</span>
+            <span>🔒 Signé & vérifié</span>
+          </div>
+        </div>
+      </div>
+      <button class="ea-dl-btn">
+        ⬇️ Télécharger l'EA
+      </button>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-grid">
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Télécharger ZenithBridge.ex5</div>
+          <div class="step-desc">Cliquez sur le bouton ci-dessus. Votre clé API Zenith est générée automatiquement dans votre espace.</div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Ouvrir le dossier données MT5</div>
+          <div class="step-desc">Dans MT5 → <strong>Fichier → Ouvrir le dossier des données</strong>. Ou utilisez le raccourci :</div>
+          <div class="step-code">Fichier → Ouvrir dossier données</div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Copier l'EA dans MQL5/Experts</div>
+          <div class="step-desc">Glissez <code style="font-family: 'JetBrains Mono'; font-size:0.8em; color: var(--accent)">ZenithBridge.ex5</code> dans le dossier :</div>
+          <div class="step-code">MQL5 / Experts /</div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Rafraîchir le Navigateur MT5</div>
+          <div class="step-desc">Dans le panneau Navigateur → clic droit sur <strong>Expert Advisors</strong> → <strong>Actualiser</strong>. L'EA Zenith apparaît.</div>
+        </div>
+      </div>
+
+      <div class="step-card step-highlight">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Glisser l'EA sur n'importe quel chart</div>
+          <div class="step-desc">Faites glisser <strong>ZenithBridge</strong> depuis le Navigateur sur un graphique ouvert (n'importe quel symbole, n'importe quelle période).</div>
+        </div>
+      </div>
+
+      <div class="step-card step-highlight">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">Entrer votre clé API Zenith</div>
+          <div class="step-desc">Une fenêtre de configuration s'ouvre. Collez votre <strong>API Key</strong> (copiez depuis Zenith → Paramètres → Intégrations).</div>
+          <div class="step-code">Zenith → Paramètres → Intégrations → Copier la clé</div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">7</div>
+        <div class="step-content">
+          <div class="step-title">Activer le trading algorithmique</div>
+          <div class="step-desc">Dans MT5 → barre d'outils → activez le bouton <strong>"Activer le trading algorithmique"</strong>. L'icône EA dans le coin du chart doit être verte.</div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">8</div>
+        <div class="step-content">
+          <div class="step-title">C'est tout. ✅</div>
+          <div class="step-desc">Vos trades suivants sont envoyés automatiquement à Zenith. L'historique passé est importable via CSV une seule fois.</div>
+          <div class="step-badge-final">✅ Trades synchronisés en temps réel</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Notes importantes -->
+    <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 220px; padding: 16px 18px; background: var(--primary-dim); border: 1px solid var(--primary-glow); border-radius: 10px; font-size: 0.78rem; color: var(--text-2); line-height: 1.5;">
+        <strong style="color: var(--primary); display: block; margin-bottom: 4px;">💡 Sans VPS</strong>
+        L'EA tourne sur votre MT5 local. Aucun serveur externe requis. Les trades sont envoyés dès leur clôture tant que MT5 est ouvert.
+      </div>
+      <div style="flex: 1; min-width: 220px; padding: 16px 18px; background: var(--accent-dim); border: 1px solid var(--accent-glow); border-radius: 10px; font-size: 0.78rem; color: var(--text-2); line-height: 1.5;">
+        <strong style="color: var(--accent); display: block; margin-bottom: 4px;">🔒 Read-only</strong>
+        L'EA est en lecture seule. Il envoie les données vers Zenith mais n'a aucun accès aux ordres ni à votre capital.
+      </div>
+      <div style="flex: 1; min-width: 220px; padding: 16px 18px; background: rgba(65,224,163,0.06); border: 1px solid rgba(65,224,163,0.15); border-radius: 10px; font-size: 0.78rem; color: var(--text-2); line-height: 1.5;">
+        <strong style="color: #41E0A3; display: block; margin-bottom: 4px;">📁 Historique</strong>
+        Pour importer vos trades passés, utilisez <strong>Fichier → Exporter historique</strong> dans MT5, puis importez le CSV dans Zenith.
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ COMPARE TABLE ═══════════ -->
+  <section class="compare-section" id="compare">
+    <p class="section-eyebrow">Comparaison détaillée</p>
+    <h2 class="section-title">Ce qui est inclus</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Fonctionnalité</th>
+          <th class="plan-col">Starter<br><small style="font-weight:400; color:var(--text-3)">8.99€/mois</small></th>
+          <th class="plan-col col-pro">Pro<br><small style="font-weight:400; color:var(--text-3)">14.99€/mois</small></th>
+          <th class="plan-col col-elite">Elite<br><small style="font-weight:400; color:var(--text-3)">29.99€/mois</small></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="category-row"><td colspan="4">Import & Synchronisation</td></tr>
+        <tr>
+          <td class="feature-name">Import CSV MT4/MT5</td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">EA MT5 (sync auto)</td>
+          <td class="plan-col"><span class="tick">✓</span> <span style="font-size:0.7rem; color:var(--text-3)">gratuit</span></td>
+          <td class="plan-col"><span class="tick">✓</span> <span class="val-text">temps réel</span></td>
+          <td class="plan-col"><span class="tick">✓</span> <span class="val-text">temps réel</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">Webhook entrant</td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">Export API</td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+        </tr>
+
+        <tr class="category-row"><td colspan="4">Analytics</td></tr>
+        <tr>
+          <td class="feature-name">P&L, Win Rate, Drawdown</td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">R-multiple & Expectancy</td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">Heatmap calendrier</td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">Rapport PDF auto</td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="val-text">mensuel</span></td>
+          <td class="plan-col"><span class="val-text">hebdomadaire</span></td>
+        </tr>
+
+        <tr class="category-row"><td colspan="4">Comptes & Limites</td></tr>
+        <tr>
+          <td class="feature-name">Comptes de trading</td>
+          <td class="plan-col"><span class="val-text">1</span></td>
+          <td class="plan-col"><span class="val-text">3</span></td>
+          <td class="plan-col"><span class="val-text">Illimité</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">Historique conservé</td>
+          <td class="plan-col"><span class="val-text">1 an</span></td>
+          <td class="plan-col"><span class="val-text">3 ans</span></td>
+          <td class="plan-col"><span class="val-text">Illimité</span></td>
+        </tr>
+
+        <tr class="category-row"><td colspan="4">Support</td></tr>
+        <tr>
+          <td class="feature-name">Support email</td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">Support prioritaire (&lt;2h)</td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">Accès bêta</td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="cross">—</span></td>
+          <td class="plan-col"><span class="tick">✓</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════ FAQ ═══════════ -->
+  <section class="faq-section">
+    <p class="section-eyebrow">FAQ</p>
+    <h2 class="section-title">Questions fréquentes</h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q">L'EA MT5 est-il disponible sur Starter ?</div>
+        <div class="faq-a">Oui. L'EA est gratuit sur tous les plans. La différence : en Starter il envoie les trades mais la sync est manuelle (CSV). En Pro+, la sync est automatique en temps réel.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Ai-je besoin d'un VPS pour la sync auto ?</div>
+        <div class="faq-a">Non. L'EA tourne sur votre propre MT5. Tant que votre terminal est ouvert, vos trades arrivent sur Zenith en temps réel. Aucun serveur supplémentaire.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">L'EA peut-il passer des ordres sur mon compte ?</div>
+        <div class="faq-a">Non. L'EA est en lecture seule. Il lit vos trades déjà exécutés et les envoie à Zenith. Il n'a aucun accès à votre capital ni à vos ordres.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Puis-je changer de plan à tout moment ?</div>
+        <div class="faq-a">Oui. Upgrade ou downgrade immédiat depuis votre espace. Aucun engagement. Le remboursement au prorata est calculé automatiquement.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Comment importer mon historique existant ?</div>
+        <div class="faq-a">Dans MT5 : Fichier → Rapport de compte → Exporter en CSV, puis importez dans Zenith. C'est une opération unique, après quoi l'EA prend le relais.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Compatible avec quels brokers ?</div>
+        <div class="faq-a">Tous les brokers qui proposent MetaTrader 5. L'EA utilise les API standard MT5, il n'est pas lié à un broker spécifique.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FOOTER CTA ═══════════ -->
+  <div class="footer-cta">
+    <h2>Prêt à voir votre edge ?</h2>
+    <p>Rejoignez les traders qui utilisent Zenith pour analyser, optimiser, et progresser.</p>
+    <div class="cta-group">
+      <button class="btn-main">Commencer en Pro — 14.99€/mois →</button>
+      <button class="btn-ghost">Voir la démo</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function setTheme(theme, btn) {
+  document.body.className = 'theme-' + theme;
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+let billing = 'monthly';
+function toggleBilling(mode, el) {
+  billing = mode;
+  document.querySelectorAll('.toggle-option').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+
+  document.querySelectorAll('.price-amount').forEach(el => {
+    el.textContent = billing === 'monthly'
+      ? el.dataset.monthly
+      : el.dataset.annual;
+  });
+  document.querySelectorAll('.price-annual').forEach(el => {
+    el.innerHTML = billing === 'monthly'
+      ? '&nbsp;'
+      : (el.dataset.annualText || '');
+  });
+}
+</script>
+</body>
+</html>

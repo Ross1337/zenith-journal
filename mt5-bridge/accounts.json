@@ -1,0 +1,16 @@
+[
+  {
+    "login": 123456,
+    "password": "investor_password_1",
+    "server": "ICMarkets-Demo01",
+    "zenith_api_key": "zk_live_xxxxxxxxxxxxx",
+    "label": "Client A - ICMarkets"
+  },
+  {
+    "login": 789012,
+    "password": "investor_password_2",
+    "server": "Pepperstone-Demo",
+    "zenith_api_key": "zk_live_yyyyyyyyyyyyy",
+    "label": "Client B - Pepperstone"
+  }
+]

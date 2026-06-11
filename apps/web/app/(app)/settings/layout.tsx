@@ -3,18 +3,20 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-
-const TABS = [
-  { href: '/settings', label: 'Profile' },
-  { href: '/settings/integrations', label: 'Integrations' },
-] as const;
+import { useT } from '@/lib/i18n-context';
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const t = useT();
+
+  const TABS = [
+    { href: '/settings', label: t('settings_tab_profile') },
+    { href: '/settings/integrations', label: t('settings_tab_integrations') },
+  ] as const;
 
   return (
     <div>
-      <nav className=mb-6 flex gap-1 border-b border-edge pb-0>
+      <nav className="mb-6 flex gap-1 border-b border-edge pb-0">
         {TABS.map(({ href, label }) => {
           const active = pathname === href;
           return (
@@ -28,7 +30,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
             >
               {label}
               {active && (
-                <span className=absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-gold />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-gold" />
               )}
             </Link>
           );

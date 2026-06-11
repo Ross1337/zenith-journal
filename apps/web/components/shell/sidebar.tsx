@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { useUiStore } from '@/lib/store';
+import { useI18n } from '@/lib/i18n-context';
 import { ZenithMark } from './zenith-mark';
 import {
   AccountsIcon,
@@ -16,18 +17,19 @@ import {
   TradesIcon,
 } from './nav-icons';
 
-const NAV = [
-  { href: '/dashboard', label: 'Dashboard', icon: DashboardIcon },
-  { href: '/trades', label: 'Trades', icon: TradesIcon },
-  { href: '/journal', label: 'Journal', icon: JournalIcon },
-  { href: '/analytics', label: 'Analytics', icon: AnalyticsIcon },
-  { href: '/calendar', label: 'Calendar', icon: CalendarIcon },
-  { href: '/accounts', label: 'Accounts', icon: AccountsIcon },
-] as const;
-
 export function Sidebar() {
   const pathname = usePathname();
   const openTradeModal = useUiStore((s) => s.openTradeModal);
+  const { t, toggle, lang } = useI18n();
+
+  const NAV = [
+    { href: '/dashboard', label: t('nav_dashboard'), icon: DashboardIcon },
+    { href: '/trades', label: t('nav_trades'), icon: TradesIcon },
+    { href: '/journal', label: t('nav_journal'), icon: JournalIcon },
+    { href: '/analytics', label: t('nav_analytics'), icon: AnalyticsIcon },
+    { href: '/calendar', label: t('nav_calendar'), icon: CalendarIcon },
+    { href: '/accounts', label: t('nav_accounts'), icon: AccountsIcon },
+  ] as const;
 
   return (
     <aside className="fixed inset-y-0 left-0 z-20 flex w-[232px] flex-col border-r border-edge-subtle bg-raised">
@@ -48,7 +50,7 @@ export function Sidebar() {
           className="flex w-full items-center justify-center gap-2 rounded-md bg-gold px-3 py-2 text-[13px] font-semibold text-ink-on-accent transition-colors duration-fast hover:bg-gold-hover active:bg-gold-active"
         >
           <PlusIcon />
-          Log trade
+          {t('nav_log_trade')}
         </button>
       </div>
 
@@ -84,6 +86,16 @@ export function Sidebar() {
       {/* Footer */}
       <div className="px-3 pb-5">
         <div className="z-horizon mx-2 mb-4" />
+        {/* Language switcher */}
+        <button
+          onClick={toggle}
+          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-[13.5px] text-ink-secondary transition-colors duration-fast hover:bg-hover hover:text-ink"
+        >
+          <span className="text-[11px] font-bold tracking-widest text-gold border border-gold/30 rounded px-1.5 py-0.5">
+            {lang === 'fr' ? 'EN' : 'FR'}
+          </span>
+          {lang === 'fr' ? 'English' : 'Français'}
+        </button>
         <Link
           href="/settings"
           className={clsx(
@@ -94,10 +106,10 @@ export function Sidebar() {
           )}
         >
           <SettingsIcon />
-          Settings
+          {t('nav_settings')}
         </Link>
         <p className="mt-2 px-3 text-[11px] leading-relaxed text-ink-faint">
-          See your edge clearly.
+          {t('nav_tagline')}
         </p>
       </div>
     </aside>
