@@ -10,10 +10,28 @@ export function Card({
   return (
     <section
       className={clsx(
-        'rounded-lg border border-edge-subtle bg-raised shadow-inner-light',
+        'relative overflow-hidden rounded-lg border border-edge-subtle bg-raised shadow-inner-light',
         className,
       )}
     >
+      {/* Top accent hairline — transparent → gold → transparent. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{
+          background:
+            'linear-gradient(90deg, transparent, rgba(66,226,184,0.55), transparent)',
+        }}
+      />
+      {/* Inner shine — a faint diagonal wash that catches the eye. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(135deg, rgba(66,226,184,0.04) 0%, transparent 45%)',
+        }}
+      />
       {children}
     </section>
   );

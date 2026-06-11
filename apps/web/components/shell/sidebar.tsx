@@ -11,6 +11,7 @@ import {
   AnalyticsIcon,
   CalendarIcon,
   DashboardIcon,
+  EaIcon,
   JournalIcon,
   PlusIcon,
   SettingsIcon,
@@ -29,6 +30,7 @@ export function Sidebar() {
     { href: '/analytics', label: t('nav_analytics'), icon: AnalyticsIcon },
     { href: '/calendar', label: t('nav_calendar'), icon: CalendarIcon },
     { href: '/accounts', label: t('nav_accounts'), icon: AccountsIcon },
+    { href: '/ea', label: t('nav_ea'), icon: EaIcon },
   ] as const;
 
   return (
@@ -47,7 +49,7 @@ export function Sidebar() {
         <button
           type="button"
           onClick={openTradeModal}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-gold px-3 py-2 text-[13px] font-semibold text-ink-on-accent transition-colors duration-fast hover:bg-gold-hover active:bg-gold-active"
+          className="flex w-full items-center justify-center gap-2 rounded-md bg-gold px-3 py-2 text-[13px] font-semibold text-ink-on-accent shadow-[0_0_20px_rgba(66,226,184,0.18)] transition-colors duration-fast hover:bg-gold-hover active:bg-gold-active"
         >
           <PlusIcon />
           {t('nav_log_trade')}
@@ -65,14 +67,14 @@ export function Sidebar() {
               className={clsx(
                 'group relative flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] transition-colors duration-fast',
                 active
-                  ? 'bg-gold-wash font-medium text-ink'
+                  ? 'bg-gold-wash font-medium text-ink shadow-[inset_0_0_12px_rgba(66,226,184,0.10)]'
                   : 'text-ink-secondary hover:bg-hover hover:text-ink',
               )}
             >
               {/* Active marker — a luminous notch on the left edge. */}
               <span
                 className={clsx(
-                  'absolute -left-3 h-4 w-0.5 rounded-full bg-gold transition-opacity duration-base',
+                  'absolute -left-3 h-4 w-0.5 rounded-full bg-gold shadow-[0_0_8px_rgba(66,226,184,0.6)] transition-opacity duration-base',
                   active ? 'opacity-100' : 'opacity-0',
                 )}
               />

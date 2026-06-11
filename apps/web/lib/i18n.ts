@@ -70,6 +70,25 @@ export const translations = {
     settings_theme_auto_desc: 'Suivre les préférences système',
     settings_tab_profile: 'Profil',
     settings_tab_integrations: 'Intégrations',
+    // EA / MT5
+    nav_ea: 'EA / MT5',
+    ea_title: 'Expert Advisor MT5',
+    ea_subtitle:
+      'Synchronisez automatiquement vos trades MetaTrader 5 vers Zenith — installation en quelques minutes.',
+    ea_download: "Télécharger l'EA",
+    ea_dl_version: 'v1.2.3 · Compatible MT5 Build 3815+',
+    ea_steps_title: 'Installation en 8 étapes',
+    ea_feat_secure: 'Sécurisé',
+    ea_feat_secure_desc:
+      "L'EA ne fait que lire vos trades. Aucun ordre n'est passé, aucune donnée sensible n'est transmise.",
+    ea_feat_realtime: 'Temps réel',
+    ea_feat_realtime_desc:
+      'Chaque ouverture, modification et clôture est transmise instantanément vers votre journal.',
+    ea_feat_history: 'Historique',
+    ea_feat_history_desc:
+      "Au premier lancement, l'EA importe automatiquement tout votre historique de trades existant.",
+    ea_note:
+      'Votre clé API se trouve dans Paramètres → Intégrations. Gardez-la secrète — elle est propre à votre compte.',
     // Common
     loading_error: 'Erreur de chargement — réessayez',
     lang_toggle: 'EN',
@@ -143,6 +162,25 @@ export const translations = {
     settings_theme_auto_desc: 'Follow the system preference',
     settings_tab_profile: 'Profile',
     settings_tab_integrations: 'Integrations',
+    // EA / MT5
+    nav_ea: 'EA / MT5',
+    ea_title: 'MT5 Expert Advisor',
+    ea_subtitle:
+      'Automatically sync your MetaTrader 5 trades to Zenith — set up in minutes.',
+    ea_download: 'Download EA',
+    ea_dl_version: 'v1.2.3 · Compatible MT5 Build 3815+',
+    ea_steps_title: '8-Step Installation Guide',
+    ea_feat_secure: 'Secure',
+    ea_feat_secure_desc:
+      'The EA only reads your trades. No orders are placed and no sensitive data is transmitted.',
+    ea_feat_realtime: 'Real-time',
+    ea_feat_realtime_desc:
+      'Every open, modification and close is streamed instantly to your journal.',
+    ea_feat_history: 'History',
+    ea_feat_history_desc:
+      'On first launch, the EA automatically imports your entire existing trade history.',
+    ea_note:
+      'Your API key lives in Settings → Integrations. Keep it secret — it is unique to your account.',
     // Common
     loading_error: 'Failed to load — please retry',
     lang_toggle: 'FR',

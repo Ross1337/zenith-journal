@@ -1,5 +1,22 @@
 import clsx from 'clsx';
 
+/** Per-tone accent color used for the top bar and the hover glow. */
+const TONE_COLOR = {
+  neutral: 'rgba(120, 140, 170, 0.55)',
+  profit: 'rgba(52, 211, 153, 0.7)',
+  loss: 'rgba(248, 113, 113, 0.7)',
+  breakeven: 'rgba(148, 163, 184, 0.6)',
+  gold: 'rgba(66, 226, 184, 0.7)',
+} as const;
+
+const TONE_GLOW = {
+  neutral: 'hover:shadow-[0_0_24px_rgba(120,140,170,0.10)]',
+  profit: 'hover:shadow-[0_0_24px_rgba(52,211,153,0.16)]',
+  loss: 'hover:shadow-[0_0_24px_rgba(248,113,113,0.16)]',
+  breakeven: 'hover:shadow-[0_0_24px_rgba(148,163,184,0.12)]',
+  gold: 'hover:shadow-[0_0_24px_rgba(66,226,184,0.18)]',
+} as const;
+
 /**
  * Dashboard KPI tile. The value is always mono/tabular; an optional spark
  * line of context sits under it (e.g. "52 wins · 41 losses").
@@ -16,7 +33,20 @@ export function StatCard({
   tone?: 'neutral' | 'profit' | 'loss' | 'breakeven' | 'gold';
 }) {
   return (
-    <div className="rounded-lg border border-edge-subtle bg-raised px-5 py-4 shadow-inner-light">
+    <div
+      className={clsx(
+        'relative overflow-hidden rounded-lg border border-edge-subtle bg-raised px-5 py-4 shadow-inner-light transition-shadow duration-base',
+        TONE_GLOW[tone],
+      )}
+    >
+      {/* Tone-colored top bar — a 2px gradient signal strip. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px]"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${TONE_COLOR[tone]}, transparent)`,
+        }}
+      />
       <p className="text-[11.5px] font-medium uppercase tracking-[0.14em] text-ink-muted">
         {label}
       </p>

@@ -74,6 +74,16 @@ export function PlusIcon({ className }: IconProps) {
   );
 }
 
+export function EaIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <rect x="4.5" y="4.5" width="9" height="9" rx="1.5" />
+      <path d="M7.5 7.5h3v3h-3z" />
+      <path d="M6.5 2v2.5M11.5 2v2.5M6.5 13.5V16M11.5 13.5V16M2 6.5h2.5M2 11.5h2.5M13.5 6.5H16M13.5 11.5H16" />
+    </svg>
+  );
+}
+
 export function CalendarIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden>
