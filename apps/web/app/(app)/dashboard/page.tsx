@@ -1,12 +1,22 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { streaks } from '@zenith/calc';
 import { Card, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatCard } from '@/components/dashboard/stat-card';
-import { EquityChart } from '@/components/dashboard/equity-chart';
-import { DailyPnlChart } from '@/components/dashboard/daily-pnl-chart';
 import { RecentTrades } from '@/components/dashboard/recent-trades';
+
+// Recharts is heavy (~110 kB) — defer it so the dashboard shell paints first.
+const chartFallback = <Skeleton className="m-4 h-[280px]" />;
+const EquityChart = dynamic(
+  () => import('@/components/dashboard/equity-chart').then((m) => m.EquityChart),
+  { ssr: false, loading: () => chartFallback },
+);
+const DailyPnlChart = dynamic(
+  () => import('@/components/dashboard/daily-pnl-chart').then((m) => m.DailyPnlChart),
+  { ssr: false, loading: () => chartFallback },
+);
 import { AccountSwitcher } from '@/components/shell/account-switcher';
 import { useAccounts, useDashboardMetrics, useTrades } from '@/lib/hooks';
 import { useUiStore } from '@/lib/store';

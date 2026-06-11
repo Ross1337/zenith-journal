@@ -1,11 +1,21 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { Card, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { EquityChart } from '@/components/dashboard/equity-chart';
 import { BreakdownBars } from '@/components/analytics/breakdown-bars';
-import { RDistribution } from '@/components/analytics/r-distribution';
 import { PnlHeatmap } from '@/components/analytics/pnl-heatmap';
+
+// Defer the Recharts-backed charts so the analytics shell paints immediately.
+const chartFallback = <Skeleton className="m-4 h-[280px]" />;
+const EquityChart = dynamic(
+  () => import('@/components/dashboard/equity-chart').then((m) => m.EquityChart),
+  { ssr: false, loading: () => chartFallback },
+);
+const RDistribution = dynamic(
+  () => import('@/components/analytics/r-distribution').then((m) => m.RDistribution),
+  { ssr: false, loading: () => chartFallback },
+);
 import { AccountSwitcher } from '@/components/shell/account-switcher';
 import { useAccounts, useDashboardMetrics, useTrades } from '@/lib/hooks';
 import { useUiStore } from '@/lib/store';
