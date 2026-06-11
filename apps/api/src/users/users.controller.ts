@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { UpdateProfileInput } from '@zenith/types';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { ZodValidationPipe } from '../common/zod-validation.pipe';
@@ -19,5 +19,10 @@ export class UsersController {
     @Body(new ZodValidationPipe(UpdateProfileInput)) input: UpdateProfileInput,
   ) {
     return this.users.updateProfile(userId, input);
+  }
+
+  @Post('api-key/regenerate')
+  regenerateApiKey(@CurrentUser() userId: string) {
+    return this.users.regenerateApiKey(userId);
   }
 }

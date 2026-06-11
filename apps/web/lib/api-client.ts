@@ -207,6 +207,8 @@ export function createApiClient(getToken: TokenGetter) {
     },
     me: {
       get: (): Promise<UserProfile> => request('/me', { schema: UserProfileSchema }),
+      regenerateApiKey: (): Promise<{ apiKey: string }> =>
+        request('/me/api-key/regenerate', { method: 'POST' }),
       update: (body: UpdateProfileInput): Promise<UserProfile> =>
         request('/me', { method: 'PATCH', body, schema: UserProfileSchema }),
     },

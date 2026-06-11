@@ -70,6 +70,15 @@ export function useJournal(filters: JournalFilters = {}) {
   });
 }
 
+export function useRegenerateApiKey() {
+  const api = useApi();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.me.regenerateApiKey(),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['me'] }),
+  });
+}
+
 export function useProfile() {
   const api = useApi();
   return useQuery({ queryKey: ['me'], queryFn: () => api.me.get() });

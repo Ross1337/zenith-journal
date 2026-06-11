@@ -39,6 +39,7 @@ export const UserProfileSchema = z.object({
   timezone: z.string(),
   theme: z.enum(['dark', 'light', 'auto']),
   baseCurrency: z.string(),
+  apiKey: z.string().nullable(),
   createdAt: z.coerce.date(),
 });
 export type UserProfile = z.infer<typeof UserProfileSchema>;
