@@ -53,7 +53,7 @@ export class MtIngestService {
         id: extOpen,
         accountId,
         symbol: input.symbol.toUpperCase(),
-        side: input.type as 'buy' | 'sell',
+        side: input.type,
         quantity: input.lots,
         price: input.openPrice,
         commission: 0,
@@ -65,9 +65,9 @@ export class MtIngestService {
         id: extClose,
         accountId,
         symbol: input.symbol.toUpperCase(),
-        side: closeSide,
+        side: closeSide as 'buy' | 'sell',
         quantity: input.lots,
-        price: input.closePrice,
+        price: input.closePrice!,
         commission,
         fees: 0,
         swap,
@@ -83,7 +83,7 @@ export class MtIngestService {
     const batchId = randomUUID();
     const importedTrade = matched[0]!;
 
-    await this.prisma.(async (tx) => {
+    await this.prisma.$transaction(async (tx) => {
       await tx.user.upsert({ where: { id: userId }, create: { id: userId }, update: {} });
 
       const idByExt = new Map<string, string>();
@@ -93,7 +93,7 @@ export class MtIngestService {
             accountId,
             symbol: f.symbol,
             instrumentType: 'forex',
-            side: f.side,
+            side: f.side as 'buy' | 'sell',
             quantity: f.quantity,
             price: f.price,
             commission: f.commission,
