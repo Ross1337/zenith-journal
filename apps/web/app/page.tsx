@@ -15,15 +15,15 @@ export default function LandingPage() {
           from { opacity: 0; transform: translateY(32px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes goldPulse {
-          0%, 100% { text-shadow: 0 0 20px rgba(242,181,68,0.4), 0 0 40px rgba(242,181,68,0.2); }
-          50% { text-shadow: 0 0 40px rgba(242,181,68,0.7), 0 0 80px rgba(242,181,68,0.35); }
+        @keyframes arcticPulse {
+          0%, 100% { text-shadow: 0 0 20px rgba(66,226,184,0.4), 0 0 40px rgba(242,181,68,0.2); }
+          50% { text-shadow: 0 0 40px rgba(66,226,184,0.7), 0 0 80px rgba(66,226,184,0.35); }
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .word-1 { animation: slideUp 0.7s ease both 0.0s; }
         .word-2 { animation: slideUp 0.7s ease both 0.15s; }
         .word-3 { animation: slideUp 0.7s ease both 0.3s; }
-        .word-gold { animation: slideUp 0.7s ease both 0.45s, goldPulse 3s ease-in-out infinite 1.2s; }
+        .word-gold { animation: slideUp 0.7s ease both 0.45s, arcticPulse 3s ease-in-out infinite 1.2s; }
         .badge-anim { animation: fadeIn 0.6s ease both 0.6s; }
         .sub-anim { animation: slideUp 0.7s ease both 0.5s; }
         .cta-anim { animation: slideUp 0.7s ease both 0.65s; }
@@ -83,7 +83,7 @@ function Nav() {
         <nav className="hidden items-center gap-6 text-[13px] text-ink-secondary sm:flex">
           <a href="#features" className="transition-colors duration-fast hover:text-ink">Features</a>
           <a href="#why" className="transition-colors duration-fast hover:text-ink">Why</a>
-          <a href="#pricing" className="transition-colors duration-fast hover:text-ink">Pricing</a>
+          <a href="#pricing" className="transition-colors duration-fast hover:text-ink">Tarifs</a>
         </nav>
         <div className="ml-auto flex items-center gap-3">
           <Link
@@ -116,8 +116,8 @@ function Hero() {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full" aria-hidden>
       <defs>
         <linearGradient id="heroFillVivid" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f2b544" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#f2b544" stopOpacity="0" />
+          <stop offset="0%" stopColor="#42e2b8" stopOpacity="0.45" />
+          <stop offset="100%" stopColor="#42e2b8" stopOpacity="0" />
         </linearGradient>
         <filter id="glow">
           <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -125,11 +125,11 @@ function Hero() {
         </filter>
       </defs>
       {[0.25, 0.5, 0.75].map((f) => (
-        <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} stroke="#f2b544" strokeOpacity="0.15" strokeDasharray="2 8" />
+        <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} stroke="#42e2b8" strokeOpacity="0.15" strokeDasharray="2 8" />
       ))}
       <path d={`${path} L${w},${h} L0,${h} Z`} fill="url(#heroFillVivid)" />
-      <path d={path} fill="none" stroke="#f2b544" strokeWidth="2.5" strokeLinejoin="round" filter="url(#glow)" />
-      <circle cx={w} cy={h - 24 - (points[points.length - 1]! / max) * (h - 60)} r="5" fill="#f2b544" filter="url(#glow)" />
+      <path d={path} fill="none" stroke="#42e2b8" strokeWidth="2.5" strokeLinejoin="round" filter="url(#glow)" />
+      <circle cx={w} cy={h - 24 - (points[points.length - 1]! / max) * (h - 60)} r="5" fill="#42e2b8" filter="url(#glow)" />
     </svg>
   );
 
@@ -137,16 +137,16 @@ function Hero() {
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full" role="img" aria-label="Equity curve illustration">
       <defs>
         <linearGradient id="heroFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f2b544" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#f2b544" stopOpacity="0" />
+          <stop offset="0%" stopColor="#42e2b8" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#42e2b8" stopOpacity="0" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((f) => (
         <line key={f} x1="0" x2={w} y1={h * f} y2={h * f} stroke="#1e2330" strokeDasharray="2 8" />
       ))}
       <path d={`${path} L${w},${h} L0,${h} Z`} fill="url(#heroFill)" />
-      <path d={path} fill="none" stroke="#f2b544" strokeWidth="2.2" strokeLinejoin="round" />
-      <circle cx={w} cy={h - 24 - (points[points.length - 1]! / max) * (h - 60)} r="4" fill="#f2b544" />
+      <path d={path} fill="none" stroke="#42e2b8" strokeWidth="2.2" strokeLinejoin="round" />
+      <circle cx={w} cy={h - 24 - (points[points.length - 1]! / max) * (h - 60)} r="4" fill="#42e2b8" />
     </svg>
   );
 
@@ -156,7 +156,7 @@ function Hero() {
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-[480px]"
-        style={{ background: 'radial-gradient(ellipse 65% 50% at 50% 0%, rgba(242,181,68,0.13) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(ellipse 65% 50% at 50% 0%, rgba(66,226,184,0.13) 0%, transparent 70%)' }}
       />
       <div className="relative mx-auto max-w-[1100px] px-6 pb-20 pt-20 text-center sm:pt-28">
         <p className="badge-anim mx-auto mb-5 w-fit rounded-full border border-edge bg-raised px-3 py-1 text-[11.5px] uppercase tracking-[0.16em] text-ink-muted opacity-0">
@@ -179,7 +179,7 @@ function Hero() {
         <div className="cta-anim mt-8 flex items-center justify-center gap-3 opacity-0">
           <Link
             href={CTA_HREF}
-            className="rounded-md bg-gold px-6 py-2.5 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_rgba(242,181,68,0.3)] transition-colors hover:bg-gold-hover"
+            className="rounded-md bg-gold px-6 py-2.5 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_rgba(66,226,184,0.3)] transition-colors hover:bg-gold-hover"
           >
             Start journaling free
           </Link>
@@ -277,7 +277,7 @@ function Features() {
         {FEATURES.map((f, i) => (
           <article
             key={f.title}
-            className="reveal rounded-xl border border-edge-subtle bg-raised p-5 transition-all duration-300 hover:border-gold/30 hover:shadow-[0_0_24px_rgba(242,181,68,0.06)]"
+            className="reveal rounded-xl border border-edge-subtle bg-raised p-5 transition-all duration-300 hover:border-gold/30 hover:shadow-[0_0_24px_rgba(66,226,184,0.06)]"
             style={{ transitionDelay: `${i * 80}ms` }}
           >
             <span className="z-numeric text-[11px] text-gold">{String(i + 1).padStart(2, '0')}</span>
@@ -335,16 +335,16 @@ function WhySection() {
 
 const PLANS = [
   {
-    name: 'Free', price: '$0', cadence: 'forever', cta: 'Start free', highlight: false,
-    features: ['50 trades / month', '1 account', 'Core KPIs & equity curve', 'Manual trade logging'],
+    name: 'Starter', price: '8.99€', cadence: '/ mois', cta: 'Commencer', highlight: false, badge: null,
+    features: ['Import CSV MT4/MT5', 'EA MT5 gratuit inclus', 'Dashboard P&L / Win Rate / Drawdown', '1 compte de trading', 'Trade log + notes'],
   },
   {
-    name: 'Pro', price: '$14.99', cadence: 'per month', cta: 'Go Pro', highlight: true,
-    features: ['Unlimited trades & accounts', 'CSV import with dedup', 'Full analytics & heatmaps', 'Journal, screenshots & psychology', 'Prop-firm guardrails'],
+    name: 'Pro', price: '14.99€', cadence: '/ mois', cta: 'Démarrer en Pro →', highlight: true, badge: 'Le plus populaire',
+    features: ['Tout Starter +', 'Sync MT5 automatique en temps réel', '3 comptes de trading', 'Analytics : R-multiple, expectancy, heatmap', 'Rapport PDF mensuel'],
   },
   {
-    name: 'Lifetime', price: '$199', cadence: 'one payment', cta: 'Own it forever', highlight: false,
-    features: ['Everything in Pro', 'All future features', 'No subscription, ever'],
+    name: 'Elite', price: '29.99€', cadence: '/ mois', cta: 'Accéder à l’Elite →', highlight: false, badge: null,
+    features: ['Tout Pro +', 'Comptes illimités', 'Support prioritaire < 2h', 'Dashboard personnalisable', 'Rapport PDF hebdomadaire'],
   },
 ];
 
@@ -353,22 +353,22 @@ function Pricing() {
     <section id="pricing" className="border-t border-edge-subtle bg-raised/40">
       <div className="mx-auto max-w-[1100px] px-6 py-20">
         <header className="mx-auto mb-12 max-w-xl text-center reveal">
-          <h2 className="font-display text-[30px] font-semibold tracking-tight text-ink">Honest pricing</h2>
-          <p className="mt-3 text-[14.5px] text-ink-secondary">Cheaper than one bad revenge trade.</p>
+          <h2 className="font-display text-[30px] font-semibold tracking-tight text-ink">Tarifs clairs</h2>
+          <p className="mt-3 text-[14.5px] text-ink-secondary">Moins cher qu’un revenge trade raté.</p>
         </header>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           {PLANS.map((p, i) => (
             <article
               key={p.name}
-              className={`reveal ${p.highlight
-                ? 'relative rounded-xl border border-gold/50 bg-raised p-6 shadow-[0_0_40px_rgba(242,181,68,0.12)]'
+              className={`reveal ${p.badge
+                ? 'relative rounded-xl border border-gold/50 bg-raised p-6 shadow-[0_0_40px_rgba(66,226,184,0.12)]'
                 : 'rounded-xl border border-edge-subtle bg-raised p-6'
               }`}
               style={{ transitionDelay: `${i * 100}ms` }}
             >
-              {p.highlight && (
+              {p.badge && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold px-3 py-0.5 text-[10.5px] font-bold uppercase tracking-wider text-ink-on-accent">
-                  Most popular
+                  {p.badge}
                 </span>
               )}
               <h3 className="font-display text-[14px] font-semibold uppercase tracking-[0.14em] text-ink-secondary">{p.name}</h3>
@@ -388,7 +388,7 @@ function Pricing() {
               </ul>
               <Link
                 href={CTA_HREF}
-                className={p.highlight
+                className={p.badge
                   ? 'mt-6 block rounded-md bg-gold px-4 py-2.5 text-center text-[13.5px] font-semibold text-ink-on-accent transition-colors hover:bg-gold-hover'
                   : 'mt-6 block rounded-md border border-edge px-4 py-2.5 text-center text-[13.5px] font-medium text-ink-secondary transition-colors hover:border-edge-strong hover:text-ink'
                 }
@@ -399,7 +399,7 @@ function Pricing() {
           ))}
         </div>
         <p className="mt-8 text-center text-[12px] text-ink-faint">
-          Prices in USD. Cancel anytime — your data exports with you.
+          Prix en EUR · Sans engagement · Données exportables
         </p>
       </div>
     </section>
@@ -424,7 +424,7 @@ function FinalCta() {
         </p>
         <Link
           href={CTA_HREF}
-          className="mt-8 inline-block rounded-md bg-gold px-7 py-3 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_rgba(242,181,68,0.3)] transition-colors hover:bg-gold-hover"
+          className="mt-8 inline-block rounded-md bg-gold px-7 py-3 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_rgba(66,226,184,0.3)] transition-colors hover:bg-gold-hover"
         >
           Start journaling free
         </Link>
@@ -443,7 +443,7 @@ function Footer() {
         </div>
         <nav className="flex items-center gap-5 text-[12.5px] text-ink-muted">
           <a href="#features" className="hover:text-ink-secondary">Features</a>
-          <a href="#pricing" className="hover:text-ink-secondary">Pricing</a>
+          <a href="#pricing" className="hover:text-ink-secondary">Tarifs</a>
           <Link href={clerkEnabled ? '/sign-in' : '/dashboard'} className="hover:text-ink-secondary">Sign in</Link>
         </nav>
         <p className="z-numeric text-[11.5px] text-ink-faint">© 2026 ZENITH</p>
