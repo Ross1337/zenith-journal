@@ -1,12 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import { Card, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Field, Input, Select } from '@/components/ui/field';
 import { useProfile, useUpdateProfile } from '@/lib/hooks';
-import { applyTheme, type Theme } from '@/lib/theme';
 import { useT } from '@/lib/i18n-context';
 
 const TIMEZONES = [
@@ -27,12 +25,6 @@ export default function SettingsPage() {
   const t = useT();
   const { data: profile, isLoading, isError } = useProfile();
   const update = useUpdateProfile();
-
-  const THEMES: Array<{ value: Theme; label: string; desc: string }> = [
-    { value: 'dark', label: t('settings_theme_dark_label'), desc: t('settings_theme_dark_desc') },
-    { value: 'light', label: t('settings_theme_light_label'), desc: t('settings_theme_light_desc') },
-    { value: 'auto', label: t('settings_theme_auto_label'), desc: t('settings_theme_auto_desc') },
-  ];
 
   const [displayName, setDisplayName] = useState('');
   const [timezone, setTimezone] = useState('UTC');
@@ -68,11 +60,6 @@ export default function SettingsPage() {
     await update.mutateAsync({ displayName: displayName.trim() || null, timezone });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
-  };
-
-  const setTheme = (theme: Theme) => {
-    applyTheme(theme); // instant feedback
-    update.mutate({ theme });
   };
 
   return (
@@ -123,35 +110,6 @@ export default function SettingsPage() {
                 {t('settings_save')}
               </button>
             </div>
-          </div>
-        </Card>
-
-        <Card>
-          <CardHeader title={t('settings_appearance')} />
-          <div className="grid grid-cols-1 gap-3 px-5 pb-5 pt-2 sm:grid-cols-3">
-            {THEMES.map((th) => (
-              <button
-                key={th.value}
-                type="button"
-                onClick={() => setTheme(th.value)}
-                className={clsx(
-                  'rounded-lg border px-4 py-3 text-left transition-colors duration-fast',
-                  profile.theme === th.value
-                    ? 'border-gold/50 bg-gold-wash'
-                    : 'border-edge bg-high hover:border-edge-strong',
-                )}
-              >
-                <p
-                  className={clsx(
-                    'font-display text-[13.5px] font-semibold',
-                    profile.theme === th.value ? 'text-gold' : 'text-ink',
-                  )}
-                >
-                  {th.label}
-                </p>
-                <p className="mt-1 text-[11.5px] leading-snug text-ink-muted">{th.desc}</p>
-              </button>
-            ))}
           </div>
         </Card>
 

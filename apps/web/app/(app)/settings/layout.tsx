@@ -12,6 +12,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
   const TABS = [
     { href: '/settings', label: t('settings_tab_profile') },
     { href: '/settings/integrations', label: t('settings_tab_integrations') },
+    { href: '/settings/preferences', label: t('settings_tab_preferences') },
   ] as const;
 
   return (
