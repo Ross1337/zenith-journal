@@ -16,10 +16,10 @@ of any competitor. Reference quality bar: Linear, Vercel, Raycast, Resend.
 
 | Decision | Why |
 | --- | --- |
-| **Surfaces** `#0a0b10 → #1d2130` (void → overlay) | Blue-black, not gray-black: reads as depth, not mud. Four elevation steps only. |
-| **Solar gold accent** `#f2b544` | Warmth against the cold field; used *sparingly* — primary actions, active nav, brand moments. Never for data. |
-| **Ion violet** `#8b7cf6` | Secondary accent for "insight" moments (ideas, AI, callouts). |
-| **P&L green/red** `#41e0a3` / `#f2555f` | Tuned for dark backgrounds (high-chroma but not neon). Colorblind-safe blue/orange variant behind `[data-pnl='colorblind']`. |
+| **Surfaces** `#050510 → #1a1a32` (void → overlay) | A deep void with a faint violet cast, not gray-black: reads as depth, not mud. Four elevation steps only. |
+| **Solar gold accent** `#f2b544` (glow `#f8d06b`) | Warmth against the cold field; the signature accent — primary actions, active nav, brand moments. Never for data. |
+| **Multicolor accent set** ion `#38bdf8` · violet `#a78bfa` · rose `#fb7185` · teal `#2dd4bf` | Each KPI/section gets a distinct hue so the product reads rich, not monochrome. Exposed as `bg-/text-/border-{ion,violet,rose,teal}` + a `solar`/`aurora` gradient. |
+| **P&L green/red** `#4ade80` / `#f87171` | Tuned for dark backgrounds (high-chroma but not neon). Colorblind-safe blue/orange variant behind `[data-pnl='colorblind']`. |
 | **Type stack** Space Grotesk (display) / Inter (UI) / JetBrains Mono (numbers) | Every number in the product goes through `.z-numeric` — mono + tabular figures so columns of P&L always align. |
 | **`z-horizon` divider** | The signature element: a 1px gradient line (transparent → gold → transparent). Used in the sidebar, modals, section titles. |
 | **Light theme "Daylight"** | Warm paper tones (`#fafaf7`), gold darkened to `#b07c18` for AA contrast. Switchable dark/light/auto in settings. |
@@ -47,5 +47,11 @@ of any competitor. Reference quality bar: Linear, Vercel, Raycast, Resend.
 ## Landing page
 
 Same Observatory language in public: dawn-gradient hero over the void surface,
-the product's own equity curve as the hero artifact, gold CTAs. Pricing is
-flat and honest: Free / Pro $14.99/mo / Lifetime $199.
+the product's own equity curve as the hero artifact, gold CTAs, a glassmorphism
+nav with an aurora hairline. Dedicated `/pricing` and `/ea` marketing pages
+(FR/EN) share that nav.
+
+Pricing is flat and honest, in euros: **Starter 8.99 / Pro 14.99 / Premium
+29.99 €** per month (annual −20%). Pro is the visual anchor (gold border,
+"Populaire" badge, slight scale); Premium is deliberately priced to steer
+toward Pro. A check/✗ comparison matrix sits below the cards.
