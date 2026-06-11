@@ -11,27 +11,8 @@ import { AccountSwitcher } from '@/components/shell/account-switcher';
 import { useAccounts, useDashboardMetrics, useTrades } from '@/lib/hooks';
 import { useUiStore } from '@/lib/store';
 import { useT } from '@/lib/i18n-context';
+import { DashboardSkeleton } from './skeleton';
 import { fmtCurrency, fmtPct, fmtPnl, fmtRatio, pnlTone } from '@/lib/format';
-
-export function DashboardSkeleton() {
-  return (
-    <>
-      <header className="mb-6">
-        <Skeleton className="h-7 w-44" />
-        <Skeleton className="mt-2 h-4 w-64" />
-      </header>
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        {Array.from({ length: 5 }, (_, i) => (
-          <Skeleton key={i} className="h-[104px]" />
-        ))}
-      </div>
-      <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-5">
-        <Skeleton className="h-[340px] xl:col-span-3" />
-        <Skeleton className="h-[340px] xl:col-span-2" />
-      </div>
-    </>
-  );
-}
 
 export default function DashboardPage() {
   const t = useT();
@@ -52,7 +33,7 @@ export default function DashboardPage() {
   const closed = [...(tradeList?.items ?? [])].sort(
     (a, b) => a.openedAt.getTime() - b.openedAt.getTime(),
   );
-  const streak = streaks(closed.map((t) => t.netPnl ?? 0));
+  const streak = streaks(closed.map((tr) => tr.netPnl ?? 0));
   const lastEquity = equity?.[equity.length - 1];
 
   if (isLoading) return <DashboardSkeleton />;
