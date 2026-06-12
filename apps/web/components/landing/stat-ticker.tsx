@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState } from 'react';
 
 const STATS = [
-  { value: 30, suffix: 's', prefix: '< ', label: 'to log a trade' },
-  { value: 30, suffix: '+', prefix: '', label: 'metrics computed live' },
-  { value: 1, suffix: ' drop', prefix: '', label: 'to import broker CSVs' },
-  { value: 0, suffix: '∞', prefix: '', label: 'accounts, one journal', isInfinity: true },
+  { value: 30, suffix: 's', prefix: '< ', label: 'pour enregistrer un trade' },
+  { value: 30, suffix: '+', prefix: '', label: 'métriques calculées en direct' },
+  { value: 1, suffix: ' glisser', prefix: '', label: 'pour importer vos CSV broker' },
+  { value: 0, suffix: '∞', prefix: '', label: 'comptes, un seul journal', isInfinity: true },
 ];
 
 function AnimatedNumber({ target, suffix, prefix, isInfinity }: { target: number; suffix: string; prefix: string; isInfinity?: boolean }) {

@@ -4,6 +4,7 @@ import { ThemeSwitcher } from '@/components/shell/theme-switcher';
 import { CursorReveal, CursorRevealVivid } from '@/components/landing/cursor-reveal';
 import { StatTicker } from '@/components/landing/stat-ticker';
 import { Marquee } from '@/components/landing/marquee';
+import { ScrollReveal } from '@/components/landing/scroll-reveal';
 
 const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 const CTA_HREF = clerkEnabled ? '/sign-up' : '/dashboard';
@@ -50,27 +51,6 @@ export default function LandingPage() {
   );
 }
 
-/** Client-side scroll reveal via IntersectionObserver — no lib. */
-function ScrollReveal() {
-  return (
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `
-          (function() {
-            function init() {
-              var obs = new IntersectionObserver(function(entries) {
-                entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('in'); } });
-              }, { threshold: 0.15 });
-              document.querySelectorAll('.reveal, .why-line').forEach(function(el) { obs.observe(el); });
-            }
-            if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
-          })();
-        `,
-      }}
-    />
-  );
-}
-
 function Nav() {
   return (
     <header className="sticky top-0 z-40 border-b border-edge-subtle bg-void/70 backdrop-blur-xl">
@@ -84,8 +64,8 @@ function Nav() {
           </span>
         </Link>
         <nav className="hidden items-center gap-6 text-[13px] text-ink-secondary sm:flex">
-          <a href="#features" className="transition-colors duration-fast hover:text-ink">Features</a>
-          <a href="#why" className="transition-colors duration-fast hover:text-ink">Why</a>
+          <a href="#features" className="transition-colors duration-fast hover:text-ink">Fonctionnalités</a>
+          <a href="#why" className="transition-colors duration-fast hover:text-ink">Pourquoi</a>
           <Link href="/pricing" className="transition-colors duration-fast hover:text-gold">Tarifs</Link>
           <Link href="/mt5" className="transition-colors duration-fast hover:text-teal">EA</Link>
         </nav>
@@ -96,13 +76,13 @@ function Nav() {
             href={clerkEnabled ? '/sign-in' : '/dashboard'}
             className="hidden rounded-md px-3 py-1.5 text-[13px] font-medium text-ink-secondary transition-colors hover:text-ink sm:block"
           >
-            Sign in
+            Connexion
           </Link>
           <Link
             href={CTA_HREF}
             className="rounded-md bg-gold px-3.5 py-1.5 text-[13px] font-semibold text-ink-on-accent shadow-[0_0_20px_var(--z-gold-glow)] transition-all hover:bg-gold-hover hover:shadow-[0_0_28px_var(--z-gold-glow)]"
           >
-            Get started
+            Commencer
           </Link>
         </div>
       </div>
@@ -169,20 +149,21 @@ function Hero() {
       <div className="z-orb z-orb-accent h-[300px] w-[300px] opacity-40" style={{ top: -80, right: '10%' }} />
       <div className="relative mx-auto max-w-[1100px] px-6 pb-20 pt-20 text-center sm:pt-28">
         <p className="badge-anim mx-auto mb-5 w-fit rounded-full border border-edge bg-raised px-3 py-1 text-[11.5px] uppercase tracking-[0.16em] text-ink-muted opacity-0">
-          The trading journal for serious traders
+          Le journal de trading pour traders sérieux
         </p>
 
         <h1 className="mx-auto max-w-3xl font-display text-[40px] font-semibold leading-[1.08] tracking-tight text-ink sm:text-[58px]">
-          <span className="word-1 inline-block opacity-0">See</span>{' '}
-          <span className="word-2 inline-block opacity-0">your</span>{' '}
+          <span className="word-1 inline-block opacity-0">Visualisez</span>{' '}
+          <span className="word-2 inline-block opacity-0">votre</span>{' '}
           <span className="word-3 inline-block opacity-0">edge</span>{' '}
-          <span className="word-gold z-gradient-text inline-block opacity-0 [filter:drop-shadow(0_0_18px_var(--z-gold-glow))]">clearly.</span>
+          <span className="word-gold z-gradient-text inline-block opacity-0 [filter:drop-shadow(0_0_18px_var(--z-gold-glow))]">clairement.</span>
         </h1>
 
         <p className="sub-anim mx-auto mt-5 max-w-xl text-[15.5px] leading-relaxed text-ink-secondary opacity-0">
-          Log a trade in under 30 seconds. ZENITH turns your executions into
-          P&L, R-multiples, behavioral analytics and an equity curve you can
-          finally trust — across every account you trade.
+          Enregistrez un trade en moins de 30 secondes. ZENITH transforme vos
+          exécutions en P&L, R-multiples, analytics comportementaux et une courbe
+          d’equity en laquelle vous pouvez enfin avoir confiance — sur chacun de
+          vos comptes.
         </p>
 
         <div className="cta-anim mt-8 flex items-center justify-center gap-3 opacity-0">
@@ -190,13 +171,13 @@ function Hero() {
             href={CTA_HREF}
             className="rounded-md bg-gold px-6 py-2.5 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_var(--z-gold-glow)] transition-colors hover:bg-gold-hover"
           >
-            Start journaling free
+            Commencer gratuitement
           </Link>
           <a
             href="#pricing"
             className="rounded-md border border-edge px-6 py-2.5 text-[14px] font-medium text-ink-secondary transition-colors hover:border-edge-strong hover:text-ink"
           >
-            See pricing
+            Voir les tarifs
           </a>
         </div>
 
@@ -214,7 +195,7 @@ function Hero() {
             ))}
           </div>
           <p className="text-[12.5px] text-ink-muted">
-            Join <span className="text-ink font-semibold">1,200+</span> traders who know their edge
+            Rejoignez <span className="text-ink font-semibold">1 200+</span> traders qui connaissent leur edge
           </p>
         </div>
 
@@ -225,14 +206,14 @@ function Hero() {
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-profit" />
                 <span className="z-numeric text-[11.5px] uppercase tracking-[0.14em] text-ink-muted">
-                  Equity curve · all accounts
+                  Courbe d’equity · tous les comptes
                 </span>
               </div>
               <span className="z-numeric text-[13px] font-semibold text-profit">+$12,840.50</span>
             </div>
             {darkChart}
             <div className="grid grid-cols-2 gap-3 px-2 pt-4 sm:grid-cols-4">
-              {[['Win rate','54.2%'],['Profit factor','1.82'],['Expectancy','+0.43R'],['Max drawdown','−$2,140']].map(([label, value]) => (
+              {[['Taux de réussite','54.2%'],['Facteur de profit','1.82'],['Espérance','+0.43R'],['Drawdown max','−$2,140']].map(([label, value]) => (
                 <div key={label} className="rounded-lg border border-edge-subtle bg-high px-4 py-3 text-left">
                   <p className="text-[10.5px] uppercase tracking-[0.14em] text-ink-muted">{label}</p>
                   <p className="z-numeric mt-1 text-[17px] font-semibold text-ink">{value}</p>
@@ -248,7 +229,7 @@ function Hero() {
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-gold" style={{boxShadow: '0 0 8px var(--primary)'}} />
                   <span className="z-numeric text-[11.5px] uppercase tracking-[0.14em] text-gold/70">
-                    Equity curve · all accounts
+                    Courbe d’equity · tous les comptes
                   </span>
                 </div>
                 <span className="z-numeric text-[13px] font-semibold text-gold">+$12,840.50</span>
@@ -263,12 +244,12 @@ function Hero() {
 }
 
 const FEATURES = [
-  { title: 'Frictionless logging', body: 'Symbol, entry, exit, stop — live P&L and R-multiple computed as you type. Everything else is optional and one tap away.' },
-  { title: 'Broker CSV import', body: 'Drop any execution export — IBKR, NinjaTrader, Tradovate, generic. Fills are matched into trades, previewed, deduplicated, then committed.' },
-  { title: 'Analytics that answer questions', body: 'Equity curve, R distribution, P&L heatmap, breakdowns by setup, symbol, hour and weekday. Find where the edge lives — and where it leaks.' },
-  { title: 'Psychology, quantified', body: 'Plan adherence, tagged mistakes, emotional state before/during/after. The honest layer most journals skip is the one that pays.' },
-  { title: 'Prop-firm guardrails', body: 'Eval and funded accounts carry their own profit targets and drawdown limits, tracked live so you never blow a challenge by accident.' },
-  { title: 'A journal, not just numbers', body: 'Daily plans, recaps, lessons and ideas in markdown, with mood tracking — connected to the trading days they describe.' },
+  { title: 'Saisie sans friction', body: 'Symbole, entrée, sortie, stop — P&L et R-multiple calculés en direct pendant que vous tapez. Tout le reste est optionnel, à un clic près.' },
+  { title: 'Import CSV broker', body: 'Déposez n’importe quel export d’exécutions — IBKR, NinjaTrader, Tradovate, générique. Les fills sont regroupés en trades, prévisualisés, dédupliqués, puis validés.' },
+  { title: 'Des analytics qui répondent', body: 'Courbe d’equity, distribution des R, heatmap de P&L, répartitions par setup, symbole, heure et jour de la semaine. Trouvez où vit l’edge — et où il fuit.' },
+  { title: 'La psychologie, quantifiée', body: 'Respect du plan, erreurs taguées, état émotionnel avant/pendant/après. La couche honnête que la plupart des journaux évitent est celle qui paie.' },
+  { title: 'Garde-fous prop-firm', body: 'Les comptes eval et funded portent leurs propres objectifs de profit et limites de drawdown, suivis en direct pour ne jamais griller un challenge par accident.' },
+  { title: 'Un journal, pas que des chiffres', body: 'Plans quotidiens, recaps, leçons et idées en markdown, avec suivi de l’humeur — connectés aux journées de trading qu’ils décrivent.' },
 ];
 
 function Features() {
@@ -276,10 +257,10 @@ function Features() {
     <section id="features" className="mx-auto max-w-[1100px] px-6 py-20">
       <header className="mx-auto mb-12 max-w-xl text-center reveal">
         <h2 className="font-display text-[30px] font-semibold tracking-tight text-ink">
-          Built for the review loop
+          Conçu pour la boucle de revue
         </h2>
         <p className="mt-3 text-[14.5px] leading-relaxed text-ink-secondary">
-          Log → review → adjust. Every screen in ZENITH serves the loop that actually improves traders.
+          Enregistrer → revoir → ajuster. Chaque écran de ZENITH sert la boucle qui fait vraiment progresser les traders.
         </p>
       </header>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -300,9 +281,9 @@ function Features() {
 }
 
 const WHY = [
-  { num: '01', text: 'NO SYSTEM' },
-  { num: '02', text: 'NO DATA' },
-  { num: '03', text: 'NO REVIEW' },
+  { num: '01', text: 'AUCUN SYSTÈME' },
+  { num: '02', text: 'AUCUNE DONNÉE' },
+  { num: '03', text: 'AUCUNE REVUE' },
 ];
 
 function WhySection() {
@@ -310,7 +291,7 @@ function WhySection() {
     <section id="why" className="border-t border-edge-subtle bg-raised/30 py-20">
       <div className="mx-auto max-w-[1100px] px-6">
         <p className="reveal mb-4 text-[11.5px] uppercase tracking-[0.2em] text-gold">
-          Why traders fail
+          Pourquoi les traders échouent
         </p>
         <div className="space-y-2">
           {WHY.map((w, i) => (
@@ -335,7 +316,7 @@ function WhySection() {
           ))}
         </div>
         <p className="reveal mt-8 max-w-lg text-[14.5px] leading-relaxed text-ink-secondary">
-          ZENITH fixes all three. One place to log, one place to review, one system that shows you where the edge is — and where it leaks.
+          ZENITH corrige les trois. Un seul endroit pour enregistrer, un seul pour revoir, un seul système qui vous montre où est l’edge — et où il fuit.
         </p>
       </div>
     </section>
@@ -426,16 +407,16 @@ function FinalCta() {
       <div className="relative mx-auto max-w-[1100px] px-6 py-24 text-center reveal">
         <ZenithMark size={36} className="mx-auto" />
         <h2 className="mt-6 font-display text-[32px] font-semibold tracking-tight text-ink">
-          Your next 100 trades deserve a record.
+          Vos 100 prochains trades méritent d’être consignés.
         </h2>
         <p className="mx-auto mt-3 max-w-md text-[14.5px] text-ink-secondary">
-          The traders who review are the traders who last. Start tonight.
+          Les traders qui revoient sont ceux qui durent. Commencez ce soir.
         </p>
         <Link
           href={CTA_HREF}
           className="mt-8 inline-block rounded-md bg-gold px-7 py-3 text-[14px] font-semibold text-ink-on-accent shadow-[0_0_32px_var(--z-gold-glow)] transition-colors hover:bg-gold-hover"
         >
-          Start journaling free
+          Commencer gratuitement
         </Link>
       </div>
     </section>
@@ -448,12 +429,12 @@ function Footer() {
       <div className="mx-auto flex max-w-[1100px] flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
         <div className="flex items-center gap-2.5">
           <ZenithMark size={18} />
-          <span className="text-[12.5px] text-ink-muted">ZENITH — See your edge clearly.</span>
+          <span className="text-[12.5px] text-ink-muted">ZENITH — Visualisez votre edge clairement.</span>
         </div>
         <nav className="flex items-center gap-5 text-[12.5px] text-ink-muted">
-          <a href="#features" className="hover:text-ink-secondary">Features</a>
+          <a href="#features" className="hover:text-ink-secondary">Fonctionnalités</a>
           <a href="#pricing" className="hover:text-ink-secondary">Tarifs</a>
-          <Link href={clerkEnabled ? '/sign-in' : '/dashboard'} className="hover:text-ink-secondary">Sign in</Link>
+          <Link href={clerkEnabled ? '/sign-in' : '/dashboard'} className="hover:text-ink-secondary">Connexion</Link>
         </nav>
         <p className="z-numeric text-[11.5px] text-ink-faint">© 2026 ZENITH</p>
       </div>
