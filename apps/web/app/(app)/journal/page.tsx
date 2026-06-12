@@ -41,9 +41,9 @@ export default function JournalPage() {
 
   return (
     <>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="z-gradient-text font-display text-[22px] font-semibold tracking-tight">
+          <h1 className="z-gradient-text font-display text-[20px] font-semibold tracking-tight lg:text-[22px]">
             {t('jr_title')}
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">
@@ -53,7 +53,7 @@ export default function JournalPage() {
         <button
           type="button"
           onClick={() => setComposing((v) => !v)}
-          className="rounded-md bg-gold px-4 py-2 text-[13px] font-semibold text-ink-on-accent transition-colors duration-fast hover:bg-gold-hover"
+          className="self-start rounded-md bg-gold px-4 py-2 text-[13px] font-semibold text-ink-on-accent transition-colors duration-fast hover:bg-gold-hover"
         >
           {composing ? t('jr_close') : t('jr_new')}
         </button>
@@ -244,7 +244,7 @@ function Composer({ onDone }: { onDone: () => void }) {
             placeholder={'## Bias\nWhat does the day look like?\n\n## Levels\n- …'}
           />
         </Field>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <span className="text-[11.5px] uppercase tracking-[0.1em] text-ink-muted">{t('jc_mood')}</span>
             {[1, 2, 3, 4, 5].map((n) => (

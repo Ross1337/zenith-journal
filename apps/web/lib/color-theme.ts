@@ -17,7 +17,7 @@ export const COLOR_THEMES: {
   { id: 'arctic', label: 'Arctic Precision', dot: 'linear-gradient(135deg, #42E2B8, #5B8EFF)' },
 ];
 
-export const DEFAULT_COLOR_THEME: ColorTheme = 'cosmos';
+export const DEFAULT_COLOR_THEME: ColorTheme = 'arctic';
 export const COLOR_THEME_KEY = 'zenith-theme';
 
 const CLASSES = ['theme-cosmos', 'theme-ember', 'theme-arctic'];
@@ -44,4 +44,4 @@ export function readColorTheme(): ColorTheme {
  * Inline, render-blocking script that applies the saved theme before first
  * paint — prevents a flash of the default Cosmos palette. Injected in <body>.
  */
-export const COLOR_THEME_NO_FLASH_SCRIPT = `(function(){try{var t=localStorage.getItem('${COLOR_THEME_KEY}');var ok=['cosmos','ember','arctic'].indexOf(t)>=0?t:'${DEFAULT_COLOR_THEME}';var b=document.body;b.classList.remove('theme-cosmos','theme-ember','theme-arctic');b.classList.add('theme-'+ok);}catch(e){document.body.classList.add('theme-${DEFAULT_COLOR_THEME}');}})();`;
+export const COLOR_THEME_NO_FLASH_SCRIPT = "(function(){var b=document.body;b.classList.remove(\"theme-cosmos\",\"theme-ember\",\"theme-arctic\");b.classList.add(\"theme-arctic\");})()";

@@ -1,0 +1,29 @@
+services:
+  mt5-vantage-demo:
+    image: zenith-mt5-bridge
+    container_name: zenith-mt5-vantage-demo
+    environment:
+      - MT5_LOGIN=25566816
+      - MT5_PASSWORD=Z@6uZJsF
+      - MT5_SERVER=VantageMarkets-Demo
+      - ZENITH_API_URL=http://host.docker.internal:4000
+      - ZENITH_API_KEY=e81707bb-2524-476e-9e86-062375a303fe
+      - POLL_INTERVAL=30
+      - USE_MOCK=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./bridge_mock.py:/app/bridge_mock.py:ro
+    restart: unless-stopped
+    mem_limit: 512m
+    shm_size: "256m"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  default:
+    name: zenith_default
+    external: true

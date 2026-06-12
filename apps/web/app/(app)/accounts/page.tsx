@@ -29,9 +29,9 @@ export default function AccountsPage() {
 
   return (
     <>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="z-gradient-text font-display text-[22px] font-semibold tracking-tight">
+          <h1 className="z-gradient-text font-display text-[20px] font-semibold tracking-tight lg:text-[22px]">
             Accounts
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">
@@ -41,7 +41,7 @@ export default function AccountsPage() {
         <button
           type="button"
           onClick={() => setCreating((v) => !v)}
-          className="rounded-md bg-gold px-4 py-2 text-[13px] font-semibold text-ink-on-accent transition-colors duration-fast hover:bg-gold-hover"
+          className="self-start rounded-md bg-gold px-4 py-2 text-[13px] font-semibold text-ink-on-accent transition-colors duration-fast hover:bg-gold-hover"
         >
           {creating ? 'Close' : '+ Add account'}
         </button>
@@ -50,17 +50,17 @@ export default function AccountsPage() {
       {creating && <AccountForm onDone={() => setCreating(false)} />}
 
       {isLoading ? (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Skeleton className="h-44" />
           <Skeleton className="h-44" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {(accounts ?? []).map((a) => (
             <AccountCard key={a.id} account={a} />
           ))}
           {(accounts ?? []).length === 0 && (
-            <Card className="lg:col-span-2">
+            <Card className="sm:col-span-2">
               <p className="px-5 py-14 text-center text-[13px] text-ink-muted">
                 No accounts yet — add your first one to start logging trades.
               </p>
@@ -103,22 +103,22 @@ function AccountCard({ account }: { account: Account }) {
           {!account.isActive && ' · archived'}
         </p>
 
-        <div className="mt-4 grid grid-cols-3 gap-4">
+        <div className="mt-4 grid grid-cols-3 gap-3 sm:gap-4">
           <div>
             <p className="text-[11px] uppercase tracking-[0.12em] text-ink-muted">Balance</p>
-            <p className="z-numeric mt-1 text-[18px] font-semibold text-ink">
+            <p className="z-numeric mt-1 text-[15px] font-semibold text-ink sm:text-[18px]">
               {fmtCurrency(account.currentBalance)}
             </p>
           </div>
           <div>
             <p className="text-[11px] uppercase tracking-[0.12em] text-ink-muted">P&L</p>
-            <PnlValue value={pnl} className="mt-1 block text-[18px] font-semibold" />
+            <PnlValue value={pnl} className="mt-1 block text-[15px] font-semibold sm:text-[18px]" />
           </div>
           <div>
             <p className="text-[11px] uppercase tracking-[0.12em] text-ink-muted">Return</p>
             <p
               className={clsx(
-                'z-numeric mt-1 text-[18px] font-semibold',
+                'z-numeric mt-1 text-[15px] font-semibold sm:text-[18px]',
                 pnl > 0 ? 'text-profit' : pnl < 0 ? 'text-loss' : 'text-ink',
               )}
             >

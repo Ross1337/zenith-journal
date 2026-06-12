@@ -1,149 +1,118 @@
 # Zenith MT5 Bridge
 
-Automated MT5 trade ingestion via Wine + Docker. Each client runs in its own container — read-only investor password connection.
+Python bridge that polls MetaTrader 5 and pushes trades to the Zenith API.
 
 ## Architecture
 
+Each client gets their own dedicated Docker container (`zenith-mt5-{userId}`), fully isolated.
+
 ```
-[MT5 Terminal (Wine)] → [bridge.py (Python)] → [Zenith API /trades/ingest/mt]
-         ↕
-    [Docker Container]
-    1 container = 1 MT5 account
-    ~150-200 MB RAM per client
-    40-50 clients on a 8GB VPS
+Client A  →  zenith-mt5-user_abc  →  POST http://host:4000/v1/trades/ingest/mt
+Client B  →  zenith-mt5-user_def  →  POST http://host:4000/v1/trades/ingest/mt
 ```
 
-### Scaling estimate
+Two operating modes:
 
-| VPS RAM | Max containers | Notes |
-|---------|---------------|-------|
-| 4 GB    | ~15-20        | Leave 1GB for OS |
-| 8 GB    | ~40-50        | Recommended |
-| 16 GB   | ~80-100       | Production |
+| Mode | Image | When to use |
+|------|-------|-------------|
+| **Mock** | `zenith-mt5-mock:latest` | Testing, demo, no MT5 credentials |
+| **Real** | `zenith-mt5-bridge:latest` | Production with Wine + MT5 terminal |
 
-For isolation totale (Proxmox), deploy 1 LXC per client group — each LXC runs 5-10 Docker containers.
+## Provisioning a new client
 
-## Prerequisites
-
-- Docker >= 20.10 + docker-compose v2
-- Network `zenith_default` must exist:  
-  `docker network create zenith_default`
-- Zenith API accessible on the same Docker network
-
-## Quick Start
-
-### 1. Build the image
+### Mock mode (simulation)
 
 ```bash
 cd ~/zenith/mt5-bridge
-docker-compose build
-# or: docker build -t zenith-mt5-bridge .
+./provision.sh <userId> <apiKey>
 ```
 
-> First build takes ~10-15 minutes (Wine install + MT5 download).
+Example:
+```bash
+./provision.sh user_abc123 ze_api_key_here
+```
 
-### 2. Test pipeline with mock (no real broker needed)
+### Real MT5 mode
 
 ```bash
-docker-compose up mt5-mock
+./provision.sh <userId> <apiKey> <mt5Login> <mt5Password> <mt5Server>
 ```
 
-This generates fake trades every 30s and POSTs to the Zenith API. Use this to validate the ingestion endpoint before connecting real accounts.
+Example:
+```bash
+./provision.sh user_abc123 ze_api_key_here 25566816 MyPassword VantageMarkets-Demo
+```
 
-### 3. Launch a real client
+The script will:
+1. Remove any existing container with the same `userId`
+2. Build the Docker image if not already present
+3. Start the container with `--restart unless-stopped`
+
+## Container naming
+
+Containers are named `zenith-mt5-{userId}` — e.g. `zenith-mt5-user_abc123`.
+
+## Environment variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `ZENITH_API_KEY` | User's Zenith API key | Yes |
+| `ZENITH_API_URL` | Zenith API base URL | Auto-set by provision.sh |
+| `MT5_LOGIN` | MT5 account login number | Real mode only |
+| `MT5_PASSWORD` | MT5 account password | Real mode only |
+| `MT5_SERVER` | MT5 broker server name | Real mode only |
+| `POLL_INTERVAL` | Seconds between polling cycles (default: 30) | No |
+
+## Useful commands
 
 ```bash
-docker-compose up -d mt5-client-1
-docker-compose logs -f mt5-client-1
+# View logs for a client
+docker logs -f zenith-mt5-user_abc123
+
+# List all running bridges
+docker ps --filter "name=zenith-mt5-"
+
+# Stop a client's bridge
+docker stop zenith-mt5-user_abc123
+
+# Remove a client's bridge
+docker rm -f zenith-mt5-user_abc123
+
+# Rebuild mock image after code changes
+docker build -f Dockerfile.mock -t zenith-mt5-mock:latest .
 ```
-
-### 4. Add a new client
-
-Copy a service block in `docker-compose.yml`, change the credentials:
-
-```yaml
-  mt5-client-N:
-    build: .
-    environment:
-      - MT5_LOGIN=<real_login>
-      - MT5_PASSWORD=<investor_password>  # read-only!
-      - MT5_SERVER=<broker_server>
-      - ZENITH_API_URL=http://zenith-api-1:4000
-      - ZENITH_API_KEY=<client_api_key>
-    networks:
-      - zenith_default
-    restart: unless-stopped
-    mem_limit: 512m
-```
-
-Then: `docker-compose up -d mt5-client-N`
-
-## Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `MT5_LOGIN` | yes | MT5 account number |
-| `MT5_PASSWORD` | yes | Investor (read-only) password |
-| `MT5_SERVER` | yes | Broker server name (e.g. `ICMarkets-Demo01`) |
-| `ZENITH_API_URL` | yes | Base URL of Zenith API |
-| `ZENITH_API_KEY` | yes | Per-client API key |
-| `POLL_INTERVAL` | no | Poll interval in seconds (default: 60) |
-| `USE_MOCK` | no | Set to `true` to run mock bridge instead of real MT5 |
 
 ## Files
 
 | File | Description |
 |------|-------------|
-| `Dockerfile` | Ubuntu 22.04 + Wine + Python 3.11 + MT5 |
-| `entrypoint.sh` | Starts Xvfb, MT5 terminal, then bridge |
-| `bridge.py` | Real MT5 bridge — connects via MetaTrader5 Python package |
-| `bridge_mock.py` | Mock bridge — generates fake trades for pipeline testing |
-| `docker-compose.yml` | Example multi-client setup |
-| `accounts.json` | Example account config (not used by containers directly) |
+| `provision.sh` | Provisions a container per client |
+| `Dockerfile.mock` | Lightweight image for mock/simulation mode |
+| `Dockerfile` | Full Wine + MT5 image for real mode |
+| `bridge_mock.py` | Mock bridge — generates fake trades |
+| `bridge.py` | Real bridge — connects to MT5 via Wine |
+| `entrypoint.sh` | Entrypoint for real mode (Wine init + MT5 launch) |
+| `docker-compose.yml` | Legacy single-container compose (kept for reference) |
 
-## MT5 Python Package Note
+## API payload format
 
-The `MetaTrader5` Python package on Linux works by communicating with a running MT5 terminal via named pipes — it requires Wine + the MT5 terminal to be running. If the Wine/MT5 install fails in Docker:
+Each trade is sent as a `POST /v1/trades/ingest/mt` with:
 
-### Alternative: MQL5 EA approach
-
-Deploy an Expert Advisor (EA) in the MT5 terminal that:
-1. Runs on a timer (every 60s)
-2. Reads `OrdersHistoryTotal()` / `HistoryDealsTotal()`
-3. POSTs to Zenith API via `WebRequest()` (must whitelist URL in MT5 settings)
-
-The EA approach runs entirely inside the Wine MT5 terminal — no Python needed. Better compatibility, less Docker overhead (~100MB/client).
-
-## Monitoring
-
-```bash
-# All containers status
-docker-compose ps
-
-# Live logs for one client
-docker-compose logs -f mt5-client-1
-
-# Resource usage
-docker stats --no-stream
-
-# Restart a client
-docker-compose restart mt5-client-1
-```
-
-## Troubleshooting
-
-**MT5 won't start in Wine:**
-```bash
-docker exec -it zenith-mt5-1 bash
-export DISPLAY=:99
-wine "~/.wine/drive_c/Program Files/MetaTrader 5/terminal64.exe" /portable
-```
-
-**MetaTrader5 Python import fails:**  
-Fallback is automatic — `USE_MOCK=true` in env or entrypoint detects missing terminal.
-
-**API POST fails:**  
-Check `ZENITH_API_URL` is reachable from within the container network:
-```bash
-docker exec zenith-mt5-1 curl -s $ZENITH_API_URL/health
+```json
+{
+  "apiKey": "ze_...",
+  "accountId": "25566816",
+  "source": "mt5",
+  "ticket": 2000001,
+  "symbol": "EURUSD",
+  "type": "buy",
+  "openTime": "2025-01-01T10:00:00Z",
+  "closeTime": "2025-01-01T12:00:00Z",
+  "openPrice": 1.08500,
+  "closePrice": 1.08650,
+  "lots": 0.1,
+  "profit": 15.00,
+  "commission": -3.50,
+  "swap": -0.50
+}
 ```

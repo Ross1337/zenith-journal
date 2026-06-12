@@ -1,13 +1,12 @@
 import Link from 'next/link';
 import { ZenithMark } from '@/components/shell/zenith-mark';
-import { ThemeSwitcher } from '@/components/shell/theme-switcher';
 import { CursorReveal, CursorRevealVivid } from '@/components/landing/cursor-reveal';
 import { StatTicker } from '@/components/landing/stat-ticker';
 import { Marquee } from '@/components/landing/marquee';
 import { ScrollReveal } from '@/components/landing/scroll-reveal';
 
-const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
-const CTA_HREF = clerkEnabled ? '/sign-up' : '/dashboard';
+
+const CTA_HREF = "/sign-up";
 
 export default function LandingPage() {
   return (
@@ -70,10 +69,8 @@ function Nav() {
           <Link href="/mt5" className="transition-colors duration-fast hover:text-teal">EA</Link>
         </nav>
         <div className="ml-auto flex items-center gap-3">
-          <ThemeSwitcher />
-          <span aria-hidden className="hidden h-4 w-px bg-edge sm:block" />
           <Link
-            href={clerkEnabled ? '/sign-in' : '/dashboard'}
+            href={"/sign-in"}
             className="hidden rounded-md px-3 py-1.5 text-[13px] font-medium text-ink-secondary transition-colors hover:text-ink sm:block"
           >
             Connexion
@@ -434,7 +431,7 @@ function Footer() {
         <nav className="flex items-center gap-5 text-[12.5px] text-ink-muted">
           <a href="#features" className="hover:text-ink-secondary">Fonctionnalités</a>
           <a href="#pricing" className="hover:text-ink-secondary">Tarifs</a>
-          <Link href={clerkEnabled ? '/sign-in' : '/dashboard'} className="hover:text-ink-secondary">Connexion</Link>
+          <Link href={"/sign-in"} className="hover:text-ink-secondary">Connexion</Link>
         </nav>
         <p className="z-numeric text-[11.5px] text-ink-faint">© 2026 ZENITH</p>
       </div>

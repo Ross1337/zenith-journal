@@ -52,6 +52,9 @@ services:
       WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}
       # Demo mode (no Clerk keys): every request acts as this user.
       AUTH_DEV_USER: ${AUTH_DEV_USER:-}
+      # Local JWT auth (self-hosted, no Clerk).
+      LOCAL_JWT_SECRET: ${LOCAL_JWT_SECRET:-}
+      JWT_SECRET: ${JWT_SECRET:-${LOCAL_JWT_SECRET:-}}
     volumes:
       - uploads:/repo/apps/api/uploads
     ports:
@@ -63,15 +66,27 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000/v1}
-        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-}
     restart: unless-stopped
     depends_on:
       - api
     environment:
-      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:-}
-      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-}
+      INTERNAL_API_URL: http://api:4000
     ports:
       - '${WEB_PORT:-3000}:3000'
+
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: /v1
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      API_INTERNAL_URL: http://api:4000
+    ports:
+      - "3002:3001"
 
 volumes:
   pgdata:

@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+# Install only what's needed for mock mode — no Wine, no MT5
+RUN pip install --no-cache-dir requests
+
+WORKDIR /app
+COPY bridge_mock.py /app/bridge_mock.py
+
+ENV ZENITH_API_URL=http://host.docker.internal:4000
+ENV POLL_INTERVAL=30
+
+CMD ["python3", "/app/bridge_mock.py"]

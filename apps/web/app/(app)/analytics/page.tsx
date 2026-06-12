@@ -178,9 +178,9 @@ export default function AnalyticsPage() {
 
   return (
     <>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="z-gradient-text font-display text-[28px] font-semibold tracking-tight">
+          <h1 className="z-gradient-text font-display text-[20px] font-semibold tracking-tight lg:text-[28px]">
             {t('an_title')}
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">

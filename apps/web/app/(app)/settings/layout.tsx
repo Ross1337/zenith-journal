@@ -17,7 +17,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
 
   return (
     <div>
-      <nav className="mb-6 flex gap-1 border-b border-edge pb-0">
+      <nav className="mb-6 flex flex-wrap gap-1 border-b border-edge pb-0">
         {TABS.map(({ href, label }) => {
           const active = pathname === href;
           return (

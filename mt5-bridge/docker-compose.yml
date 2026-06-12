@@ -1,63 +1,38 @@
-version: '3.8'
-
 services:
-  mt5-client-1:
-    build: .
-    container_name: zenith-mt5-1
+  mt5-vantage-demo:
+    image: zenith-mt5-bridge:latest
+    container_name: zenith-mt5-vantage-demo
+    privileged: true
+    security_opt:
+      - seccomp:unconfined
     environment:
-      - MT5_LOGIN=123456
-      - MT5_PASSWORD=investor_pass_here
-      - MT5_SERVER=ICMarkets-Demo01
-      - ZENITH_API_URL=http://zenith-api-1:4000
-      - ZENITH_API_KEY=your_key_here
-      - POLL_INTERVAL=60
-    networks:
-      - zenith_default
-    restart: unless-stopped
-    mem_limit: 512m
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  mt5-client-2:
-    build: .
-    container_name: zenith-mt5-2
-    environment:
-      - MT5_LOGIN=789012
-      - MT5_PASSWORD=investor_pass_here
-      - MT5_SERVER=Pepperstone-Demo
-      - ZENITH_API_URL=http://zenith-api-1:4000
-      - ZENITH_API_KEY=your_key_here
-      - POLL_INTERVAL=60
-    networks:
-      - zenith_default
-    restart: unless-stopped
-    mem_limit: 512m
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  # Mock-only client for pipeline testing (no real MT5 needed)
-  mt5-mock:
-    build: .
-    container_name: zenith-mt5-mock
-    environment:
-      - MT5_LOGIN=000000
-      - MT5_PASSWORD=mock
-      - MT5_SERVER=Mock-Demo
-      - ZENITH_API_URL=http://zenith-api-1:4000
-      - ZENITH_API_KEY=your_key_here
-      - USE_MOCK=true
+      - MT5_LOGIN=25566816
+      - MT5_PASSWORD=Z@6uZJsF
+      - MT5_SERVER=VantageMarkets-Demo
+      - ZENITH_API_URL=http://host.docker.internal:4000
+      - ZENITH_API_KEY=e81707bb-2524-476e-9e86-062375a303fe
       - POLL_INTERVAL=30
-    networks:
-      - zenith_default
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - mt5_wine:/root/.wine
+      - ./entrypoint.sh:/app/entrypoint.sh:ro
+      - ./bridge.py:/app/bridge.py:ro
+      - ./bridge_mock.py:/app/bridge_mock.py:ro
     restart: unless-stopped
-    mem_limit: 128m
+    mem_limit: 1g
+    shm_size: "512m"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  mt5_wine:
+    name: zenith_mt5_wine
 
 networks:
-  zenith_default:
+  default:
+    name: zenith_default
     external: true

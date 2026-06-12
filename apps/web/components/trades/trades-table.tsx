@@ -34,13 +34,13 @@ export function TradesTable({ trades }: { trades: Trade[] }) {
 
   return (
     <div>
-      {/* Filter bar */}
-      <div className="flex flex-wrap items-center gap-3 px-5 py-3.5">
+      {/* Filter bar — stacks vertically on mobile, single row on sm+. */}
+      <div className="flex flex-col gap-2 px-4 py-3.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 sm:px-5">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t('tt_search')}
-          className="h-8 w-56 rounded-md border border-edge bg-high px-3 text-[13px] text-ink placeholder:text-ink-faint focus:border-edge-strong"
+          className="h-8 w-full rounded-md border border-edge bg-high px-3 text-[13px] text-ink placeholder:text-ink-faint focus:border-edge-strong sm:w-56"
         />
         <Segmented
           value={direction}
@@ -61,7 +61,7 @@ export function TradesTable({ trades }: { trades: Trade[] }) {
             { value: 'breakeven', label: t('tt_be') },
           ]}
         />
-        <span className="z-numeric ml-auto text-[12px] text-ink-muted">
+        <span className="z-numeric text-[12px] text-ink-muted sm:ml-auto">
           {filtered.length} / {trades.length} {t('tt_trades')}
         </span>
       </div>

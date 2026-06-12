@@ -19,7 +19,7 @@ export function BreakdownBars({ rows, maxRows = 8 }: { rows: BreakdownRow[]; max
   return (
     <ul className="space-y-1 px-5 pb-5 pt-2">
       {shown.map((r) => (
-        <li key={r.key} className="group grid grid-cols-[110px_1fr_150px] items-center gap-3 py-1">
+        <li key={r.key} className="group grid grid-cols-[72px_1fr_118px] items-center gap-2 py-1 sm:grid-cols-[110px_1fr_150px] sm:gap-3">
           <span className="truncate text-[12.5px] text-ink-secondary" title={r.label}>
             {r.label}
           </span>
@@ -35,8 +35,8 @@ export function BreakdownBars({ rows, maxRows = 8 }: { rows: BreakdownRow[]; max
           <span className="z-numeric whitespace-nowrap text-right text-[12px] text-ink-muted">
             <span className={clsx('font-medium', r.netPnl >= 0 ? 'text-profit' : 'text-loss')}>
               {fmtPnl(r.netPnl)}
-            </span>{' '}
-            · {r.count} · {fmtPct(r.winRate, 0)}
+            </span>
+            <span className="hidden sm:inline"> · {r.count}</span> · {fmtPct(r.winRate, 0)}
           </span>
         </li>
       ))}

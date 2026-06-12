@@ -100,9 +100,9 @@ export default function CalendarPage() {
 
   return (
     <>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="z-gradient-text font-display text-[28px] font-semibold tracking-tight">
+          <h1 className="z-gradient-text font-display text-[20px] font-semibold tracking-tight lg:text-[28px]">
             {t('cal_title')}
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">{t('cal_subtitle')}</p>
@@ -136,7 +136,7 @@ export default function CalendarPage() {
 
       {/* Month stats strip */}
       {monthDays.length > 0 && (
-        <div className="mb-4 grid grid-cols-4 gap-3">
+        <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {[
             { label: t('cal_win_days'), value: String(winDays), color: 'text-profit' },
             { label: t('cal_loss_days'), value: String(lossDays), color: 'text-loss' },
@@ -166,7 +166,7 @@ export default function CalendarPage() {
         <div className="grid grid-cols-7">
           {cells.map((cell, i) => {
             if (!cell) {
-              return <div key={`empty-${i}`} className="border-b border-r border-edge-subtle/50 min-h-[80px]" />;
+              return <div key={`empty-${i}`} className="border-b border-r border-edge-subtle/50 min-h-[56px] sm:min-h-[80px]" />;
             }
             const data = dayMap.get(cell.date);
             const isToday = cell.date === todayStr;
@@ -177,7 +177,7 @@ export default function CalendarPage() {
               <button
                 key={cell.date}
                 onClick={() => setSelectedDay(isSelected ? null : cell.date)}
-                className="relative border-b border-r border-edge-subtle/50 min-h-[80px] p-2 text-left transition-all hover:ring-1 hover:ring-gold/30"
+                className="relative border-b border-r border-edge-subtle/50 min-h-[56px] p-1.5 text-left transition-all hover:ring-1 hover:ring-gold/30 sm:min-h-[80px] sm:p-2"
                 style={{ background: isSelected ? 'rgba(66,226,184,0.12)' : bg }}
               >
                 <span
@@ -194,7 +194,7 @@ export default function CalendarPage() {
                     <p className={`z-numeric text-[11px] font-semibold ${data.pnl >= 0 ? 'text-profit' : 'text-loss'}`}>
                       {fmtPnl(data.pnl)}
                     </p>
-                    <p className="text-[10px] text-ink-muted">{data.count} {data.count !== 1 ? t('cal_trades') : t('cal_trade')}</p>
+                    <p className="hidden text-[10px] text-ink-muted sm:block">{data.count} {data.count !== 1 ? t('cal_trades') : t('cal_trade')}</p>
                   </div>
                 )}
               </button>

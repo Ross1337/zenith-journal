@@ -124,7 +124,7 @@ export default function EaPage() {
   return (
     <>
       <header className="mb-6">
-        <h1 className="z-gradient-text font-display text-[22px] font-semibold tracking-tight">
+        <h1 className="z-gradient-text font-display text-[20px] font-semibold tracking-tight lg:text-[22px]">
           {t('ea_title')}
         </h1>
         <p className="mt-1 text-[13px] text-ink-secondary">{t('ea_subtitle')}</p>

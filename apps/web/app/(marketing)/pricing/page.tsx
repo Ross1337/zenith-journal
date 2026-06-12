@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ZenithMark } from '@/components/shell/zenith-mark';
 
-const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
-const CTA_HREF = clerkEnabled ? '/sign-up' : '/dashboard';
+
+const CTA_HREF = "/sign-up";
 
 type Cycle = 'monthly' | 'annual';
 
@@ -303,6 +303,69 @@ export default function PricingPage() {
           </div>
         ))}
       </div>
+
+
+      {/* ═══════════ AFFILIATE LIFETIME ═══════════ */}
+      <section className="mt-12" id="affiliate">
+        <div className="z-shine relative overflow-hidden rounded-2xl border p-px transition-all duration-200"
+          style={{ background: 'linear-gradient(135deg, var(--primary-glow), var(--accent-glow), rgba(65,224,163,0.3))' }}>
+          <div className="relative overflow-hidden rounded-[14px] bg-high px-7 py-8">
+            {/* Orb bg */}
+            <div className="pointer-events-none absolute right-[-60px] top-[-60px] h-[200px] w-[200px] rounded-full opacity-20"
+              style={{ background: 'radial-gradient(circle, var(--profit) 0%, transparent 70%)' }} />
+
+            <div className="relative flex flex-col gap-6 md:flex-row md:items-center">
+              {/* Left content */}
+              <div className="flex-1">
+                <div className="mb-3 flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(65,224,163,0.3)] bg-profit-wash px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-profit">
+                    🎁 Offre Partenaires
+                  </span>
+                  <span className="inline-flex items-center rounded-full border border-[rgba(65,224,163,0.2)] bg-profit-wash px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.08em] text-profit">
+                    GRATUIT — 0€
+                  </span>
+                </div>
+                <h3 className="font-display text-[1.25rem] font-bold tracking-[-0.015em] text-ink">
+                  Accès Lifetime via dépôt affilié
+                </h3>
+                <p className="mt-1.5 text-[0.8375rem] leading-relaxed text-ink-secondary">
+                  Déposez chez l'un de nos brokers partenaires et obtenez l'accès{' '}
+                  <strong className="text-ink">Lifetime Zenith Elite gratuitement</strong> — sans aucun abonnement mensuel, à vie.
+                </p>
+
+                {/* Broker logos */}
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <span className="text-[0.7rem] font-medium text-ink-faint">Brokers partenaires :</span>
+                  {['Vantage Markets', 'ThinkMarkets', 'IC Markets', 'Pepperstone'].map((b) => (
+                    <span
+                      key={b}
+                      className="rounded-md border border-edge bg-surface px-2.5 py-1 text-[0.7rem] font-medium text-ink-secondary"
+                    >
+                      {b}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right CTA */}
+              <div className="flex flex-col items-center gap-2.5 md:items-end">
+                <div className="text-center md:text-right">
+                  <div className="font-display text-[2rem] font-extrabold leading-none tracking-[-0.03em] text-profit">0€</div>
+                  <div className="text-[0.75rem] text-ink-faint">pour toujours</div>
+                </div>
+                <Link
+                  href="/affiliate"
+                  className="mt-1 inline-flex items-center gap-2 rounded-[10px] px-6 py-2.5 text-[0.875rem] font-bold transition-all hover:opacity-90 hover:-translate-y-px"
+                  style={{ background: 'var(--btn-primary)', color: 'var(--btn-primary-text)', boxShadow: '0 0 20px var(--primary-glow)' }}
+                >
+                  En savoir plus →
+                </Link>
+                <p className="text-[0.7rem] text-ink-faint">Dépôt min. ~200$ · Activation sous 24h</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ═══════════ EA INSTALL ═══════════ */}
       <section className="relative mt-24" id="ea-install">

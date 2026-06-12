@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Zenith MT5 Bridge - MOCK MODE
-Simulates MT5 trade data to validate the Zenith API pipeline without a real broker.
-Generates realistic fake trades and POSTs them to the Zenith API.
+Zenith MT5 Bridge - MOCK MODE (corrigé pour l'API Zenith v1)
+Génère de faux trades et les envoie un par un vers POST /v1/trades/ingest/mt
+Format du payload conforme au DTO MtIngestInput.
 """
 
 import os
@@ -23,13 +23,12 @@ log = logging.getLogger(__name__)
 MT5_LOGIN = os.getenv("MT5_LOGIN", "999999")
 MT5_SERVER = os.getenv("MT5_SERVER", "Mock-Demo")
 ZENITH_API_URL = os.environ.get("ZENITH_API_URL", "http://localhost:4000").rstrip("/")
-ZENITH_API_KEY = os.environ.get("ZENITH_API_KEY", "mock_key")
-POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", "60"))
+ZENITH_API_KEY = os.environ.get("ZENITH_API_KEY", "")
+POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", "10"))
 
-SYMBOLS = ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "XAUUSD", "BTCUSD", "SP500"]
-SERVERS = ["ICMarkets-Demo01", "Pepperstone-Demo", "FTMO-Demo"]
+SYMBOLS = ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "XAUUSD"]
 
-ticket_counter = 1_000_000
+ticket_counter = 2_000_000
 
 
 def generate_fake_trade() -> dict:
@@ -37,82 +36,94 @@ def generate_fake_trade() -> dict:
     ticket_counter += 1
 
     symbol = random.choice(SYMBOLS)
-    trade_type = random.choice(["BUY", "SELL"])
-    volume = round(random.choice([0.01, 0.05, 0.1, 0.25, 0.5, 1.0]), 2)
+    trade_type = random.choice(["buy", "sell"])
+    lots = round(random.choice([0.01, 0.05, 0.1, 0.25, 0.5]), 2)
 
-    if "USD" in symbol and symbol != "XAUUSD" and symbol != "BTCUSD":
-        price = round(random.uniform(0.9, 1.5), 5)
-        profit = round(random.uniform(-200, 300), 2)
-    elif symbol == "XAUUSD":
-        price = round(random.uniform(1800, 2100), 2)
-        profit = round(random.uniform(-500, 800), 2)
-    elif symbol == "BTCUSD":
-        price = round(random.uniform(25000, 50000), 2)
-        profit = round(random.uniform(-1000, 2000), 2)
+    if symbol == "XAUUSD":
+        open_price = round(random.uniform(1800, 2100), 2)
+        close_price = round(open_price * random.uniform(0.995, 1.005), 2)
+        sl = round(open_price - 15 if trade_type == "buy" else open_price + 15, 2)
+        tp = round(open_price + 30 if trade_type == "buy" else open_price - 30, 2)
+        profit = round((close_price - open_price) * lots * 100 * (1 if trade_type == "buy" else -1), 2)
+    elif "JPY" in symbol:
+        open_price = round(random.uniform(130, 155), 3)
+        close_price = round(open_price * random.uniform(0.998, 1.002), 3)
+        sl = round(open_price - 0.5 if trade_type == "buy" else open_price + 0.5, 3)
+        tp = round(open_price + 1.0 if trade_type == "buy" else open_price - 1.0, 3)
+        profit = round((close_price - open_price) * lots * 100 * (1 if trade_type == "buy" else -1), 2)
     else:
-        price = round(random.uniform(4000, 5000), 2)
-        profit = round(random.uniform(-300, 500), 2)
+        open_price = round(random.uniform(0.9, 1.5), 5)
+        close_price = round(open_price * random.uniform(0.9985, 1.0015), 5)
+        sl = round(open_price - 0.003 if trade_type == "buy" else open_price + 0.003, 5)
+        tp = round(open_price + 0.005 if trade_type == "buy" else open_price - 0.005, 5)
+        profit = round((close_price - open_price) * lots * 100000 * (1 if trade_type == "buy" else -1), 2)
 
-    opened_at = datetime.now(tz=timezone.utc) - timedelta(hours=random.randint(1, 23))
+    open_time = datetime.now(tz=timezone.utc) - timedelta(hours=random.randint(2, 48))
+    close_time = open_time + timedelta(hours=random.randint(1, 12), minutes=random.randint(0, 59))
+    commission = round(-lots * 3.5, 2)
+    swap = round(random.uniform(-2.0, 0.0), 2)
 
     return {
-        "external_id": str(ticket_counter),
-        "source": "mt5_mock",
+        "apiKey": ZENITH_API_KEY,
+        "accountId": MT5_LOGIN,
+        "source": "mt5",
+        "ticket": ticket_counter,
         "symbol": symbol,
         "type": trade_type,
-        "entry": "OUT",
-        "volume": volume,
-        "price": price,
+        "openTime": open_time.isoformat(),
+        "closeTime": close_time.isoformat(),
+        "openPrice": open_price,
+        "closePrice": close_price,
+        "lots": lots,
+        "sl": sl,
+        "tp": tp,
+        "commission": commission,
+        "swap": swap,
         "profit": profit,
-        "commission": round(-volume * 3.5, 2),
-        "swap": round(random.uniform(-5, 0), 2),
-        "opened_at": opened_at.isoformat(),
-        "order_id": str(ticket_counter - 100),
-        "magic": random.choice([0, 12345, 99999]),
-        "comment": random.choice(["", "EA_Scalper", "manual", "TP hit", "SL hit"]),
     }
 
 
-def post_trades(trades: list) -> bool:
-    if not trades:
-        return True
-    url = f"{ZENITH_API_URL}/trades/ingest/mt"
-    headers = {
-        "X-Zenith-Key": ZENITH_API_KEY,
-        "Content-Type": "application/json",
-    }
+def post_trade(trade: dict) -> bool:
+    url = f"{ZENITH_API_URL}/v1/trades/ingest/mt"
+    headers = {"Content-Type": "application/json"}
     try:
-        resp = requests.post(url, json={"trades": trades}, headers=headers, timeout=15)
-        if resp.status_code in (200, 201, 204):
-            log.info(f"✓ Posted {len(trades)} mock trade(s) → HTTP {resp.status_code}")
+        resp = requests.post(url, json=trade, headers=headers, timeout=15)
+        body = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else resp.text
+        if resp.status_code in (200, 201):
+            status = body.get("status", "?") if isinstance(body, dict) else "?"
+            log.info(f"  ticket={trade['ticket']} {trade['type'].upper()} {trade['lots']} {trade['symbol']} "
+                     f"@ {trade['openPrice']} -> {trade['closePrice']} | P&L {trade['profit']} | status={status}")
         else:
-            log.warning(f"API responded {resp.status_code}: {resp.text[:200]}")
+            log.warning(f"  ticket={trade['ticket']} HTTP {resp.status_code}: {str(body)[:200]}")
         return True
     except requests.ConnectionError:
-        log.warning(f"Cannot reach Zenith API at {url} — API may not be running yet")
+        log.warning(f"Impossible de joindre l'API Zenith sur {url}")
         return False
     except requests.RequestException as e:
-        log.error(f"POST failed: {e}")
+        log.error(f"Erreur POST: {e}")
         return False
 
 
 def main():
-    log.info(f"Mock bridge starting — simulating account={MT5_LOGIN} on {MT5_SERVER}")
-    log.info(f"Zenith API target: {ZENITH_API_URL}")
-    log.info("Generating fake trades every poll cycle to validate pipeline...")
+    if not ZENITH_API_KEY:
+        log.error("ZENITH_API_KEY non définie — arrêt.")
+        sys.exit(1)
+
+    log.info(f"=== Zenith MT5 Bridge MOCK ===")
+    log.info(f"Compte simulé : {MT5_LOGIN} sur {MT5_SERVER}")
+    log.info(f"API cible      : {ZENITH_API_URL}/v1/trades/ingest/mt")
+    log.info(f"Intervalle     : {POLL_INTERVAL}s")
+    log.info("")
 
     cycle = 0
     while True:
         cycle += 1
-        count = random.randint(1, 5)
-        trades = [generate_fake_trade() for _ in range(count)]
-
-        log.info(f"[cycle {cycle}] Generated {count} fake trade(s):")
-        for t in trades:
-            log.info(f"  {t['type']} {t['volume']} {t['symbol']} @ {t['price']} → P&L {t['profit']}")
-
-        post_trades(trades)
-        log.info(f"Next poll in {POLL_INTERVAL}s...")
+        count = random.randint(1, 3)
+        log.info(f"[cycle {cycle}] Génération de {count} trade(s) fictif(s)...")
+        for _ in range(count):
+            trade = generate_fake_trade()
+            post_trade(trade)
+        log.info(f"Prochain cycle dans {POLL_INTERVAL}s...")
         time.sleep(POLL_INTERVAL)
 
 
