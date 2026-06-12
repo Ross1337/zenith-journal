@@ -50,9 +50,9 @@ export default function DashboardPage() {
 
   return (
     <>
-      <header className="mb-6 flex items-end justify-between">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="z-gradient-text font-display text-[22px] font-semibold tracking-tight">
+          <h1 className="z-gradient-text font-display text-[20px] font-semibold tracking-tight lg:text-[22px]">
             {t('dash_title')}
           </h1>
           <p className="mt-1 text-[13px] text-ink-muted">
@@ -60,7 +60,7 @@ export default function DashboardPage() {
             {t('dash_closed_trades')}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <p className="z-numeric text-[13px] text-ink-secondary">
             {t('dash_equity')}{' '}
             <span className="font-semibold text-ink">{fmtCurrency(balance)}</span>
@@ -70,7 +70,7 @@ export default function DashboardPage() {
       </header>
 
       {/* KPI row */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <StatCard
           label={t('dash_net_pnl')}
           value={fmtPnl(summary?.netPnl ?? 0)}

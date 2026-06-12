@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -21,7 +22,14 @@ import {
 export function Sidebar() {
   const pathname = usePathname();
   const openTradeModal = useUiStore((s) => s.openTradeModal);
+  const sidebarOpen = useUiStore((s) => s.sidebarOpen);
+  const closeSidebar = useUiStore((s) => s.closeSidebar);
   const { t, toggle, lang } = useI18n();
+
+  // Mobile drawer: any navigation closes it.
+  useEffect(() => {
+    closeSidebar();
+  }, [pathname, closeSidebar]);
 
   const NAV = [
     { href: '/dashboard', label: t('nav_dashboard'), icon: DashboardIcon },
@@ -34,21 +42,60 @@ export function Sidebar() {
   ] as const;
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-20 flex w-[232px] flex-col border-r border-edge-subtle bg-raised/70 backdrop-blur-xl">
+    <>
+      {/* Mobile overlay — click anywhere outside the drawer to close. */}
+      {sidebarOpen && (
+        <div
+          aria-hidden
+          onClick={closeSidebar}
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+        />
+      )}
+      <aside
+        className={clsx(
+          'fixed inset-y-0 left-0 z-50 flex w-[232px] transform flex-col border-r border-edge-subtle bg-raised/70 backdrop-blur-xl transition-transform duration-300 lg:translate-x-0',
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+        )}
+      >
       {/* Brand */}
-      <Link href="/dashboard" className="flex items-center gap-2.5 px-5 pb-5 pt-6">
-        <ZenithMark size={26} />
-        <span className="font-display text-[15px] font-semibold tracking-[0.18em] text-ink">
-          ZENITH
-        </span>
-      </Link>
+      <div className="flex items-center justify-between pr-3">
+        <Link href="/dashboard" className="flex items-center gap-2.5 px-5 pb-5 pt-6">
+          <ZenithMark size={26} />
+          <span className="font-display text-[15px] font-semibold tracking-[0.18em] text-ink">
+            ZENITH
+          </span>
+        </Link>
+        {/* Mobile-only close button */}
+        <button
+          type="button"
+          onClick={closeSidebar}
+          aria-label="Close navigation"
+          className="mt-1 flex h-8 w-8 items-center justify-center rounded-md text-ink-muted transition-colors duration-fast hover:bg-hover hover:text-ink lg:hidden"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            aria-hidden
+          >
+            <path d="M2 2l10 10M12 2L2 12" />
+          </svg>
+        </button>
+      </div>
       <div className="z-horizon mx-5" />
 
       {/* Quick add — the single most frequent action lives at the top. */}
       <div className="px-3 pt-5">
         <button
           type="button"
-          onClick={openTradeModal}
+          onClick={() => {
+            closeSidebar();
+            openTradeModal();
+          }}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-gold px-3 py-2 text-[13px] font-semibold text-ink-on-accent shadow-[0_0_20px_var(--z-gold-glow)] transition-colors duration-fast hover:bg-gold-hover active:bg-gold-active"
         >
           <PlusIcon />
@@ -114,6 +161,7 @@ export function Sidebar() {
           {t('nav_tagline')}
         </p>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
